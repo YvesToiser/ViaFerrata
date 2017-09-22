@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ViaFerrata</string>
+    <string name="boutonFavoris">FAVORIS</string>
+    <string name="boutonRecherche">RECHERCHE</string>
 </resources>
