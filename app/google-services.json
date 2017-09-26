@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "632703636872",
+    "firebase_url": "https://viaferrata-3967d.firebaseio.com",
+    "project_id": "viaferrata-3967d",
+    "storage_bucket": "viaferrata-3967d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632703636872:android:a2a27c1aec3ed4f5",
+        "android_client_info": {
+          "package_name": "fr.wcs.viaferrata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "632703636872-q08pdtnph5e077b571jmu34052eb4kbk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.wcs.viaferrata",
+            "certificate_hash": "b5ff70c69d8cb3c1fa689159c3b74719cb7a874e"
+          }
+        },
+        {
+          "client_id": "632703636872-sak7c1b4k090og3uvnnu3m3bfhj0h72v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpFl2fxT0srEjVaLKtKl6F4HZtuwiUbqQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "632703636872-sak7c1b4k090og3uvnnu3m3bfhj0h72v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
