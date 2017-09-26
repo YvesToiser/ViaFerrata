@@ -1,4 +1,7 @@
 <resources>
+    <string name="app_name">ViaFerrata</string>
+    <string name="boutonFavoris">FAVORIS</string>
+    <string name="boutonRecherche">RECHERCHE</string>
     <string name="app_name">Via Ferrata</string>
     <string name="Welcome">Bienvenue sur l\'application Via Ferrata</string>
 </resources>
