@@ -3,4 +3,7 @@
     <string name="boutonFavoris">FAVORIS</string>
     <string name="boutonRecherche">RECHERCHE</string>
     <string name="Welcome">Bienvenue sur l\'application Via Ferrata \n Ne perdez plus de temps à chercher,\n nous les avons toutes trouvées</string>
+    <string name="title_activity_via">ViaActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
