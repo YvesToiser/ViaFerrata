@@ -7,22 +7,36 @@ import android.widget.Button;
 
 public class HomeActivity extends AppCompatActivity {
 
+    final private boolean hasFavorite = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
         Button buttonRecherche=(Button)findViewById(R.id.buttonRecherche);
         Button buttonFavoris=(Button)findViewById(R.id.buttonFavoris);
+
+
+        // Check if there is favorite
+
+        if(!hasFavorite){buttonFavoris.setVisibility(View.GONE);}
+
+
         buttonRecherche.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent toSearchActivity=new Intent(HomeActivity.this,MapsActivity.class);
-                startActivity(toSearchActivity);
+                Intent intentSearch=new Intent(HomeActivity.this,MapsActivity.class);
+                startActivity(intentSearch);
             }
         });
+
+
         buttonFavoris.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent toFavoritesActivity=new Intent(HomeActivity.this,MapsActivity.class);
-                startActivity(toFavoritesActivity);
+                Intent intentFavorite=new Intent(HomeActivity.this,MapsActivity.class);
+                intentFavorite.putExtra("favori", true);
+                startActivity(intentFavorite);
             }
         });
     }
