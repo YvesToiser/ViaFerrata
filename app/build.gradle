@@ -27,8 +27,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.android.gms:play-services-maps:11.0.4'
+    compile 'com.google.firebase:firebase-database:10.0.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:design:26.+'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
 }
 configurations.all{
@@ -42,3 +43,4 @@ configurations.all{
     }
 }
 
+apply plugin: 'com.google.gms.google-services'
