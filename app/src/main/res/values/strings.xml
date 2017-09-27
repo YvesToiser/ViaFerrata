@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ViaFerrata</string>
+    <string name="app_name">Via Ferrata</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
