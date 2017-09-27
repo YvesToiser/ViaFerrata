@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonFavoris.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent intentFavorite=new Intent(HomeActivity.this,MapsActivity.class);
+                Intent intentFavorite=new Intent(HomeActivity.this,DetailActivity.class);
                 intentFavorite.putExtra("favori", true);
                 startActivity(intentFavorite);
             }

@@ -1,5 +1,6 @@
 package fr.wcs.viaferrata;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private int idVia = 0;
-    // declare database
-    private DatabaseReference mDatabase;
+    private int idVia;
+
 
     private static final String TAG = "DetailActivity";
 
@@ -26,6 +26,10 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        // Get the id from intent
+        idVia = getIntent().getIntExtra("id", 0);
+
+
         // Create variable for TextViews
         final TextView tvname = (TextView) findViewById(R.id.tvViaName);
         final TextView tvcity = (TextView) findViewById(R.id.tvViaCity);
@@ -33,8 +37,10 @@ public class DetailActivity extends AppCompatActivity {
         final  TextView tvlatitude = (TextView) findViewById(R.id.tvViaLatitude);
         final  TextView tvlongitude = (TextView) findViewById(R.id.tvViaLongitude);
 
+
         // Get values from database
         //initialize database
+        final DatabaseReference mDatabase;
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         Query mQueryRef = mDatabase.child(String.valueOf(idVia));
