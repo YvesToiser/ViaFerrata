@@ -18,8 +18,8 @@ public class HomeActivity extends AppCompatActivity {
         Button buttonRecherche=(Button)findViewById(R.id.buttonRecherche);
         Button buttonFavoris=(Button)findViewById(R.id.buttonFavoris);
 
-
         // Check if there is favorite
+
 
         if(!hasFavorite){buttonFavoris.setVisibility(View.GONE);}
 

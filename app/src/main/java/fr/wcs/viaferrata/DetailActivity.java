@@ -76,5 +76,6 @@ public class DetailActivity extends AppCompatActivity {
 //        tvlatitude.setText(latitude);
 //        tvlongitude.setText(longitude);
 
+
     }
 }
