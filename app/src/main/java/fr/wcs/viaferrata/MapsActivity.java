@@ -5,7 +5,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +21,10 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
@@ -26,6 +33,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private SlidingUpPanelLayout mLayout;
 
+    ExpListViewAdapterWithCheckbox listAdapter;
+    ExpandableListView expListView;
+    ArrayList<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,52 +47,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        final TextView t = (TextView) findViewById(R.id.name);
-        final Button button = (Button) findViewById(R.id.button);
+        final TextView t = (TextView) findViewById(R.id.filter_text);
+        final Button button = (Button) findViewById(R.id.buttonCancel);
 
         button.setVisibility(View.GONE);
 
-        /*ListView lv = (ListView) findViewById(R.id.list);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MapsActivity.this, "onItemClick", Toast.LENGTH_SHORT).show();
-            }
-        });
 
-        List<String> your_array_list = Arrays.asList(
-                "This",
-                "Is",
-                "An",
-                "Example",
-                "ListView",
-                "That",
-                "You",
-                "Can",
-                "Scroll",
-                ".",
-                "It",
-                "Shows",
-                "How",
-                "Any",
-                "Scrollable",
-                "View",
-                "Can",
-                "Be",
-                "Included",
-                "As",
-                "A",
-                "Child",
-                "Of",
-                "SlidingUpPanelLayout"
-        );
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                your_array_list );
-
-        lv.setAdapter(arrayAdapter); */
 
         mLayout = findViewById(R.id.slidingPanel);
 
@@ -108,18 +80,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         (mLayout.getPanelState() == PanelState.EXPANDED)) {
                     mLayout.setEnabled(false);
                     mLayout.setTouchEnabled(false);
-                    t.setVisibility(View.INVISIBLE);
+                }
+                if (mLayout != null &&
+                        (mLayout.getPanelState() == PanelState.EXPANDED || mLayout.getPanelState() == PanelState.DRAGGING )) {
+                    t.setVisibility(View.GONE);
                     button.setVisibility(View.VISIBLE);
+                }
+                else{
+                    t.setVisibility(View.VISIBLE);
+                    button.setVisibility(View.GONE);
                 }
             }
         });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.setEnabled(true);
+                mLayout.setTouchEnabled(true);
+                mLayout.setPanelState(PanelState.COLLAPSED);
+            }
+        });
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+
+        // preparing list data
+        prepareListData();
+
+        listAdapter = new ExpListViewAdapterWithCheckbox(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+
+    }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Zone géographique");
+        listDataHeader.add("Niveau");
+
+        // Adding child data
+        List<String> zoneGeo = new ArrayList<String>();
+        zoneGeo.add("");
+        zoneGeo.add("");
+        zoneGeo.add("");
+        zoneGeo.add("");
+
+        List<String> niveau = new ArrayList<String>();
+        niveau.add("Facile (F)");
+        niveau.add("Peu difficile (PD)");
+        niveau.add("Assez difficile (AD)");
+        niveau.add("Difficile (D)");
+        niveau.add("Très difficile (TD)");
+        niveau.add("Extremement difficile (ED)");
+
+
+        listDataChild.put(listDataHeader.get(0), zoneGeo);
+        listDataChild.put(listDataHeader.get(1), niveau);
+    }
         /*mLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         }); */
-    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
