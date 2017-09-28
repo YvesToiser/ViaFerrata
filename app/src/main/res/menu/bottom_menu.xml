@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/itineraryButton"
         android:title="Itineraire"
         android:icon="@drawable/ic_itinerary"
         />
     <item
+        android:id="@+id/favButton"
         android:title="Favoris"
         android:icon="@drawable/ic_favoris"
         />
     <item
+        android:id="@+id/doneButton"
         android:title="Done"
         android:icon="@drawable/ic_done"
         />
     <item
+        android:id="@+id/shareButton"
         android:title="Share"
         android:icon="@drawable/ic_share"
         />
