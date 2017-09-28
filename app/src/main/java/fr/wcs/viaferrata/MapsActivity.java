@@ -5,10 +5,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -42,7 +40,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -52,19 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         button.setVisibility(View.GONE);
 
-
-
-
         mLayout = findViewById(R.id.slidingPanel);
-
-        /*if (mLayout != null &&
-                (mLayout.getPanelState() == PanelState.EXPANDED)){
-            mLayout.setEnabled(false);
-            mLayout.setTouchEnabled(false);
-            t.setVisibility(View.INVISIBLE);
-            button.setVisibility(View.VISIBLE);
-
-        }*/
 
         mLayout.addPanelSlideListener(new PanelSlideListener() {
             @Override
@@ -111,6 +96,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // setting list adapter
         expListView.setAdapter(listAdapter);
 
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                expListView.collapseGroup((groupPosition + 1)%2);
+            }
+        });
+
     }
 
     private void prepareListData() {
@@ -140,21 +133,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDataChild.put(listDataHeader.get(0), zoneGeo);
         listDataChild.put(listDataHeader.get(1), niveau);
     }
-        /*mLayout.setFadeOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        }); */
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-        // Add a marker in Sydney and move the camera
         LatLng wcs = new LatLng(43.6015191, 1.4420288000000028);
         LatLng maison = new LatLng(43.6161646, 1.4120812999999544);
         mMap.addMarker(new MarkerOptions()
@@ -171,14 +155,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-    /*@Override
-    public void onBackPressed() {
-        if (mLayout != null &&
-                (mLayout.getPanelState() == PanelState.EXPANDED || mLayout.getPanelState() == PanelState.ANCHORED)) {
-            mLayout.setPanelState(PanelState.COLLAPSED);
-        } else {
-            super.onBackPressed();
-        }
-    }*/
 }
 
