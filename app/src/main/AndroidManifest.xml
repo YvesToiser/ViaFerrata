@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViaActivity">
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +19,7 @@
         <activity android:name=".MapsActivity" />
         <activity android:name=".DetailActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".ViaActivity"
             android:label="@string/title_activity_via"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
