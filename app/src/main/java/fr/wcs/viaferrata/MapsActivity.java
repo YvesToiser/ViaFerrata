@@ -123,7 +123,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             zoom = width*0.0003f + 4.78f;
             Log.d(TAG, "Portrait" + zoom);
         }
-
         else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             zoom = height*0.00018f + 4.7f;
             Log.d(TAG, "Paysage" + zoom);
