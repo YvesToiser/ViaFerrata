@@ -35,8 +35,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".MapsActivity" />
-        <activity android:name=".DetailActivity"></activity>
-
+        <activity android:name=".DetailActivity" />
+        <activity
+            android:name=".ViaActivity"
+            android:label="@string/title_activity_via"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
