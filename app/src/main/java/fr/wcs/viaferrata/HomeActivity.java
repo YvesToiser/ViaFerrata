@@ -18,8 +18,8 @@ public class HomeActivity extends AppCompatActivity {
         Button buttonRecherche=(Button)findViewById(R.id.buttonRecherche);
         Button buttonFavoris=(Button)findViewById(R.id.buttonFavoris);
 
+        // Check if there is favorite
 
-// Check if there is favorite
 
         if(!hasFavorite){buttonFavoris.setVisibility(View.GONE);}
 
@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonFavoris.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent intentFavorite=new Intent(HomeActivity.this,MapsActivity.class);
+                Intent intentFavorite=new Intent(HomeActivity.this,DetailActivity.class);
                 intentFavorite.putExtra("favori", true);
                 startActivity(intentFavorite);
             }

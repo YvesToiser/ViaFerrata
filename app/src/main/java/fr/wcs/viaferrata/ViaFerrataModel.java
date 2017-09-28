@@ -6,67 +6,79 @@ package fr.wcs.viaferrata;
 
 public class ViaFerrataModel {
 
-    private float mLatitude;
-    private float mLongitude;
-    private String mNom;
-    private String mVille;
-    private int mDepartement;
-    private String mDifficulte;
+    private double latitude;
+    private double longitude;
+    private String nom;
+    private String Ville;
+    private int departement;
+    //private String difficulte;
+    private String departement_nom;
+    private String description;
 
-    public ViaFerrataModel(float mLatitude, float mLongitude, String mNom, String mVille, int mDepartement, String mDifficulte) {
-        this.mLatitude = mLatitude;
-        this.mLongitude = mLongitude;
-        this.mNom = mNom;
-        this.mVille = mVille;
-        this.mDepartement = mDepartement;
-        this.mDifficulte = mDifficulte;
+    public ViaFerrataModel() {
     }
 
-    public float getmLatitude() {
-        return mLatitude;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setmLatitude(float mLatitude) {
-        this.mLatitude = mLatitude;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public float getmLongitude() {
-        return mLongitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setmLongitude(float mLongitude) {
-        this.mLongitude = mLongitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public String getmNom() {
-        return mNom;
+    public String getNom() {
+        return nom;
     }
 
-    public void setmNom(String mNom) {
-        this.mNom = mNom;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getmVille() {
-        return mVille;
+    public String getVille() {
+        return Ville;
     }
 
-    public void setmVille(String mVille) {
-        this.mVille = mVille;
+    public void setVille(String ville) {
+        Ville = ville;
     }
 
-    public int getmDepartement() {
-        return mDepartement;
+    public int getDepartement() {
+        return departement;
     }
 
-    public void setmDepartement(int mDepartement) {
-        this.mDepartement = mDepartement;
+    public void setDepartement(int departement) {
+        this.departement = departement;
     }
 
-    public String getmDifficulte() {
-        return mDifficulte;
+//    public String getDifficulte() {
+//        return difficulte;
+//    }
+//
+//    public void setDifficulte(String difficulte) {
+//        this.difficulte = difficulte;
+//    }
+
+    public String getDepartement_nom() {
+        return departement_nom;
     }
 
-    public void setmDifficulte(String mDifficulte) {
-        this.mDifficulte = mDifficulte;
+    public void setDepartement_nom(String departement_nom) {
+        this.departement_nom = departement_nom;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -15,6 +15,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
@@ -35,6 +41,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ExpandableListView expListView;
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +79,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         (mLayout.getPanelState() == PanelState.EXPANDED || mLayout.getPanelState() == PanelState.DRAGGING )) {
                     t.setVisibility(View.GONE);
                     button.setVisibility(View.VISIBLE);
-                }
-                else{
+                }else{
                     t.setVisibility(View.VISIBLE);
                     button.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.setEnabled(true);
+                mLayout.setTouchEnabled(true);
+                mLayout.setPanelState(PanelState.COLLAPSED);
             }
         });
 
@@ -134,26 +151,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDataChild.put(listDataHeader.get(1), niveau);
     }
 
+    private  int idVia = 0;
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-        LatLng wcs = new LatLng(43.6015191, 1.4420288000000028);
-        LatLng maison = new LatLng(43.6161646, 1.4120812999999544);
-        mMap.addMarker(new MarkerOptions()
-                .position(wcs)
-                .title("Welcome to the Wild Code School"));
-        mMap.addMarker(new MarkerOptions()
-                .position(maison)
-                .title("Maison"));
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Intent intent = new Intent(MapsActivity.this, DetailActivity.class);
-                startActivity(intent);
-            }
-        });
+        for (int i = 0; i<120; i++){
+            mMap = googleMap;
+            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+            final DatabaseReference maDatabase;
+
+            maDatabase = FirebaseDatabase.getInstance().getReference();
+
+            Query mQueryRef = maDatabase.child(String.valueOf(i));
+            idVia = i;
+
+            mQueryRef.addValueEventListener(new ValueEventListener(){
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Get Post object and use the values to update the UI
+                    ViaFerrataModel viaFerrata = dataSnapshot.getValue(ViaFerrataModel.class);
+                    //  String name = viaFerrata.getNom();
+                    String Ville = viaFerrata.getVille();
+                    double latitude = viaFerrata.getLatitude();
+                    double longitude = viaFerrata.getLongitude();
+                    LatLng latlng = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(latlng)
+                            .title(Ville));
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            Intent intent = new Intent(MapsActivity.this, DetailActivity.class);
+                            intent.putExtra("id", idVia);
+                            startActivity(intent);
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w(TAG, "Read Data Failed", databaseError.toException());
+
+                }
+            });
+        }
     }
 }
 
