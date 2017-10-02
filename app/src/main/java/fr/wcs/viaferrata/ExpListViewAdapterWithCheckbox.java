@@ -37,18 +37,6 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         mChildCheckStates = new HashMap<Integer, boolean[]>();
     }
 
-    public int getNumberOfCheckedItemsInGroup(int mGroupPosition)
-    {
-        boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
-        int count = 0;
-        if(getChecked != null) {
-            for (int j = 0; j < getChecked.length; ++j) {
-                if (getChecked[j]) count++;
-            }
-        }
-        return  count;
-    }
-
     @Override
     public int getGroupCount() {
         return mListDataGroup.size();
