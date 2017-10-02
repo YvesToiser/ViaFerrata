@@ -20,6 +20,13 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 public class ViaActivity extends AppCompatActivity {
 
     /**
@@ -38,13 +45,13 @@ public class ViaActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private int idVia;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
 
-        //get the id from intent
-        idVia = getIntent().getIntExtra("id", 0);
+
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
