@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.transition.Visibility;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -39,6 +38,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -77,15 +77,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
 
         // Adding child data
         listDataHeader.add("Zone géographique");
         listDataHeader.add("Niveau");
 
         // Adding child data
-        List<String> zoneGeo = new ArrayList<String>();
+        List<String> zoneGeo = new ArrayList<>();
         zoneGeo.add("Occitanie");
         zoneGeo.add("Nouvelle-Aquitaine");
         //zoneGeo.add("PACA");
@@ -100,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //zoneGeo.add("Pays-de-la-Loire");
         zoneGeo.add("Corse");
 
-        List<String> niveau = new ArrayList<String>();
+        List<String> niveau = new ArrayList<>();
         niveau.add("Facile (F)");
         niveau.add("Peu difficile (PD)");
         niveau.add("Assez difficile (AD)");
@@ -222,6 +222,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
                             marker.setVisible(false);
+                        }
+                    });
+                    buttonValider.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            List<Integer> filtreDiff = new ArrayList<>();
+                            Map<Integer, Boolean> listeDiff = listAdapter.getListeDiff();
+
+                            List<Integer> filtreZoneGeo = new ArrayList<>();
+                            Map<Integer, Boolean> listeZoneGeo = listAdapter.getListeZoneGeo();
+
+                            for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreDiff.add(position);
+                                }
+                            }
+
+                            for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreZoneGeo.add(position);
+                                }
+                            }
+                            if (filtreDiff.isEmpty()) {
+                                for (int i=0;i<6;i++){
+                                    filtreDiff.add(i);
+                                }
+                            }
+                            if (filtreZoneGeo.isEmpty()) {
+                                for (int i=0;i<5;i++){
+                                    filtreZoneGeo.add(i);
+                                }
+                            }
+                            Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
+                            Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
                         }
                     });
                     mLayout.setEnabled(false);
