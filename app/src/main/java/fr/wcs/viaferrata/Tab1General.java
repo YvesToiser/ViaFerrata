@@ -1,6 +1,7 @@
 package fr.wcs.viaferrata;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Tab1General extends Fragment{
 
+    private static final String TAG = "Tab1";
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -45,6 +47,7 @@ public class Tab1General extends Fragment{
 
         Intent intent = getActivity().getIntent();
         ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
+        Log.d(TAG, "Object Tagg " + maviaferrata);
 
 
         String nomVia = maviaferrata.getNom();
