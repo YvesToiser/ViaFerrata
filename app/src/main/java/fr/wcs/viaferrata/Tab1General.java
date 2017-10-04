@@ -1,5 +1,7 @@
 package fr.wcs.viaferrata;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -19,53 +21,85 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Tab1General extends Fragment{
 
-    private int idVia;
+    private static final String TAG = "Tab1";
+
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View rootview = inflater.inflate(R.layout.tab1general, container, false);
+        View rootview = inflater.inflate(R.layout.tab1generalb, container, false);
 
-        final TextView depart = (TextView) rootview.findViewById(R.id.altDepart);
-        final TextView arrivee = (TextView) rootview.findViewById(R.id.altArrivee);
-        final TextView temps = (TextView) rootview.findViewById(R.id.tempsVia);
-        final TextView niveau = (TextView) rootview.findViewById(R.id.lvlVia);
-
-        //get the id from intent
-        //idVia = getIntent().getIntExtra("id", 0);
-        idVia = 1;
-
-        //
-        final DatabaseReference maDatabase;
-        maDatabase = FirebaseDatabase.getInstance().getReference();
-        Query mQueryRef = maDatabase.child("viaFerrata").child(String.valueOf(idVia));
-
-        mQueryRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ViaFerrataModel maviaferrata = dataSnapshot.getValue(ViaFerrataModel.class);
-                String nom = maviaferrata.getNom();
-                //setTitle(nom);
-                String altitudeDepart = maviaferrata.getAltitudeDepart();
-                depart.setText(altitudeDepart);
-                String altitudeArrivee = maviaferrata.getAltitudeArrivee();
-                arrivee.setText(altitudeArrivee);
-                String tempsvia = maviaferrata.getHoraireDuree();
-                temps.setText(tempsvia);
-                int niveauvia = maviaferrata.getDifficulte();
-                niveau.setText(String.valueOf(niveauvia));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        final TextView name = (TextView) rootview.findViewById(R.id.viaName);
+        final TextView prix = (TextView) rootview.findViewById(R.id.viaPrix);
+        final TextView ville = (TextView) rootview.findViewById(R.id.viaVille);
+        final TextView departement = (TextView) rootview.findViewById(R.id.viaDepartement);
+        final TextView region = (TextView) rootview.findViewById(R.id.viaRegion);
+        final TextView description = (TextView) rootview.findViewById(R.id.viaDescription);
+        final TextView depart = (TextView) rootview.findViewById(R.id.viaAltDep);
+        final TextView arrivee = (TextView) rootview.findViewById(R.id.viaAltArr);
+        final TextView temps = (TextView) rootview.findViewById(R.id.viaDuree);
+        final TextView niveau = (TextView) rootview.findViewById(R.id.viaNiveau);
+        final TextView passerelles = (TextView) rootview.findViewById(R.id.viaPasserelles);
+        final TextView pont = (TextView) rootview.findViewById(R.id.viapontSinge);
+        final TextView echelle = (TextView) rootview.findViewById(R.id.viaEchelle);
+        final TextView tyrolienne = (TextView) rootview.findViewById(R.id.viaTyrol);
+        final TextView acces = (TextView) rootview.findViewById(R.id.viaAcces);
+        final TextView info = (TextView) rootview.findViewById(R.id.viaInfo);
 
 
+        Intent intent = getActivity().getIntent();
+        ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
+        Log.d(TAG, "Object Tagg " + maviaferrata);
 
 
+        String nomVia = maviaferrata.getNom();
+        name.setText(nomVia);
+
+        String prixVia = maviaferrata.getPrix();
+        prix.setText(prixVia);
+
+        String villeVia = maviaferrata.getVille();
+        ville.setText(villeVia);
+
+        String depVia = maviaferrata.getDptNom();
+        departement.setText(depVia);
+
+        String regionVia = maviaferrata.getRegion();
+        region.setText(regionVia);
+
+        String descriptionVia = maviaferrata.getDescription();
+        description.setText(descriptionVia);
+
+        String altitudeDepart = maviaferrata.getAltitudeDepart();
+        depart.setText(altitudeDepart);
+
+        String altitudeArrivee = maviaferrata.getAltitudeArrivee();
+        arrivee.setText(altitudeArrivee);
+
+        String tempsvia = maviaferrata.getHoraireDuree();
+        temps.setText(tempsvia);
+
+        int niveauvia = maviaferrata.getDifficulte();
+        niveau.setText(String.valueOf(niveauvia));
+
+        String nbPasserelles = maviaferrata.getNbPasserelle();
+        passerelles.setText(nbPasserelles);
+
+
+        String nbPont = maviaferrata.getNbPontSinge();
+        pont.setText(nbPont);
+
+        String nbEchellesFillets = maviaferrata.getNbEchelleFilet();
+        echelle.setText(nbEchellesFillets);
+
+        String nbTyroliennes = maviaferrata.getNbTyrolienne();
+        tyrolienne.setText(nbTyroliennes);
+
+        String infoAcces = maviaferrata.getInfoAcces();
+        acces.setText(infoAcces);
+
+        String infoGen = maviaferrata.getInfo();
+        info.setText(infoGen);
 
         return rootview;
-
 
     }
 }

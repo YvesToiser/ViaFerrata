@@ -1,10 +1,13 @@
 package fr.wcs.viaferrata;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by wilder on 26/09/17.
  */
 
-public class ViaFerrataModel {
+public class ViaFerrataModel implements Parcelable{
 
     private String nom;
     private String ville;
@@ -58,6 +61,18 @@ public class ViaFerrataModel {
         this.horaireRetour = horaireRetour;
         this.infoAcces = infoAcces;
     }
+
+    public static final Creator<ViaFerrataModel> CREATOR = new Creator<ViaFerrataModel>() {
+        @Override
+        public ViaFerrataModel createFromParcel(Parcel in) {
+            return new ViaFerrataModel(in);
+        }
+
+        @Override
+        public ViaFerrataModel[] newArray(int size) {
+            return new ViaFerrataModel[size];
+        }
+    };
 
     public String getNom() {
         return nom;
@@ -243,5 +258,95 @@ public class ViaFerrataModel {
         this.infoAcces = infoAcces;
     }
 
+    @Override
+    public String toString() {
+        return "ViaFerrataModel{" +
+                "nom='" + nom + '\'' +
+                ", ville='" + ville + '\'' +
+                ", dptNb=" + dptNb +
+                ", dptNom='" + dptNom + '\'' +
+                ", region='" + region + '\'' +
+                ", difficulte=" + difficulte +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", description='" + description + '\'' +
+                ", altitudeDepart='" + altitudeDepart + '\'' +
+                ", altitudeArrivee='" + altitudeArrivee + '\'' +
+                ", denivele='" + denivele + '\'' +
+                ", longueur='" + longueur + '\'' +
+                ", prix='" + prix + '\'' +
+                ", nbPasserelle='" + nbPasserelle + '\'' +
+                ", nbPontSinge='" + nbPontSinge + '\'' +
+                ", nbEchelleFilet='" + nbEchelleFilet + '\'' +
+                ", nbTyrolienne='" + nbTyrolienne + '\'' +
+                ", info='" + info + '\'' +
+                ", horaireApproche='" + horaireApproche + '\'' +
+                ", horaireDuree='" + horaireDuree + '\'' +
+                ", horaireRetour='" + horaireRetour + '\'' +
+                ", infoAcces='" + infoAcces + '\'' +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(nom);
+        parcel.writeString(ville);
+        parcel.writeInt(dptNb);
+        parcel.writeString(dptNom);
+        parcel.writeString(region);
+        parcel.writeInt(difficulte);
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
+        parcel.writeString(description);
+        parcel.writeString(altitudeDepart);
+        parcel.writeString(altitudeArrivee);
+        parcel.writeString(denivele);
+        parcel.writeString(longueur);
+        parcel.writeString(prix);
+        parcel.writeString(nbPasserelle);
+        parcel.writeString(nbPontSinge);
+        parcel.writeString(nbEchelleFilet);
+        parcel.writeString(nbTyrolienne);
+        parcel.writeString(info);
+        parcel.writeString(horaireApproche);
+        parcel.writeString(horaireDuree);
+        parcel.writeString(horaireRetour);
+        parcel.writeString(infoAcces);
+    }
+
+
+
+    // Méthode servant à lire les données du parcelable
+    private ViaFerrataModel(Parcel in) {
+        nom  = in.readString();
+        ville  = in.readString();
+        dptNb  = in.readInt();
+        dptNom = in.readString();
+        region = in.readString();
+        difficulte = in.readInt();
+        longitude = in.readDouble();
+        latitude = in.readDouble();
+        description = in.readString();
+        altitudeDepart = in.readString();
+        altitudeArrivee = in.readString();
+        denivele = in.readString();
+        longueur = in.readString();
+        prix = in.readString();
+        nbPasserelle = in.readString();
+        nbPontSinge = in.readString();
+        nbEchelleFilet = in.readString();
+        nbTyrolienne = in.readString();
+        info = in.readString();
+        horaireApproche = in.readString();
+        horaireDuree = in.readString();
+        horaireRetour = in.readString();
+        infoAcces = in.readString();
+
+    }
 }
 

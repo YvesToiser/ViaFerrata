@@ -1,5 +1,6 @@
 package fr.wcs.viaferrata;
 
+import android.content.Intent;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -43,14 +44,11 @@ public class ViaActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private int idVia;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
-
 
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
