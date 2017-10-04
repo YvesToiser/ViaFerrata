@@ -14,6 +14,26 @@
     <string name="done">Déjà faite</string>
     <string name="favorite">Favoris</string>
 
+    <!--    String ViaAvtivity    -->
+    <string name="viaNameStatic">Non de la Via Ferrata :</string>
+    <string name="viaVilleStatic">Ville :</string>
+    <string name="viaDepartementStatic">Departement :</string>
+    <string name="viaRegionStatic">Région :</string>
+    <string name="viaDescriptionStatic">Description de la Via Ferrata :</string>
+    <string name="viaAltDepartStatic">Alt de départ</string>
+    <string name="viaAltArriveeStatic">Alt d'arrivée</string>
+    <string name="viaNiveauStatic">Niveau :</string>
+    <string name="viaDureeStatic">Durée :</string>
+    <string name="viaDenivelStatic">Dénivelé</string>
+    <string name="viaLongueurStatic">Longueur</string>
+    <string name="viaPasserelleStatic">Passerelles</string>
+    <string name="viaPontSingeStatic">Ponts de Singe</string>
+    <string name="viaEchelleStatic">Echelles Fillets</string>
+    <string name="viaTyrolStatic">Tyroliennes</string>
+    <string name="viaAccesStatic">Infos sur l'accès :</string>
+    <string name="viaInfoStatic">Infos complémentaires :</string>
+    <string name="viaPrix">Prix :</string>
+
     <!--    Permissions    -->
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
     <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
