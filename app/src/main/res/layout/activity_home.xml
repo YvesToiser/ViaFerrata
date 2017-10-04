@@ -49,20 +49,6 @@
             android:textColor="#FFFFFF"
             android:textSize="24dp" />
 
-        <Button
-            android:id="@+id/buttonFavoris"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/search_button"
-            android:text="@string/boutonFavoris"
-            android:textColor="#FFFFFF"
-            android:textSize="24dp" />
-
-
     </LinearLayout>
 
 
