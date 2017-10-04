@@ -137,7 +137,7 @@ public class ViaFerrataModel implements Parcelable{
             case 3: return "Assez Difficile";
             case 4: return "Difficile";
             case 5: return "Très Difficile";
-            case 6: return "Extrémement Difficile";
+            case 6: return "Extrêmement Difficile";
             default : return "Inconnue";
         }
     }
