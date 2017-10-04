@@ -1,4 +1,5 @@
 package fr.wcs.viaferrata;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.support.v4.app.Fragment;
@@ -29,9 +30,6 @@ public class Tab1General extends Fragment{
         final TextView temps = (TextView) rootview.findViewById(R.id.tempsVia);
         final TextView niveau = (TextView) rootview.findViewById(R.id.lvlVia);
 
-        //get the id from intent
-        //idVia = getIntent().getIntExtra("id", 0);
-        idVia = 1;
 
         //
         final DatabaseReference maDatabase;

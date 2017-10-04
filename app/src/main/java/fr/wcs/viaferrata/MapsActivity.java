@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.transition.Visibility;
 import android.support.v4.app.ActivityCompat;
@@ -162,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for(int i = 0; i<mViaFerrataList.size(); i++){
             ViaFerrataModel via = mViaFerrataList.get(i);
             String nom = via.getNom();
-            Log.d(TAG, "test22 Nom" + nom);
+            Log.d(TAG, "test22 Objet via" + via);
             String ville = via.getVille();
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
@@ -179,6 +180,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .snippet(ville)
                                 .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
             );
+            marker.setTag(via);
+
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
@@ -190,8 +193,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onInfoWindowClick(Marker marker) {
                     Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
-                    intent.putExtra("id", marker.getTitle());
-                    Log.d(TAG, "ID VIA " + marker.getTitle());
+                    intent.putExtra("via", (ViaFerrataModel) marker.getTag() );
+                    Log.d(TAG, "Marker Tagg " + marker.getTag());
                     startActivity(intent);
                 }
             });
