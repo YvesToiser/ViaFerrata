@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
@@ -127,6 +128,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final ListView itemsListVia = findViewById(R.id.listVia);
         itemsListVia.setAdapter(adapter);
+
+        itemsListVia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ViaFerrataModel viaItem = mViaFerrataList.get(i);
+                Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                intent.putExtra("via", viaItem);
+                startActivity(intent);
+
+
+            }
+        });
     }
 
     private void prepareListData() {
@@ -264,6 +277,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
                             marker.setVisible(false);
+
+                            listAdapter.resetCheckboxes();
+
                         }
                     });
                     buttonValider.setOnClickListener(new View.OnClickListener() {
