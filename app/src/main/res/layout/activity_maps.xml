@@ -22,10 +22,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include
-                layout="@layout/map"
+            <ViewFlipper
+                android:id="@+id/flipper"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <fragment
+                        android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cameraTargetLat="46.52863469527167"
+                        app:cameraTargetLng="2.43896484375"
+                        app:mapType="normal"
+                        app:uiCompass="true"
+                        app:uiScrollGestures="true"
+                        app:uiZoomGestures="true"
+                        tools:context="fr.wcs.viaferrata.MapsActivity" />
+                </FrameLayout>
+
+                <ListView
+                    android:id="@+id/listVia"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </ViewFlipper>
 
         </RelativeLayout>
 
@@ -45,4 +70,14 @@
 
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+    <ToggleButton
+        android:id="@+id/buttonSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="470dp" />
+
 </RelativeLayout>

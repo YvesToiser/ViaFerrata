@@ -4,17 +4,24 @@ import android.Manifest;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SlidingUpPanelLayout mLayout;
     private Button buttonCancel;
     private Button buttonValider;
+    private ToggleButton buttonSwitch;
     private  int idVia = 0;
     private Marker marker;
 
@@ -62,6 +70,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ExpandableListView expListView;
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+
+    Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
+    ViewFlipper flipper;
+
+
+    int mFlipping = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +88,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
+
+        flipper = (ViewFlipper) findViewById(R.id.flipper);
+
+        slide_in_left = AnimationUtils.loadAnimation(this,
+                R.anim.in_left);
+        slide_in_right = AnimationUtils.loadAnimation(this,
+                R.anim.in_right);
+        slide_out_left = AnimationUtils.loadAnimation(this,
+                R.anim.out_left);
+        slide_out_right = AnimationUtils.loadAnimation(this,
+                R.anim.out_right);
+
+        buttonSwitch = findViewById(R.id.buttonSwitch);
+
+        buttonSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if( isChecked) {
+                    flipper.setOutAnimation(slide_out_left);
+                    flipper.setInAnimation(slide_in_right);
+
+                    flipper.showNext();
+                }
+                else {
+                    flipper.setInAnimation(slide_in_left);
+                    flipper.setOutAnimation(slide_out_right);
+
+                    flipper.showPrevious();
+
+                }
+            }
+        });
+
+        /*
+        buttonSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flipper = (ViewFlipper) findViewById(R.id.flipper);
+
+
+
+                if(mFlipping==0){
+                    flipper.startFlipping();
+                    mFlipping=1;
+                    Log.i(TAG, String.valueOf(mFlipping));
+                }
+                else{
+                    flipper.stopFlipping();
+                    mFlipping=0;
+                    Log.i(TAG, String.valueOf(mFlipping));
+                }
+
+            }
+        });
+        */
+
     }
 
     private void prepareListData() {
@@ -260,6 +330,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
                             Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
+
                         }
                     });
                     mLayout.setEnabled(false);
