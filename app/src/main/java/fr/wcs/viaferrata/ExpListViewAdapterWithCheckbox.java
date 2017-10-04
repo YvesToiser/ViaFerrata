@@ -200,6 +200,11 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         return false;
     }
 
+    public void resetCheckboxes() {
+        ChildViewHolder childViewHolder = new ChildViewHolder();
+        childViewHolder.mCheckBox.setChecked(false);
+    }
+
     public final class GroupViewHolder {
 
         TextView mGroupText;
