@@ -6,17 +6,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.transition.Visibility;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,6 +47,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -57,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SlidingUpPanelLayout mLayout;
     private Button buttonCancel;
     private Button buttonValider;
+    private ToggleButton buttonSwitch;
 
     private Marker marker;
     int drawableMarqueur = R.drawable.marqueur;
@@ -66,7 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
-
+    Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
+    ViewFlipper flipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,19 +91,67 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
 
+        flipper = findViewById(R.id.flipper);
 
+        slide_in_left = AnimationUtils.loadAnimation(this,
+                R.anim.in_left);
+        slide_in_right = AnimationUtils.loadAnimation(this,
+                R.anim.in_right);
+        slide_out_left = AnimationUtils.loadAnimation(this,
+                R.anim.out_left);
+        slide_out_right = AnimationUtils.loadAnimation(this,
+                R.anim.out_right);
+
+        buttonSwitch = findViewById(R.id.buttonSwitch);
+
+        buttonSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if( isChecked) {
+                    flipper.setOutAnimation(slide_out_left);
+                    flipper.setInAnimation(slide_in_right);
+
+                    flipper.showNext();
+                }
+                else {
+                    flipper.setInAnimation(slide_in_left);
+                    flipper.setOutAnimation(slide_out_right);
+
+                    flipper.showPrevious();
+                }
+            }
+        });
+
+        //List adapter
+
+        ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, mViaFerrataList);
+
+        final ListView itemsListVia = findViewById(R.id.listVia);
+        itemsListVia.setAdapter(adapter);
+
+        itemsListVia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ViaFerrataModel viaItem = mViaFerrataList.get(i);
+                Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                intent.putExtra("via", viaItem);
+                startActivity(intent);
+
+
+            }
+        });
     }
 
     private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
 
         // Adding child data
         listDataHeader.add("Zone géographique");
         listDataHeader.add("Niveau");
 
         // Adding child data
-        List<String> zoneGeo = new ArrayList<String>();
+        List<String> zoneGeo = new ArrayList<>();
         zoneGeo.add("Occitanie");
         zoneGeo.add("Nouvelle-Aquitaine");
         //zoneGeo.add("PACA");
@@ -108,7 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //zoneGeo.add("Pays-de-la-Loire");
         zoneGeo.add("Corse");
 
-        List<String> niveau = new ArrayList<String>();
+        List<String> niveau = new ArrayList<>();
         niveau.add("Facile (F)");
         niveau.add("Peu difficile (PD)");
         niveau.add("Assez difficile (AD)");
@@ -219,6 +277,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
                             marker.setVisible(false);
+
+                            listAdapter.resetCheckboxes();
+
+                        }
+                    });
+                    buttonValider.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            List<Integer> filtreDiff = new ArrayList<>();
+                            Map<Integer, Boolean> listeDiff = listAdapter.getListeDiff();
+
+                            List<Integer> filtreZoneGeo = new ArrayList<>();
+                            Map<Integer, Boolean> listeZoneGeo = listAdapter.getListeZoneGeo();
+
+                            for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreDiff.add(position);
+                                }
+                            }
+
+                            for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreZoneGeo.add(position);
+                                }
+                            }
+                            if (filtreDiff.isEmpty()) {
+                                for (int i=0;i<6;i++){
+                                    filtreDiff.add(i);
+                                }
+                            }
+                            if (filtreZoneGeo.isEmpty()) {
+                                for (int i=0;i<5;i++){
+                                    filtreZoneGeo.add(i);
+                                }
+                            }
+                            Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
+                            Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
+
                         }
                     });
                     mLayout.setEnabled(false);
@@ -232,11 +332,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         t.setVisibility(GONE);
                         buttonCancel.setVisibility(VISIBLE);
                         buttonValider.setVisibility(VISIBLE);
+                        buttonSwitch.setVisibility(GONE);
                     }
                     else if (t.getVisibility() == GONE) {
                         t.setVisibility(VISIBLE);
                         buttonCancel.setVisibility(GONE);
                         buttonValider.setVisibility(GONE);
+                        buttonSwitch.setVisibility(VISIBLE);
                     }
                 }
 
@@ -246,6 +348,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
                     mLayout.setEnabled(true);
                     mLayout.setTouchEnabled(true);
+                    t.setVisibility(VISIBLE);
+                    buttonCancel.setVisibility(GONE);
+                    buttonValider.setVisibility(GONE);
+                    buttonSwitch.setVisibility(VISIBLE);
                 }
             }
         });
@@ -314,7 +420,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mPermissionDenied = true;
         }
     }
-
 
     @Override
     protected void onResumeFragments() {
