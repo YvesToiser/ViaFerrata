@@ -21,7 +21,7 @@
     <string name="viaRegionStatic">Région :</string>
     <string name="viaDescriptionStatic">Description de la Via Ferrata :</string>
     <string name="viaAltDepartStatic">Alt de départ</string>
-    <string name="viaAltArriveeStatic">Alt d'arrivée</string>
+    <string name="viaAltArriveeStatic">Alt d\'arrivée</string>
     <string name="viaNiveauStatic">Niveau :</string>
     <string name="viaDureeStatic">Durée :</string>
     <string name="viaDenivelStatic">Dénivelé</string>
@@ -30,7 +30,7 @@
     <string name="viaPontSingeStatic">Ponts de Singe</string>
     <string name="viaEchelleStatic">Echelles Fillets</string>
     <string name="viaTyrolStatic">Tyroliennes</string>
-    <string name="viaAccesStatic">Infos sur l'accès :</string>
+    <string name="viaAccesStatic">Infos sur l\'accès :</string>
     <string name="viaInfoStatic">Infos complémentaires :</string>
     <string name="viaPrix">Prix :</string>
 

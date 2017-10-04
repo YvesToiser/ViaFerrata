@@ -52,11 +52,6 @@ public class ViaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
 
-        //intent de l'objet via parcelable
-
-
-
-
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three

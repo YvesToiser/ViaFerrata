@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.transition.Visibility;
 import android.support.v4.app.ActivityCompat;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -55,18 +57,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SlidingUpPanelLayout mLayout;
     private Button buttonCancel;
     private Button buttonValider;
-    private  int idVia = 0;
+
     private Marker marker;
+    int drawableMarqueur = R.drawable.marqueur;
 
     ExpListViewAdapterWithCheckbox listAdapter;
     ExpandableListView expListView;
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -74,6 +80,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
+
+
     }
 
     private void prepareListData() {
@@ -151,52 +159,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
 
-        for (int i = 0; i < 7; i++) {
+        Log.d(TAG, "Taille de la Via Ferrata au moment de l'affichage des markers" + mViaFerrataList.size());
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            String nom = via.getNom();
+            Log.d(TAG, "test22 Objet via" + via);
+            String ville = via.getVille();
+            double latitude = via.getLatitude();
+            double longitude = via.getLongitude();
+            final LatLng latlng = new LatLng(latitude, longitude);
+            int difficulte = via.getDifficulte();
 
-            final DatabaseReference maDatabase;
-            maDatabase = FirebaseDatabase.getInstance().getReference();
-            Query mQueryRef = maDatabase.child("viaFerrata").child(String.valueOf(i));
-            idVia = i;
+            // TODO Passer les filtres et voir si filterisok
 
-            mQueryRef.addValueEventListener(new ValueEventListener() {
 
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Get Post object and use the values to update the UI
-                    ViaFerrataModel viaFerrata = dataSnapshot.getValue(ViaFerrataModel.class);
-                    String nom = viaFerrata.getNom();
-                    String ville = viaFerrata.getVille();
-                    double latitude = viaFerrata.getLatitude();
-                    double longitude = viaFerrata.getLongitude();
-                    final LatLng latlng = new LatLng(latitude, longitude);
-                    marker = mMap.addMarker(new MarkerOptions()
-                            .position(latlng)
-                            .title(nom)
-                            .snippet(ville)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marqueur))
-                    );
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 6));
-                            return false;
-                        }
-                    });
-                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                        @Override
-                        public void onInfoWindowClick(Marker marker) {
-                            Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
-                            intent.putExtra("id", idVia);
-                            startActivity(intent);
-                        }
-                    });
+
+            marker = mMap.addMarker(new MarkerOptions()
+                                .position(latlng)
+                                .title(nom)
+                                .snippet(ville)
+                                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+            );
+            marker.setTag(via);
+
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 6));
+                    return false;
                 }
-
+            });
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w(TAG, "Read Data Failed", databaseError.toException());
-
+                public void onInfoWindowClick(Marker marker) {
+                    Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                    intent.putExtra("via", (ViaFerrataModel) marker.getTag() );
+                    Log.d(TAG, "Marker Tagg " + marker.getTag());
+                    startActivity(intent);
                 }
             });
         }
@@ -208,8 +207,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.i(TAG, "onPanelSlide, offset " + slideOffset);
 
             }
-
-
 
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
@@ -243,7 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
 
-                 else if (mLayout != null && (mLayout.getPanelState() == PanelState.ANCHORED)) {
+                else if (mLayout != null && (mLayout.getPanelState() == PanelState.ANCHORED)) {
                     mLayout.setPanelState(PanelState.COLLAPSED);
                 }
                 else if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
