@@ -45,15 +45,11 @@ public class ViaActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
 
-        //get the via from intent
-        Intent intent = getIntent();
-        ViaFerrataModel myVia = (ViaFerrataModel) intent.getParcelableExtra("via");
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
