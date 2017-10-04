@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
@@ -89,7 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
 
-        flipper = (ViewFlipper) findViewById(R.id.flipper);
+        flipper = findViewById(R.id.flipper);
 
         slide_in_left = AnimationUtils.loadAnimation(this,
                 R.anim.in_left);
@@ -116,10 +117,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     flipper.setOutAnimation(slide_out_right);
 
                     flipper.showPrevious();
-
                 }
             }
         });
+
+        //List adapter
+
+        ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, mViaFerrataList);
+
+        final ListView itemsListVia = findViewById(R.id.listVia);
+        itemsListVia.setAdapter(adapter);
     }
 
     private void prepareListData() {
@@ -397,7 +404,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mPermissionDenied = true;
         }
     }
-
 
     @Override
     protected void onResumeFragments() {

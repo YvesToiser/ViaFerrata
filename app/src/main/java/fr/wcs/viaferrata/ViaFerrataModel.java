@@ -118,6 +118,18 @@ public class ViaFerrataModel implements Parcelable{
         return difficulte;
     }
 
+    public String getDifficulteInLetters() {
+        switch (difficulte){
+            case 1: return "F";
+            case 2: return "PD";
+            case 3: return "AD";
+            case 4: return "D";
+            case 5: return "TD";
+            case 6: return "ED";
+            default: return "?";
+        }
+    }
+
     public void setDifficulte(int difficulte) {
         this.difficulte = difficulte;
     }
