@@ -28,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
+
 public class ViaActivity extends AppCompatActivity {
 
     /**
@@ -75,6 +77,36 @@ public class ViaActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
+
+
+        // Shared Pref
+        Intent intent = getIntent();
+        ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
+        mySharedPref = getPreferences(MODE_PRIVATE);
+        String favId = "Fav" + maviaferrata.getNom();
+        boolean isFavorite = getPreferences(MODE_PRIVATE).getBoolean(favId, false);
+        String doneId = "Done" + maviaferrata.getNom();
+        boolean isDone = getPreferences(MODE_PRIVATE).getBoolean(doneId, false);
+
+
+        // A mettre dans le bouton
+        boolean isFavNewValue;
+        if(isFavorite){
+            isFavNewValue=false;
+        }else{
+            isFavNewValue=true;
+        }
+        mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
+
+
+
+        boolean isDoneNewValue;
+        if(isDone){
+            isDoneNewValue=false;
+        }else{
+            isDoneNewValue=true;
+        }
+        mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
 
     }
 

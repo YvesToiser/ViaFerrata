@@ -314,6 +314,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
                             Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
+
+
                             // Appelle la fonction qui réactualise les marqueurs sur la map
                             mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);

@@ -1,6 +1,7 @@
 package fr.wcs.viaferrata;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +21,8 @@ import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
-
     public static ArrayList<ViaFerrataModel> mViaFerrataList = new ArrayList<>();
+    public static SharedPreferences mySharedPref;
     private static final String TAG = "HomeActivity";
 
     /** Duration of wait for splash screen**/
