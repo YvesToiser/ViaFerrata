@@ -164,7 +164,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
                     getChecked[mChildPosition] = isChecked;
                     mChildCheckStates.put(mGroupPosition, getChecked);
                     Log.i(TAG, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked));
-                    Toast.makeText(mContext, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(mContext, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
                     if (mGroupPosition == 0){
                         listeZoneGeo.put(mChildPosition, true);
                     }
@@ -178,7 +178,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
                     getChecked[mChildPosition] = isChecked;
                     mChildCheckStates.put(mGroupPosition, getChecked);
                     Log.i(TAG, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked));
-                    Toast.makeText(mContext, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(mContext, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
                     if (mGroupPosition == 0){
                         listeZoneGeo.put(mChildPosition, false);
                     }

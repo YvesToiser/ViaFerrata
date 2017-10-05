@@ -34,12 +34,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
@@ -123,16 +118,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //List adapter
+        displayList(mViaFerrataList);
 
-        ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, mViaFerrataList);
+    }
 
+    // Fonction qui remplit la liste
+    private void displayList (ArrayList<ViaFerrataModel> viaferrataList){
+        final ArrayList<ViaFerrataModel> myListOfVia = viaferrataList;
         final ListView itemsListVia = findViewById(R.id.listVia);
+
+        ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, viaferrataList);
         itemsListVia.setAdapter(adapter);
 
         itemsListVia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ViaFerrataModel viaItem = mViaFerrataList.get(i);
+                ViaFerrataModel viaItem = myListOfVia.get(i);
                 Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
                 intent.putExtra("via", viaItem);
                 startActivity(intent);
@@ -152,19 +153,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Adding child data
         List<String> zoneGeo = new ArrayList<>();
-        zoneGeo.add("Occitanie");
-        zoneGeo.add("Nouvelle-Aquitaine");
-        //zoneGeo.add("PACA");
         zoneGeo.add("Auverge-Rhône-Alpes");
-        //zoneGeo.add("Bourgogne Franche Comté");
-        //zoneGeo.add("Grand-Est");
-        //zoneGeo.add("Hauts-de-France");
+        zoneGeo.add("Bourgogne Franche Comté");
+        zoneGeo.add("Corse");
+        zoneGeo.add("Grand-Est");
         zoneGeo.add("Normandie");
+        zoneGeo.add("Nouvelle-Aquitaine");
+        zoneGeo.add("Occitanie");
+        zoneGeo.add("PACA");
+        //zoneGeo.add("Hauts-de-France");
         //zoneGeo.add("Bretagne");
         //zoneGeo.add("Île-de-France");
         //zoneGeo.add("Centre-Val-de-Loire");
         //zoneGeo.add("Pays-de-la-Loire");
-        zoneGeo.add("Corse");
+
 
         List<String> niveau = new ArrayList<>();
         niveau.add("Facile (F)");
@@ -226,12 +228,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
-            int difficulte = via.getDifficulte();
-
-            // TODO Passer les filtres et voir si filterisok
-
-
-
             marker = mMap.addMarker(new MarkerOptions()
                                 .position(latlng)
                                 .title(nom)
@@ -279,6 +275,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             listAdapter.notifyDataSetChanged();
 
+
                         }
                     });
                     buttonValider.setOnClickListener(new View.OnClickListener() {
@@ -311,13 +308,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             }
                             if (filtreZoneGeo.isEmpty()) {
-                                for (int i=0;i<5;i++){
+                                for (int i=0;i<8;i++){
                                     filtreZoneGeo.add(i);
                                 }
                             }
                             Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
                             Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
+                            // Appelle la fonction qui réactualise les marqueurs sur la map
+                            mMap.clear();
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
+                            // Appelle la fonction qui réactualise la liste
+                            final ListView itemsListVia = findViewById(R.id.listVia);
+                            itemsListVia.setAdapter(null);
+                            rechargeList(filtreZoneGeo, filtreDiff);
+
+
+                            mLayout.setEnabled(true);
+                            mLayout.setTouchEnabled(true);
+                            mLayout.setPanelState(PanelState.COLLAPSED);
+                            marker.setVisible(false);
                         }
                     });
                     mLayout.setEnabled(false);
@@ -371,6 +381,96 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    // Fonction qui vérifie si la via correspond aux filtres
+    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb){
+        // Difficulty filter
+        boolean difficultyMatches = false;
+        for (int j = 0; j<listDiff.size(); j++){
+            if(listDiff.get(j)==difficulte){
+                difficultyMatches=true;
+            }
+        }
+        if(!difficultyMatches){
+            return false;
+        }
+        // Zone géo filter
+        boolean zoneGeoMatches = false;
+        for (int j = 0; j<listZoneGeo.size(); j++){
+            if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
+        }
+        if(!zoneGeoMatches){
+            return false;
+        }
+        return true;
+    }
+
+    // Fonction qui recharge les marqueurs sur la map
+    public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
+
+        // Check all vias again
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            String nom = via.getNom();
+            Log.d(TAG, "test28 listDiff" + listDiff);
+            String ville = via.getVille();
+            double latitude = via.getLatitude();
+            double longitude = via.getLongitude();
+            final LatLng latlng = new LatLng(latitude, longitude);
+            int difficulte = via.getDifficulte()-1;
+            int zoneGeoNb = via.getRegionNumber();
+            // If all filters match we add the marker
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
+                marker = mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(nom)
+                        .snippet(ville)
+                        .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+
+                );
+                Log.d(TAG, "test28 Via Nb" + i + " marker added");
+                marker.setTag(via);
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 6));
+                        return false;
+                    }
+                });
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                        intent.putExtra("via", (ViaFerrataModel) marker.getTag());
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
+        // Phantom marker . This is a hack to solve problem of last marker not showing
+        marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .visible(false)
+                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+        );
+    }
+
+// Fonction qui recharge la liste en fonction des nouveaux filtres
+    public void rechargeList(List<Integer> listZoneGeo, List<Integer> listDiff){
+        // Filtre la liste des via dans une nouvelle liste
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            int difficulte = via.getDifficulte()-1;
+            int zoneGeoNb = via.getRegionNumber();
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
+                newList.add(via);
+            }
+        }
+        // Affiche la nouvelle liste
+        displayList(newList);
     }
 
     @Override

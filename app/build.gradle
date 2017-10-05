@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "fr.wcs.viaferrata"
         minSdkVersion 15
@@ -33,6 +33,7 @@ dependencies {
     compile 'com.android.support:design:26.+'
     testCompile 'junit:junit:4.12'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
 }
 configurations.all{
     resolutionStrategy.eachDependency{ DependencyResolveDetails details ->

@@ -110,6 +110,21 @@ public class ViaFerrataModel implements Parcelable{
         return region;
     }
 
+    public int getRegionNumber(){
+        switch (region){
+            case "Occitanie": return 6;
+            case "Nouvelle-Aquitaine": return 5;
+            case "Auvergne-Rhône-Alpes": return 0;
+            case "Normandie": return 4;
+            case "Bourgogne Franche Comté": return 1;
+            case "Grand-Est": return 3;
+            case "PACA": return 7;
+            case "Corse": return 2;
+            default :  return -1;
+
+        }
+    }
+
     public void setRegion(String region) {
         this.region = region;
     }
@@ -137,7 +152,7 @@ public class ViaFerrataModel implements Parcelable{
             case 3: return "Assez Difficile";
             case 4: return "Difficile";
             case 5: return "Très Difficile";
-            case 6: return "Extrémement Difficile";
+            case 6: return "Extrêmement Difficile";
             default : return "Inconnue";
         }
     }
