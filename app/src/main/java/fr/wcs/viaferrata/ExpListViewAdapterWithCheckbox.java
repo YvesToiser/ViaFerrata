@@ -26,18 +26,19 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     private Context mContext;
     private HashMap<String, List<String>> mListDataChild;
     private ArrayList<String> mListDataGroup;
-    private HashMap<Integer, boolean[]> mChildCheckStates;
 
     private static final String TAG = "MapActivity";
     private Map<Integer, Boolean> listeDiff = new HashMap<>();
     private Map<Integer, Boolean> listeZoneGeo = new HashMap<>();
 
-    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild){
+
+    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, Map<Integer, Boolean> listeDiff, Map<Integer, Boolean> listeZoneGeo ){
 
         mContext = context;
         mListDataGroup = listDataGroup;
         mListDataChild = listDataChild;
-        mChildCheckStates = new HashMap<>();
+        this.listeDiff = listeDiff;
+        this.listeZoneGeo = listeZoneGeo;
     }
 
     public Map<Integer, Boolean> getListeDiff() {
@@ -46,6 +47,14 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
 
     public Map<Integer, Boolean> getListeZoneGeo() {
         return listeZoneGeo;
+    }
+
+    public void setListeDiff(Map<Integer, Boolean> listeDiff) {
+        this.listeDiff = listeDiff;
+    }
+
+    public void setListeZoneGeo(Map<Integer, Boolean> listeZoneGeo) {
+        this.listeZoneGeo = listeZoneGeo;
     }
 
     @Override
@@ -123,11 +132,12 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
 
             childViewHolder = new ChildViewHolder();
 
-            childViewHolder.mChildText = (TextView) convertView
+            childViewHolder.mChildText = convertView
                     .findViewById(R.id.lblListItem);
 
-            childViewHolder.mCheckBox = (CheckBox) convertView
+            childViewHolder.mCheckBox = convertView
                     .findViewById(R.id.lstcheckBox);
+
 
             convertView.setTag(R.layout.list_item, childViewHolder);
 
@@ -140,50 +150,36 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         childViewHolder.mChildText.setText(childText);
         childViewHolder.mCheckBox.setOnCheckedChangeListener(null);
 
-        if (mChildCheckStates.containsKey(mGroupPosition)) {
-            boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
-            childViewHolder.mCheckBox.setChecked(getChecked[mChildPosition]);
-
-        }
-        else {
-            boolean getChecked[] = new boolean[getChildrenCount(mGroupPosition)];
-            mChildCheckStates.put(mGroupPosition, getChecked);
-            childViewHolder.mCheckBox.setChecked(false);
+        if (mGroupPosition == 0) {
+            if (listeZoneGeo.containsKey(mChildPosition)){
+                childViewHolder.mCheckBox.setChecked(listeZoneGeo.get(mChildPosition));
+            }
+            else {
+                childViewHolder.mCheckBox.setChecked(false);
+            }
         }
 
+        if (mGroupPosition == 1) {
+            if (listeDiff.containsKey(mChildPosition)){
+                childViewHolder.mCheckBox.setChecked(listeDiff.get(mChildPosition));
+            }
+            else {
+                childViewHolder.mCheckBox.setChecked(false);
+            }
+        }
         childViewHolder.mCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked) {
-
-                    boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
-                    getChecked[mChildPosition] = isChecked;
-                    mChildCheckStates.put(mGroupPosition, getChecked);
-                    Log.i(TAG, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked));
-                 //   Toast.makeText(mContext, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
-                    if (mGroupPosition == 0){
-                        listeZoneGeo.put(mChildPosition, true);
-                    }
-                    if (mGroupPosition == 1){
-                        listeDiff.put(mChildPosition, true);
-                    }
-
-                } else {
-
-                    boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
-                    getChecked[mChildPosition] = isChecked;
-                    mChildCheckStates.put(mGroupPosition, getChecked);
-                    Log.i(TAG, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked));
-                 //   Toast.makeText(mContext, String.valueOf(mGroupPosition) + " - "+ String.valueOf(mChildPosition) + " is " + String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
-                    if (mGroupPosition == 0){
-                        listeZoneGeo.put(mChildPosition, false);
-                    }
-                    if (mGroupPosition == 1){
-                        listeDiff.put(mChildPosition, false);
-                    }
+                if (mGroupPosition == 0) {
+                    listeZoneGeo.put(mChildPosition, isChecked);
                 }
+
+                if (mGroupPosition == 1) {
+                    listeDiff.put(mChildPosition, isChecked);
+                }
+
             }
         });
 
@@ -198,11 +194,6 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     @Override
     public boolean hasStableIds() {
         return false;
-    }
-
-    public void resetCheckboxes() {
-        ChildViewHolder childViewHolder = new ChildViewHolder();
-        childViewHolder.mCheckBox.setChecked(false);
     }
 
     public final class GroupViewHolder {

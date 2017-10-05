@@ -73,6 +73,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
     ViewFlipper flipper;
 
+    Map<Integer, Boolean> listeDiff = new HashMap<>();
+    Map<Integer, Boolean> listeZoneGeo = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -272,20 +275,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setEnabled(true);
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
-                            marker.setVisible(false);
+                            listeDiff = new HashMap<>();
+                            listeZoneGeo = new HashMap<>();
+                            listAdapter.setListeDiff(listeDiff);
+                            listAdapter.setListeZoneGeo(listeZoneGeo);
+                            listAdapter.notifyDataSetChanged();
 
-                         //   listAdapter.resetCheckboxes();
+                            List<Integer> filtreDiff = new ArrayList<>();
+                            List<Integer> filtreZoneGeo = new ArrayList<>();
 
+                                for (int i=0;i<6;i++){
+                                    filtreDiff.add(i);
+                                }
+                                for (int i=0;i<8;i++){
+                                    filtreZoneGeo.add(i);
+                                }
+
+                            mMap.clear();
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
+
+                            final ListView itemsListVia = findViewById(R.id.listVia);
+                            itemsListVia.setAdapter(null);
+                            rechargeList(filtreZoneGeo, filtreDiff);
+
+                            expListView.collapseGroup(0);
+                            expListView.collapseGroup(1);
                         }
                     });
                     buttonValider.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             List<Integer> filtreDiff = new ArrayList<>();
-                            Map<Integer, Boolean> listeDiff = listAdapter.getListeDiff();
+                            listeDiff = listAdapter.getListeDiff();
 
                             List<Integer> filtreZoneGeo = new ArrayList<>();
-                            Map<Integer, Boolean> listeZoneGeo = listAdapter.getListeZoneGeo();
+                            listeZoneGeo = listAdapter.getListeZoneGeo();
 
                             for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
                                 int position = entry.getKey();
@@ -324,6 +348,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             final ListView itemsListVia = findViewById(R.id.listVia);
                             itemsListVia.setAdapter(null);
                             rechargeList(filtreZoneGeo, filtreDiff);
+
+                            expListView.collapseGroup(0);
+                            expListView.collapseGroup(1);
 
 
                             mLayout.setEnabled(true);
@@ -371,7 +398,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // preparing list data
         prepareListData();
-        listAdapter = new ExpListViewAdapterWithCheckbox(this, listDataHeader, listDataChild);
+        listAdapter = new ExpListViewAdapterWithCheckbox(this, listDataHeader, listDataChild, listeDiff, listeZoneGeo);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
