@@ -48,6 +48,8 @@ public class HomeActivity extends AppCompatActivity {
         }, SPLASH_DISPLAY_LENGTH);
         //end splash screen code
 
+        //TO DO PREVOIR CAS OU  FIREBASE N'EST PAS ACCESSIBLE
+
         // Retrieve all the viaFerrata from database and store it in global var
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference viaFerrataRef = database.getReference("viaFerrata");

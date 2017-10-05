@@ -1,32 +1,25 @@
 package fr.wcs.viaferrata;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Icon;
+import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 
-import android.widget.TextView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
@@ -48,10 +41,45 @@ public class ViaActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
 
+    private static final String TAG = "ViaActivity";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
+
+        final BottomNavigationItemView favButton = (BottomNavigationItemView)findViewById(R.id.favButton);
+        final BottomNavigationItemView doneButton = (BottomNavigationItemView)findViewById(R.id.doneButton);
+
+        //Shared preferences
+        Intent intentFav = getIntent();
+        ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
+        mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+
+        final String favId = "Fav" + maviaferrata.getNom();
+        final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+
+        final String doneId = "Done" + maviaferrata.getNom();
+        final boolean isDone = mySharedPref.getBoolean(doneId, false);
+        Log.i(TAG, "fav" +isFavorite);
+
+        //initialiser bouton favori et fait
+
+        if(isFavorite){
+            favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        }else{
+            favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+        }
+
+        if(isDone){
+            doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        }else{
+            doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+        }
+
 
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -68,6 +96,72 @@ public class ViaActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomButton);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+
+                    case R.id.backButton:
+                        Intent intent = new Intent(ViaActivity.this, MapsActivity.class);
+                        startActivity(intent);
+                        break;
+
+
+                    case R.id.favButton:
+                        final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+                        boolean isFavNewValue;
+                        if(isFavorite){
+                            isFavNewValue=false;
+                        }else{
+                            isFavNewValue=true;
+                        }
+                        mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
+                        final boolean isFavoriteNow = mySharedPref.getBoolean(favId, false);
+                        Log.i(TAG, "fav" +isFavoriteNow);
+
+                        if(isFavoriteNow){
+                            favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                        }else{
+                            favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+                        }
+
+
+                        break;
+                    case R.id.doneButton:
+                        final boolean isDone = mySharedPref.getBoolean(doneId, false);
+                        boolean isDoneNewValue;
+                        if(isDone){
+                            isDoneNewValue=false;
+                        }else{
+
+                            isDoneNewValue=true;
+                        }
+                        mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
+                        final boolean isDoneNow = mySharedPref.getBoolean(doneId, false);
+                        Log.i(TAG, "done" +isDoneNow);
+
+                        if(isDoneNow){
+                            doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                        }else{
+                            doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+                        }
+
+                        break;
+                    case R.id.shareButton:
+
+                        break;
+                    case R.id.itineraryButton:
+
+                        break;
+                }
+
+
+                return false;
+            }
+        });
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -152,11 +246,8 @@ public class ViaActivity extends AppCompatActivity {
                     Tab1General tab1 = new Tab1General();
                     return tab1;
                 case 1:
-                    Tab2Technique tab2 = new Tab2Technique();
+                    Tab3Photo tab2 = new Tab3Photo();
                     return tab2;
-                case 2:
-                    Tab3Photo tab3 = new Tab3Photo();
-                    return tab3;
                 default:
                     return null;
             }
@@ -165,7 +256,7 @@ public class ViaActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -174,8 +265,6 @@ public class ViaActivity extends AppCompatActivity {
                 case 0:
                     return "General";
                 case 1:
-                    return "Technique";
-                case 2:
                     return "Photos";
             }
             return null;
