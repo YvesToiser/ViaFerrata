@@ -5,11 +5,20 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
-
+<!--
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/splashscreenvia"/>
+        app:srcCompat="@drawable/splashscreen_via"/>-->
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:scaleType="centerCrop"
+        android:src="@drawable/spash"/>
+
 </LinearLayout>

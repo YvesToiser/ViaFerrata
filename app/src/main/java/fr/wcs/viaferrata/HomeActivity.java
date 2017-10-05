@@ -25,7 +25,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
 
     /** Duration of wait for splash screen**/
-    private final int SPLASH_DISPLAY_LENGTH = 2500;
+    private final int SPLASH_DISPLAY_LENGTH = 6000;
 
 
     @Override
