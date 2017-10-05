@@ -123,16 +123,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //List adapter
+        displayList(mViaFerrataList);
 
-        ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, mViaFerrataList);
+    }
 
+    // Fonction qui remplit la liste
+    private void displayList (ArrayList<ViaFerrataModel> viaferrataList){
+        final ArrayList<ViaFerrataModel> myListOfVia = viaferrataList;
         final ListView itemsListVia = findViewById(R.id.listVia);
+
+        ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, viaferrataList);
         itemsListVia.setAdapter(adapter);
 
         itemsListVia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ViaFerrataModel viaItem = mViaFerrataList.get(i);
+                ViaFerrataModel viaItem = myListOfVia.get(i);
                 Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
                 intent.putExtra("via", viaItem);
                 startActivity(intent);
@@ -318,6 +324,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
                             // Appelle la fonction qui réactualise la liste
+                            final ListView itemsListVia = findViewById(R.id.listVia);
+                            itemsListVia.setAdapter(null);
+                            rechargeList(filtreZoneGeo, filtreDiff);
 
 
                             mLayout.setEnabled(true);
@@ -447,6 +456,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .visible(false)
                 .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
         );
+    }
+
+    public void rechargeList(List<Integer> listZoneGeo, List<Integer> listDiff){
+        // Filtre la liste des via dans une nouvelle liste
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            int difficulte = via.getDifficulte()-1;
+            int zoneGeoNb = via.getRegionNumber();
+            // By default filters Match
+            boolean allFiltersMatches = true;
+            // Difficulty filter
+            boolean difficultyMatches = false;
+            for (int j = 0; j<listDiff.size(); j++){
+                if(listDiff.get(j)==difficulte){
+                    difficultyMatches=true;
+                }
+            }
+            if(!difficultyMatches){
+                allFiltersMatches=false;
+            }
+            // Zone géo filter
+            boolean zoneGeoMatches = false;
+            for (int j = 0; j<listZoneGeo.size(); j++){
+                if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
+            }
+            if(!zoneGeoMatches){allFiltersMatches=false;}
+
+            // If all filters match we add the marker
+            if(allFiltersMatches) {
+                newList.add(via);
+            }
+
+        }
+        // Affiche la nouvelle liste
+        displayList(newList);
     }
 
     @Override
