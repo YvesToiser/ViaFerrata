@@ -34,12 +34,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
@@ -233,7 +228,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
-            int difficulte = via.getDifficulte();
             marker = mMap.addMarker(new MarkerOptions()
                                 .position(latlng)
                                 .title(nom)
