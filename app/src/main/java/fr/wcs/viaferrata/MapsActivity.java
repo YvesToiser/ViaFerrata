@@ -412,11 +412,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             if(!zoneGeoMatches){allFiltersMatches=false;}
 
-
-            Log.d(TAG, "test28 Via Nb" + i + " : "+difficultyMatches+" "+allFiltersMatches);
-
-
-            // If all filters match we had the marker
+            // If all filters match we add the marker
             if(allFiltersMatches) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
