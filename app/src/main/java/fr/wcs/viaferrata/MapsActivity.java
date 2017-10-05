@@ -388,6 +388,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    // Fonction qui vérifie si la via correspond aux filtres
+    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb){
+        // Difficulty filter
+        boolean difficultyMatches = false;
+        for (int j = 0; j<listDiff.size(); j++){
+            if(listDiff.get(j)==difficulte){
+                difficultyMatches=true;
+            }
+        }
+        if(!difficultyMatches){
+            return false;
+        }
+        // Zone géo filter
+        boolean zoneGeoMatches = false;
+        for (int j = 0; j<listZoneGeo.size(); j++){
+            if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
+        }
+        if(!zoneGeoMatches){ return false;}
+        return true;
+    }
+
     // Fonction qui recharge les marqueurs sur la map
     public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
 
@@ -402,27 +423,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final LatLng latlng = new LatLng(latitude, longitude);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
-            // By default filters Match
-            boolean allFiltersMatches = true;
-            // Difficulty filter
-            boolean difficultyMatches = false;
-            for (int j = 0; j<listDiff.size(); j++){
-                if(listDiff.get(j)==difficulte){
-                    difficultyMatches=true;
-                }
-            }
-            if(!difficultyMatches){
-                allFiltersMatches=false;
-            }
-            // Zone géo filter
-            boolean zoneGeoMatches = false;
-            for (int j = 0; j<listZoneGeo.size(); j++){
-                if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
-            }
-            if(!zoneGeoMatches){allFiltersMatches=false;}
-
             // If all filters match we add the marker
-            if(allFiltersMatches) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -458,6 +460,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         );
     }
 
+// Fonction qui recharge la liste en fonction des nouveaux filtres
     public void rechargeList(List<Integer> listZoneGeo, List<Integer> listDiff){
         // Filtre la liste des via dans une nouvelle liste
         final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
@@ -465,30 +468,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ViaFerrataModel via = mViaFerrataList.get(i);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
-            // By default filters Match
-            boolean allFiltersMatches = true;
-            // Difficulty filter
-            boolean difficultyMatches = false;
-            for (int j = 0; j<listDiff.size(); j++){
-                if(listDiff.get(j)==difficulte){
-                    difficultyMatches=true;
-                }
-            }
-            if(!difficultyMatches){
-                allFiltersMatches=false;
-            }
-            // Zone géo filter
-            boolean zoneGeoMatches = false;
-            for (int j = 0; j<listZoneGeo.size(); j++){
-                if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
-            }
-            if(!zoneGeoMatches){allFiltersMatches=false;}
-
-            // If all filters match we add the marker
-            if(allFiltersMatches) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
                 newList.add(via);
             }
-
         }
         // Affiche la nouvelle liste
         displayList(newList);
