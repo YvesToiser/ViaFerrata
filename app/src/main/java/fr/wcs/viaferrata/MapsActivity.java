@@ -227,11 +227,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
             int difficulte = via.getDifficulte();
-
-            // TODO Passer les filtres et voir si filterisok
-
-
-
             marker = mMap.addMarker(new MarkerOptions()
                                 .position(latlng)
                                 .title(nom)
@@ -278,7 +273,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setPanelState(PanelState.COLLAPSED);
                             marker.setVisible(false);
 
-                            listAdapter.resetCheckboxes();
+                         //   listAdapter.resetCheckboxes();
 
                         }
                     });
@@ -318,7 +313,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
                             Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
+                            // Appelle la fonction qui réactualise les marqueurs sur la map
+                            mMap.clear();
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
+                            // Appelle la fonction qui réactualise la liste
+
+
+                            mLayout.setEnabled(true);
+                            mLayout.setTouchEnabled(true);
+                            mLayout.setPanelState(PanelState.COLLAPSED);
+                            marker.setVisible(false);
                         }
                     });
                     mLayout.setEnabled(false);
@@ -372,6 +377,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    // Fonction qui recharge les marqueurs sur la map
+    public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
+
+        // Check all vias again
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            String nom = via.getNom();
+            Log.d(TAG, "test28 listDiff" + listDiff);
+            String ville = via.getVille();
+            double latitude = via.getLatitude();
+            double longitude = via.getLongitude();
+            final LatLng latlng = new LatLng(latitude, longitude);
+            int difficulte = via.getDifficulte()-1;
+            // By default filters Match
+            boolean allFiltersMatches = true;
+            // Difficulty filter
+            boolean difficultyMatches = false;
+            for (int j = 0; j<listDiff.size(); j++){
+                if(listDiff.get(j)==difficulte){difficultyMatches=true;}
+            }
+            if(!difficultyMatches){allFiltersMatches=false;}
+            // Zone géo filter
+            Log.d(TAG, "test28 Via Nb" + i + " : "+difficultyMatches+" "+allFiltersMatches);
+
+
+            // If all filters match we had the marker
+            if(allFiltersMatches) {
+                marker = mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(nom)
+                        .snippet(ville)
+                        .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+
+                );
+                Log.d(TAG, "test28 Via Nb" + i + " marker added");
+                marker.setTag(via);
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 6));
+                        return false;
+                    }
+                });
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                        intent.putExtra("via", (ViaFerrataModel) marker.getTag());
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
     }
 
     @Override
