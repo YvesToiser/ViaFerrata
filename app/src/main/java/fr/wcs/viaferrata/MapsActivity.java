@@ -276,9 +276,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setEnabled(true);
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
-                            marker.setVisible(false);
 
-                            listAdapter.resetCheckboxes();
+                            listAdapter.notifyDataSetChanged();
 
                         }
                     });

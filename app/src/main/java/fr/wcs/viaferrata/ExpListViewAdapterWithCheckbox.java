@@ -123,11 +123,12 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
 
             childViewHolder = new ChildViewHolder();
 
-            childViewHolder.mChildText = (TextView) convertView
+            childViewHolder.mChildText = convertView
                     .findViewById(R.id.lblListItem);
 
-            childViewHolder.mCheckBox = (CheckBox) convertView
+            childViewHolder.mCheckBox = convertView
                     .findViewById(R.id.lstcheckBox);
+
 
             convertView.setTag(R.layout.list_item, childViewHolder);
 
@@ -136,6 +137,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
             childViewHolder = (ChildViewHolder) convertView
                     .getTag(R.layout.list_item);
         }
+        childViewHolder.mCheckBox.setChecked(false);
 
         childViewHolder.mChildText.setText(childText);
         childViewHolder.mCheckBox.setOnCheckedChangeListener(null);
@@ -198,11 +200,6 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     @Override
     public boolean hasStableIds() {
         return false;
-    }
-
-    public void resetCheckboxes() {
-        ChildViewHolder childViewHolder = new ChildViewHolder();
-        childViewHolder.mCheckBox.setChecked(false);
     }
 
     public final class GroupViewHolder {
