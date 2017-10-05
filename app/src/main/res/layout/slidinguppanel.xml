@@ -11,23 +11,23 @@
         android:orientation="vertical">
 
         <Switch
-            android:id="@+id/switch2"
+            android:id="@+id/switchFavorite"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:paddingStart="20dp"
-            android:paddingLeft="20dp"
             android:paddingEnd="30dp"
+            android:paddingLeft="20dp"
             android:paddingRight="30dp"
+            android:paddingStart="20dp"
             android:text="@string/favorite" />
 
         <Switch
-            android:id="@+id/switch1"
+            android:id="@+id/switchDone"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:paddingStart="20dp"
-            android:paddingLeft="20dp"
             android:paddingEnd="30dp"
+            android:paddingLeft="20dp"
             android:paddingRight="30dp"
+            android:paddingStart="20dp"
             android:text="@string/done" />
 
         <ExpandableListView

@@ -4,12 +4,10 @@ import android.Manifest;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,6 +19,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
@@ -61,6 +60,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button buttonCancel;
     private Button buttonValider;
     private ToggleButton buttonSwitch;
+    private Switch switchFavorite;
+    private Switch switchDone;
+
+    boolean filtreFavoris;
+    boolean filtreDone;
 
     private Marker marker;
     int drawableMarqueur = R.drawable.marqueur;
@@ -88,6 +92,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
+
+        switchFavorite = findViewById(R.id.switchFavorite);
+        switchDone = findViewById(R.id.switchDone);
 
         flipper = findViewById(R.id.flipper);
 
@@ -267,7 +274,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
+
+
                 Log.i(TAG, "onPanelStateChanged " + newState);
+                switchFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        filtreFavoris = isChecked;
+                    }
+                });
+                switchDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        filtreDone = isChecked;
+                    }
+                });
                 if (mLayout != null && (mLayout.getPanelState() == PanelState.EXPANDED)) {
                     buttonCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -300,6 +321,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             expListView.collapseGroup(0);
                             expListView.collapseGroup(1);
+
+                            switchFavorite.setChecked(false);
+                            switchDone.setChecked(false);
                         }
                     });
                     buttonValider.setOnClickListener(new View.OnClickListener() {
@@ -355,6 +379,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
                             marker.setVisible(false);
+
+                            Log.i(TAG, "Filtre favoris : " + String.valueOf(filtreFavoris));
+                            Log.i(TAG, "Filtre fait : " + String.valueOf(filtreDone));
                         }
                     });
                     mLayout.setEnabled(false);
