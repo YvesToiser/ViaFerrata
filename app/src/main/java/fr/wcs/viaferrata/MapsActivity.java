@@ -158,19 +158,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Adding child data
         List<String> zoneGeo = new ArrayList<>();
-        zoneGeo.add("Occitanie");
-        zoneGeo.add("Nouvelle-Aquitaine");
-        //zoneGeo.add("PACA");
         zoneGeo.add("Auverge-Rhône-Alpes");
-        //zoneGeo.add("Bourgogne Franche Comté");
-        //zoneGeo.add("Grand-Est");
-        //zoneGeo.add("Hauts-de-France");
+        zoneGeo.add("Bourgogne Franche Comté");
+        zoneGeo.add("Corse");
+        zoneGeo.add("Grand-Est");
         zoneGeo.add("Normandie");
+        zoneGeo.add("Nouvelle-Aquitaine");
+        zoneGeo.add("Occitanie");
+        zoneGeo.add("PACA");
+        //zoneGeo.add("Hauts-de-France");
         //zoneGeo.add("Bretagne");
         //zoneGeo.add("Île-de-France");
         //zoneGeo.add("Centre-Val-de-Loire");
         //zoneGeo.add("Pays-de-la-Loire");
-        zoneGeo.add("Corse");
+
 
         List<String> niveau = new ArrayList<>();
         niveau.add("Facile (F)");
@@ -313,7 +314,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             }
                             if (filtreZoneGeo.isEmpty()) {
-                                for (int i=0;i<5;i++){
+                                for (int i=0;i<8;i++){
                                     filtreZoneGeo.add(i);
                                 }
                             }
@@ -405,7 +406,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int j = 0; j<listZoneGeo.size(); j++){
             if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
         }
-        if(!zoneGeoMatches){ return false;}
+        if(!zoneGeoMatches){
+            return false;
+        }
         return true;
     }
 
