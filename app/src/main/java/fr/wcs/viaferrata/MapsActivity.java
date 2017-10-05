@@ -392,19 +392,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
             int difficulte = via.getDifficulte()-1;
+            int zoneGeoNb = via.getRegionNumber();
             // By default filters Match
             boolean allFiltersMatches = true;
             // Difficulty filter
             boolean difficultyMatches = false;
             for (int j = 0; j<listDiff.size(); j++){
-                if(listDiff.get(j)==difficulte){difficultyMatches=true;}
+                if(listDiff.get(j)==difficulte){
+                    difficultyMatches=true;
+                }
             }
-            if(!difficultyMatches){allFiltersMatches=false;}
+            if(!difficultyMatches){
+                allFiltersMatches=false;
+            }
             // Zone géo filter
-            Log.d(TAG, "test28 Via Nb" + i + " : "+difficultyMatches+" "+allFiltersMatches);
+            boolean zoneGeoMatches = false;
+            for (int j = 0; j<listZoneGeo.size(); j++){
+                if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
+            }
+            if(!zoneGeoMatches){allFiltersMatches=false;}
 
-
-            // If all filters match we had the marker
+            // If all filters match we add the marker
             if(allFiltersMatches) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
@@ -433,6 +441,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             }
         }
+        // Phantom marker . This is a hack to solve problem of last marker not showing
+        marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .visible(false)
+                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+        );
     }
 
     @Override

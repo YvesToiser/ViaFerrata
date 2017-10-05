@@ -110,6 +110,18 @@ public class ViaFerrataModel implements Parcelable{
         return region;
     }
 
+    public int getRegionNumber(){
+        switch (region){
+            case "Occitanie": return 0;
+            case "Nouvelle-Aquitaine": return 1;
+            case "Auvergne-Rhône-Alpes": return 2;
+            case "Normandie": return 3;
+            case "Corse": return 4;
+            default :  return -1;
+
+        }
+    }
+
     public void setRegion(String region) {
         this.region = region;
     }
