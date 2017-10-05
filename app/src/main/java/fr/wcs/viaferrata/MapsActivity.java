@@ -47,6 +47,7 @@ import java.util.Map;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -231,12 +232,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
+
+            // get the shared pref
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            String favId = "Fav" + via.getNom();
+            boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            String doneId = "Done" + via.getNom();
+            boolean isDone = mySharedPref.getBoolean(doneId, false);
+            drawableMarqueur = R.drawable.marqueur;
+            if(!isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfait;
+
+            }
+            if(isFavorite && !isDone){
+                drawableMarqueur = R.drawable.marqueurfavoris;
+
+            }
+            if(isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfavorisfait;
+
+            }
             marker = mMap.addMarker(new MarkerOptions()
-                                .position(latlng)
-                                .title(nom)
-                                .snippet(ville)
-                                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+                    .position(latlng)
+                    .title(nom)
+                    .snippet(ville)
+                    .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
             );
+
+
             marker.setTag(via);
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -449,6 +472,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final LatLng latlng = new LatLng(latitude, longitude);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
+            // get the shared pref
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            String favId = "Fav" + via.getNom();
+            boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            String doneId = "Done" + via.getNom();
+            boolean isDone = mySharedPref.getBoolean(doneId, false);
+            drawableMarqueur = R.drawable.marqueur;
+            if(!isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfait;
+
+            }
+            if(isFavorite && !isDone){
+                drawableMarqueur = R.drawable.marqueurfavoris;
+
+            }
+            if(isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfavorisfait;
+
+            }
             // If all filters match we add the marker
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
                 marker = mMap.addMarker(new MarkerOptions()
