@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:id="@+id/itineraryButton"
-        android:title="Itineraire"
-        android:icon="@drawable/ic_itinerary"
+        android:id="@+id/backButton"
+        android:title="Retour"
+        android:icon="@drawable/ic_home"
+        android:state_focused="true"
+        android:state_pressed="true"
         />
     <item
         android:id="@+id/favButton"
         android:title="Favoris"
-        android:icon="@drawable/ic_favoris"
+        android:icon="@drawable/ic_stars"
+        android:state_focused="true"
+        android:state_pressed="true"
         />
     <item
         android:id="@+id/doneButton"
-        android:title="Done"
+        android:title="Fait"
         android:icon="@drawable/ic_done"
+        android:state_focused="true"
+        android:state_pressed="true"
         />
     <item
         android:id="@+id/shareButton"
-        android:title="Share"
+        android:title="Partager"
         android:icon="@drawable/ic_share"
+        />
+    <item
+        android:id="@+id/itineraryButton"
+        android:title="Itineraire"
+        android:icon="@drawable/ic_itinerary"
         />
 
 </menu>

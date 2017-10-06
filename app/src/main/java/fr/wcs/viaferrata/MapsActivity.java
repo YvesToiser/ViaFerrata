@@ -46,6 +46,7 @@ import java.util.Map;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -238,12 +239,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
+
+            // get the shared pref
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            String favId = "Fav" + via.getNom();
+            boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            String doneId = "Done" + via.getNom();
+            boolean isDone = mySharedPref.getBoolean(doneId, false);
+            drawableMarqueur = R.drawable.marqueur;
+            if(!isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfait;
+
+            }
+            if(isFavorite && !isDone){
+                drawableMarqueur = R.drawable.marqueurfavoris;
+
+            }
+            if(isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfavorisfait;
+
+            }
             marker = mMap.addMarker(new MarkerOptions()
-                                .position(latlng)
-                                .title(nom)
-                                .snippet(ville)
-                                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+                    .position(latlng)
+                    .title(nom)
+                    .snippet(ville)
+                    .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
             );
+
+
             marker.setTag(via);
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -312,6 +335,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     filtreZoneGeo.add(i);
                                 }
 
+                            switchFavorite.setChecked(false);
+                            switchDone.setChecked(false);
+
                             mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
@@ -322,8 +348,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             expListView.collapseGroup(0);
                             expListView.collapseGroup(1);
 
-                            switchFavorite.setChecked(false);
-                            switchDone.setChecked(false);
                         }
                     });
                     buttonValider.setOnClickListener(new View.OnClickListener() {
@@ -362,6 +386,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
                             Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
+
+
                             // Appelle la fonction qui réactualise les marqueurs sur la map
                             mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
@@ -438,7 +464,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Fonction qui vérifie si la via correspond aux filtres
-    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb){
+    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb, boolean filtreFavoris, boolean isFavorite, boolean filtreDone, boolean isDone){
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -455,6 +481,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
         }
         if(!zoneGeoMatches){
+            return false;
+        }
+        if(filtreFavoris && !isFavorite){
+            return false;
+        }
+        if(filtreDone && !isDone){
             return false;
         }
         return true;
@@ -474,8 +506,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final LatLng latlng = new LatLng(latitude, longitude);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
+            // get the shared pref
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            String favId = "Fav" + via.getNom();
+            boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            String doneId = "Done" + via.getNom();
+            boolean isDone = mySharedPref.getBoolean(doneId, false);
+            drawableMarqueur = R.drawable.marqueur;
+            if(!isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfait;
+
+            }
+            if(isFavorite && !isDone){
+                drawableMarqueur = R.drawable.marqueurfavoris;
+
+            }
+            if(isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfavorisfait;
+
+            }
             // If all filters match we add the marker
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -519,7 +570,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ViaFerrataModel via = mViaFerrataList.get(i);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            final String favId = "Fav" + via.getNom();
+            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            final String doneId = "Done" + via.getNom();
+            final boolean isDone = mySharedPref.getBoolean(doneId, false);
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
                 newList.add(via);
             }
         }
