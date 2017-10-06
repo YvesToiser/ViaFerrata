@@ -133,6 +133,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //List adapter
+        final ListView itemsListVia = findViewById(R.id.listVia);
+        itemsListVia.setAdapter(null);
         displayList(mViaFerrataList);
 
     }
