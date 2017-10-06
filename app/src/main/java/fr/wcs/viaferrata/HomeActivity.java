@@ -21,14 +21,12 @@ import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
-
     public static ArrayList<ViaFerrataModel> mViaFerrataList = new ArrayList<>();
     public static SharedPreferences mySharedPref;
     private static final String TAG = "HomeActivity";
 
     /** Duration of wait for splash screen**/
     private final int SPLASH_DISPLAY_LENGTH = 6000;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

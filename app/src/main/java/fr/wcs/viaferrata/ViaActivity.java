@@ -21,6 +21,8 @@ import android.widget.Button;
 
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
+
 public class ViaActivity extends AppCompatActivity {
 
     /**
