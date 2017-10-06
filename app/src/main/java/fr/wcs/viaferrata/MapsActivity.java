@@ -46,6 +46,7 @@ import java.util.Map;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -481,6 +482,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final LatLng latlng = new LatLng(latitude, longitude);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            final String favId = "Fav" + via.getNom();
+            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            final String doneId = "Done" + via.getNom();
+            final boolean isDone = mySharedPref.getBoolean(doneId, false);
             // If all filters match we add the marker
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
                 marker = mMap.addMarker(new MarkerOptions()
@@ -526,6 +532,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ViaFerrataModel via = mViaFerrataList.get(i);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            final String favId = "Fav" + via.getNom();
+            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            final String doneId = "Done" + via.getNom();
+            final boolean isDone = mySharedPref.getBoolean(doneId, false);
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
                 newList.add(via);
             }
