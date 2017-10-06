@@ -3,9 +3,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="fr.wcs.viaferrata.MapsActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="fr.wcs.viaferrata.MapsActivity">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/slidingPanel"
@@ -55,13 +55,13 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/dragView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#ffffff"
-            android:orientation="vertical"
             android:clickable="true"
             android:focusable="false"
-            android:id="@+id/dragView">
+            android:orientation="vertical">
 
             <include
                 layout="@layout/slidinguppanel"
@@ -73,11 +73,16 @@
 
     <ToggleButton
         android:id="@+id/buttonSwitch"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="470dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/toggle_button"
+        android:gravity="center_horizontal"
+        android:textOff=""
+        android:textOn="" />
 
 </RelativeLayout>
