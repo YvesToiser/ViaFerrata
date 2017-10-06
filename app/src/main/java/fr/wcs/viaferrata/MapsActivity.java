@@ -324,6 +324,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             switchFavorite.setChecked(false);
                             switchDone.setChecked(false);
+
                         }
                     });
                     buttonValider.setOnClickListener(new View.OnClickListener() {
@@ -438,7 +439,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Fonction qui vérifie si la via correspond aux filtres
-    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb){
+    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb, boolean filtreFavoris, boolean isFavorite, boolean filtreDone, boolean isDone){
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -455,6 +456,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
         }
         if(!zoneGeoMatches){
+            return false;
+        }
+        if(filtreFavoris && !isFavorite){
+            return false;
+        }
+        if(filtreDone && !isDone){
             return false;
         }
         return true;
@@ -475,7 +482,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
             // If all filters match we add the marker
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -519,7 +526,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ViaFerrataModel via = mViaFerrataList.get(i);
             int difficulte = via.getDifficulte()-1;
             int zoneGeoNb = via.getRegionNumber();
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb)) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
                 newList.add(via);
             }
         }
