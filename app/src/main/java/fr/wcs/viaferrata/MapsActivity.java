@@ -335,6 +335,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     filtreZoneGeo.add(i);
                                 }
 
+                            switchFavorite.setChecked(false);
+                            switchDone.setChecked(false);
+
                             mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
@@ -344,9 +347,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             expListView.collapseGroup(0);
                             expListView.collapseGroup(1);
-
-                            switchFavorite.setChecked(false);
-                            switchDone.setChecked(false);
 
                         }
                     });
