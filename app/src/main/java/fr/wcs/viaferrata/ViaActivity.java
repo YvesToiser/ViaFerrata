@@ -64,19 +64,21 @@ public class ViaActivity extends AppCompatActivity {
         final boolean isDone = mySharedPref.getBoolean(doneId, false);
         Log.i(TAG, "fav" +isFavorite);
 
+        favButton.setIcon(getDrawable(R.drawable.etoileunchecked));
+
         //initialiser bouton favori et fait
 
         if(isFavorite){
-            favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        }else{
             favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        }else{
+            favButton.setBackgroundColor(getResources().getColor(R.color.transparent));
 
         }
 
         if(isDone){
-            doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        }else{
             doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        }else{
+            doneButton.setBackgroundColor(getResources().getColor(R.color.transparent));
 
         }
 
@@ -121,9 +123,9 @@ public class ViaActivity extends AppCompatActivity {
                         Log.i(TAG, "fav" +isFavoriteNow);
 
                         if(isFavoriteNow){
-                            favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                        }else{
                             favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                        }else{
+                            favButton.setBackgroundColor(getResources().getColor(R.color.transparent));
 
                         }
 
@@ -143,9 +145,9 @@ public class ViaActivity extends AppCompatActivity {
                         Log.i(TAG, "done" +isDoneNow);
 
                         if(isDoneNow){
-                            doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                        }else{
                             doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                        }else{
+                            doneButton.setBackgroundColor(getResources().getColor(R.color.transparent));
 
                         }
 
@@ -239,5 +241,12 @@ public class ViaActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ViaActivity.this, MapsActivity.class);
+        startActivity(intent);
     }
 }
