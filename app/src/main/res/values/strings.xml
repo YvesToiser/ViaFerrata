@@ -1,7 +1,7 @@
 <resources>
 
     <string name="title_activity_maps">Map</string>
-    <string name="app_name">ViaFerrata</string>
+    <string name="app_name">Via Ferrata</string>
     <string name="boutonFavoris">FAVORIS</string>
     <string name="boutonRecherche">RECHERCHE</string>
     <string name="Welcome">Bienvenue sur l\'application Via Ferrata \n Ne perdez plus de temps à chercher,\n nous les avons toutes trouvées</string>
