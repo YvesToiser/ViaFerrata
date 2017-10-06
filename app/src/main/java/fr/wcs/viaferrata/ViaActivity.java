@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
@@ -54,7 +55,7 @@ public class ViaActivity extends AppCompatActivity {
 
         //Shared preferences
         Intent intentFav = getIntent();
-        ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
+        final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
         mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
 
         final String favId = "Fav" + maviaferrata.getNom();
@@ -110,12 +111,15 @@ public class ViaActivity extends AppCompatActivity {
 
                     case R.id.favButton:
                         final boolean isFavorite = mySharedPref.getBoolean(favId, false);
-                        boolean isFavNewValue;
+                        boolean isFavNewValue = !isFavorite;
+                        String toastMessage;
                         if(isFavorite){
-                            isFavNewValue=false;
+                            toastMessage = maviaferrata.getNom()+" "+"ne fait plus partie de vos favoris.";
                         }else{
-                            isFavNewValue=true;
+                            toastMessage = maviaferrata.getNom()+" "+"a été ajoutée à vos favoris.";
                         }
+                        Toast toastFavorite = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
+                        toastFavorite.show();
                         mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
                         final boolean isFavoriteNow = mySharedPref.getBoolean(favId, false);
                         Log.i(TAG, "fav" +isFavoriteNow);
@@ -124,20 +128,20 @@ public class ViaActivity extends AppCompatActivity {
                             favButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                         }else{
                             favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
                         }
 
 
                         break;
                     case R.id.doneButton:
                         final boolean isDone = mySharedPref.getBoolean(doneId, false);
-                        boolean isDoneNewValue;
+                        boolean isDoneNewValue= !isDone;
                         if(isDone){
-                            isDoneNewValue=false;
+                            toastMessage = "Vous n'avez pas fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                         }else{
-
-                            isDoneNewValue=true;
+                            toastMessage = "Vous avez fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                         }
+                        Toast toastDone = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
+                        toastDone.show();
                         mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
                         final boolean isDoneNow = mySharedPref.getBoolean(doneId, false);
                         Log.i(TAG, "done" +isDoneNow);
@@ -146,7 +150,6 @@ public class ViaActivity extends AppCompatActivity {
                             doneButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                         }else{
                             doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
                         }
 
                         break;
