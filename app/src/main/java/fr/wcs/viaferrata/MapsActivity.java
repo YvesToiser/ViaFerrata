@@ -47,6 +47,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
+import static fr.wcs.viaferrata.R.string.favorite;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -96,6 +97,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         switchFavorite = findViewById(R.id.switchFavorite);
         switchDone = findViewById(R.id.switchDone);
+
+        switchFavorite.setText(getString(R.string.favorite)+" ("+numberOfFavorites()+")");
+        switchDone.setText(getString(R.string.done)+" ("+numberOfDone()+")");
 
         flipper = findViewById(R.id.flipper);
 
@@ -581,6 +585,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         // Affiche la nouvelle liste
         displayList(newList);
+    }
+
+    // Fonction qui retourne le nombre de favoris
+    public String numberOfFavorites (){
+        int nbOfFav = 0;
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            final String favId = "Fav" + via.getNom();
+            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            if(isFavorite){
+                nbOfFav++;
+            }
+        }
+        return String.valueOf(nbOfFav);
+    }
+
+    // Fonction qui retourne le nombre de done
+    public String numberOfDone (){
+        int nbOfDone = 0;
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            final String doneId = "Done" + via.getNom();
+            final boolean isDone = mySharedPref.getBoolean(doneId, false);
+            if(isDone){
+                nbOfDone++;
+            }
+        }
+        return String.valueOf(nbOfDone);
     }
 
     @Override
