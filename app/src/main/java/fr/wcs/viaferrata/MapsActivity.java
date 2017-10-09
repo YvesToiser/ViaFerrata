@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -137,6 +138,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         itemsListVia.setAdapter(null);
         displayList(mViaFerrataList);
 
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        Drawable drawable_groupIndicator =
+                getResources().getDrawable(R.drawable.group_indicator);
+        int drawable_width = drawable_groupIndicator.getMinimumWidth();
+
+        if(android.os.Build.VERSION.SDK_INT <
+                android.os.Build.VERSION_CODES.JELLY_BEAN_MR2){
+            expListView.setIndicatorBounds(
+                    expListView.getWidth()-drawable_width*2,
+                    expListView.getWidth()-drawable_width);
+        }else{
+            expListView.setIndicatorBoundsRelative(
+                    expListView.getWidth()-drawable_width*2,
+                    expListView.getWidth()-drawable_width);
+        }
     }
 
     // Fonction qui remplit la liste
@@ -275,13 +296,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             marker.setTag(via);
 
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                            @Override
-                            public boolean onMarkerClick(Marker marker) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 6));
-                    return false;
-                }
-            });
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
@@ -543,13 +557,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d(TAG, "test28 Via Nb" + i + " marker added");
                 marker.setTag(via);
 
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 6));
-                        return false;
-                    }
-                });
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
@@ -639,17 +646,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
-
     @Override
     public void onBackPressed() {
         if (mLayout != null &&
                 (mLayout.getPanelState() == PanelState.EXPANDED || mLayout.getPanelState() == PanelState.ANCHORED)) {
+            mLayout.setTouchEnabled(true);
+            mLayout.setEnabled(true);
             mLayout.setPanelState(PanelState.COLLAPSED);
         } else {
             super.onBackPressed();
         }
     }
+
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

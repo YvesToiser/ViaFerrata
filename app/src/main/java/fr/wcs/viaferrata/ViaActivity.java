@@ -3,6 +3,7 @@ package fr.wcs.viaferrata;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
@@ -159,6 +160,9 @@ public class ViaActivity extends AppCompatActivity {
 
                         break;
                     case R.id.itineraryButton:
+                        Intent intentGM = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + maviaferrata.getLatitude() + "," + maviaferrata.getLongitude()));
+                        startActivity(intentGM);
 
                         break;
                 }

@@ -79,6 +79,8 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         String groupText = getGroup(groupPosition);
         GroupViewHolder groupViewHolder;
 
+
+
         if (convertView == null) {
 
             LayoutInflater inflater = (LayoutInflater) mContext
@@ -99,6 +101,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         groupViewHolder.mGroupText.setText(groupText);
 
         return convertView;
+
     }
 
     @Override
