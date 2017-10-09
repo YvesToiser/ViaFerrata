@@ -1,5 +1,6 @@
 package fr.wcs.viaferrata;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ public class Tab1General extends Fragment{
 
     private static final String TAG = "Tab1";
 
+
+
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View rootview = inflater.inflate(R.layout.tab1generalb, container, false);
@@ -43,6 +46,60 @@ public class Tab1General extends Fragment{
         final TextView tyrolienne = (TextView) rootview.findViewById(R.id.viaTyrol);
         final TextView acces = (TextView) rootview.findViewById(R.id.viaAcces);
         final TextView info = (TextView) rootview.findViewById(R.id.viaInfo);
+
+        //Fonts
+        TextView viaNameStatic = (TextView) rootview.findViewById(R.id.viaNameStatic);
+        final TextView viaVilleStatic = (TextView) rootview.findViewById(R.id.viaVilleStat);
+        final TextView viaDepartementStatic = (TextView) rootview.findViewById(R.id.viaDepartementStat);
+        final TextView viaRegionStatic = (TextView) rootview.findViewById(R.id.viaRegionStat);
+        final TextView viaDescriptionStatic = (TextView) rootview.findViewById(R.id.viaDescriptionStatic);
+        final TextView viaAltDepStatic = (TextView) rootview.findViewById(R.id.viaAltDpStatic);
+        final TextView viaAltArrStatic = (TextView) rootview.findViewById(R.id.viaAltArrStatic);
+        final TextView viaTempsStatic = (TextView) rootview.findViewById(R.id.viaTempsStatic);
+        final TextView viaNiveauStatic = (TextView) rootview.findViewById(R.id.viaNiveauStatic);
+        final TextView viaPasserelleStatic = (TextView) rootview.findViewById(R.id.viaPasserelleStatic);
+        final TextView viaPontSingeStatic = (TextView) rootview.findViewById(R.id.viaPontSingeStatic);
+        final TextView viaEchelleStatic = (TextView) rootview.findViewById(R.id.viaEchelleStatic);
+        final TextView viaTyrolienneStatic = (TextView) rootview.findViewById(R.id.viaTyrolStatic);
+        final TextView viaAccesStatic = (TextView) rootview.findViewById(R.id.viaAccesStatic);
+        final TextView viaInfoStatic = (TextView) rootview.findViewById(R.id.viaInfoStatic);
+        final TextView viaPrixStatic = (TextView) rootview.findViewById(R.id.viaPrix);
+
+        Typeface myTitlesFont = Typeface.createFromAsset(getContext().getAssets(), "Fonts/Montserrat-Medium.ttf");
+        viaNameStatic.setTypeface(myTitlesFont);
+        viaVilleStatic.setTypeface(myTitlesFont);
+        viaDepartementStatic.setTypeface(myTitlesFont);
+        viaRegionStatic.setTypeface(myTitlesFont);
+        viaDescriptionStatic.setTypeface(myTitlesFont);
+        viaAltDepStatic.setTypeface(myTitlesFont);
+        viaAltArrStatic.setTypeface(myTitlesFont);
+        viaTempsStatic.setTypeface(myTitlesFont);
+        viaNiveauStatic.setTypeface(myTitlesFont);
+        viaPasserelleStatic.setTypeface(myTitlesFont);
+        viaPontSingeStatic.setTypeface(myTitlesFont);
+        viaEchelleStatic.setTypeface(myTitlesFont);
+        viaTyrolienneStatic.setTypeface(myTitlesFont);
+        viaAccesStatic.setTypeface(myTitlesFont);
+        viaInfoStatic.setTypeface(myTitlesFont);
+        viaPrixStatic.setTypeface(myTitlesFont);
+
+        Typeface myTextFont = Typeface.createFromAsset(getContext().getAssets(), "Fonts/Quicksand-Regular.ttf");
+        name.setTypeface(myTextFont);
+        prix.setTypeface(myTextFont);
+        ville.setTypeface(myTextFont);
+        departement.setTypeface(myTextFont);
+        region.setTypeface(myTextFont);
+        description.setTypeface(myTextFont);
+        depart.setTypeface(myTextFont);
+        arrivee.setTypeface(myTextFont);
+        temps.setTypeface(myTextFont);
+        niveau.setTypeface(myTextFont);
+        passerelles.setTypeface(myTextFont);
+        pont.setTypeface(myTextFont);
+        echelle.setTypeface(myTextFont);
+        tyrolienne.setTypeface(myTextFont);
+        acces.setTypeface(myTextFont);
+        info.setTypeface(myTextFont);
 
 
         Intent intent = getActivity().getIntent();
@@ -77,8 +134,8 @@ public class Tab1General extends Fragment{
         String tempsvia = maviaferrata.getHoraireDuree();
         temps.setText(tempsvia);
 
-        int niveauvia = maviaferrata.getDifficulte();
-        niveau.setText(String.valueOf(niveauvia));
+        String niveauvia = maviaferrata.getDifficulteInWords();
+        niveau.setText(niveauvia);
 
         String nbPasserelles = maviaferrata.getNbPasserelle();
         passerelles.setText(nbPasserelles);
@@ -101,5 +158,8 @@ public class Tab1General extends Fragment{
 
         return rootview;
 
+
+
     }
+
 }
