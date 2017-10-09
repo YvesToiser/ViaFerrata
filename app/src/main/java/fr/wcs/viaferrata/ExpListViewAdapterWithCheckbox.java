@@ -30,15 +30,17 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     private static final String TAG = "MapActivity";
     private Map<Integer, Boolean> listeDiff = new HashMap<>();
     private Map<Integer, Boolean> listeZoneGeo = new HashMap<>();
+    private OnParameterChangeListener listener;
 
 
-    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, Map<Integer, Boolean> listeDiff, Map<Integer, Boolean> listeZoneGeo ){
+    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, Map<Integer, Boolean> listeDiff, Map<Integer, Boolean> listeZoneGeo, OnParameterChangeListener listener ){
 
         mContext = context;
         mListDataGroup = listDataGroup;
         mListDataChild = listDataChild;
         this.listeDiff = listeDiff;
         this.listeZoneGeo = listeZoneGeo;
+        this.listener = listener;
     }
 
     public Map<Integer, Boolean> getListeDiff() {
@@ -182,6 +184,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
                 if (mGroupPosition == 1) {
                     listeDiff.put(mChildPosition, isChecked);
                 }
+                listener.onChange();
 
             }
         });

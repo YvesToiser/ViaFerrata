@@ -224,6 +224,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonValider =  findViewById(R.id.buttonValider);
 
+        buttonCancel.setText(getResources().getString(R.string.back));
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
 
@@ -318,18 +319,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
 
+                listeDiff = listAdapter.getListeDiff();
+                listeZoneGeo = listAdapter.getListeZoneGeo();
+
+                List<Integer> filtreDiff = new ArrayList<>();
+                List<Integer> filtreZoneGeo = new ArrayList<>();
+
+                for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
+                    int position = entry.getKey();
+                    boolean value = entry.getValue();
+                    if (value) {
+                        filtreDiff.add(position);
+                    }
+                }
+
+                for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
+                    int position = entry.getKey();
+                    boolean value = entry.getValue();
+                    if (value) {
+                        filtreZoneGeo.add(position);
+                    }
+                }
+
+
 
                 Log.i(TAG, "onPanelStateChanged " + newState);
                 switchFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                         filtreFavoris = isChecked;
+                        buttonCancel.setText(getResources().getString(R.string.cancelText));
+
                     }
                 });
                 switchDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                         filtreDone = isChecked;
+                        buttonCancel.setText(getResources().getString(R.string.cancelText));
                     }
                 });
                 if (mLayout != null && (mLayout.getPanelState() == PanelState.EXPANDED)) {
@@ -373,27 +400,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     buttonValider.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
                             List<Integer> filtreDiff = new ArrayList<>();
-                            listeDiff = listAdapter.getListeDiff();
-
                             List<Integer> filtreZoneGeo = new ArrayList<>();
-                            listeZoneGeo = listAdapter.getListeZoneGeo();
 
-                            for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
-                                int position = entry.getKey();
-                                boolean value = entry.getValue();
-                                if (value) {
-                                    filtreDiff.add(position);
-                                }
-                            }
-
-                            for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
-                                int position = entry.getKey();
-                                boolean value = entry.getValue();
-                                if (value) {
-                                    filtreZoneGeo.add(position);
-                                }
-                            }
                             if (filtreDiff.isEmpty()) {
                                 for (int i=0;i<6;i++){
                                     filtreDiff.add(i);
@@ -433,6 +443,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mLayout.setEnabled(false);
                     mLayout.setTouchEnabled(false);
                     t.setVisibility(GONE);
+                    buttonCancel.setText(getResources().getString(R.string.back));
                     buttonCancel.setVisibility(VISIBLE);
                     buttonValider.setVisibility(VISIBLE);
 
@@ -461,6 +472,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     buttonCancel.setVisibility(GONE);
                     buttonValider.setVisibility(GONE);
                     buttonSwitch.setVisibility(VISIBLE);
+                    buttonCancel.setText(getResources().getString(R.string.back));
                 }
             }
         });
@@ -469,7 +481,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // preparing list data
         prepareListData();
-        listAdapter = new ExpListViewAdapterWithCheckbox(this, listDataHeader, listDataChild, listeDiff, listeZoneGeo);
+        listAdapter = new ExpListViewAdapterWithCheckbox(this, listDataHeader, listDataChild, listeDiff, listeZoneGeo, new OnParameterChangeListener() {
+            @Override
+            public void onChange() {
+                buttonCancel.setText(getResources().getString(R.string.cancelText));
+            }
+        });
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
