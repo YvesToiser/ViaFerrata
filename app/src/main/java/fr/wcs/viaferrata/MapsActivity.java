@@ -1,11 +1,16 @@
 package fr.wcs.viaferrata;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -18,11 +23,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
@@ -45,7 +54,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
 
+import static android.R.id.progress;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
@@ -53,8 +64,7 @@ import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private boolean mPermissionDenied = false;
+
     private GoogleMap mMap;
     private LatLngBounds Limite = new LatLngBounds(
             new LatLng(41.36, -5.16), new LatLng(51.1, 9.8));
@@ -67,6 +77,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Switch switchFavorite;
     private Switch switchDone;
     private float zoom;
+    private Location mLocation;
+
+    private LocationManager mLocationManager = null;
+    private LocationListener mLocationListener = null;
+    private static final int PERMISSION_REQUEST_LOCALISATION = 10;
+    private boolean mPermissionDenied = false;
+    private static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
 
     boolean filtreFavoris;
     boolean filtreDone;
@@ -101,8 +120,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switchFavorite = findViewById(R.id.switchFavorite);
         switchDone = findViewById(R.id.switchDone);
 
-        switchFavorite.setText(getString(R.string.favorite)+" ("+numberOfFavorites()+")");
-        switchDone.setText(getString(R.string.done)+" ("+numberOfDone()+")");
+        switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
+        switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
+
+        final LinearLayout seekLinear = findViewById(R.id.linearSeek);
+
+        CheckBox seekCheck = findViewById(R.id.seekCheckBox);
+        seekCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    seekLinear.setVisibility(VISIBLE);
+                }
+                else {
+                    seekLinear.setVisibility(GONE);
+                }
+            }
+        });
+
+        final TextView seekText = findViewById(R.id.seekBarText);
+        SeekBar seekBar = findViewById(R.id.seekBar);
+        seekBar.setMax(700);
+        seekBar.setProgress(0);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                String textProg = String.valueOf(progress) + " km";
+                seekText.setText(textProg);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
 
         flipper = findViewById(R.id.flipper);
 
@@ -120,13 +174,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if( isChecked) {
+                if (isChecked) {
                     flipper.setOutAnimation(slide_out_left);
                     flipper.setInAnimation(slide_in_right);
 
                     flipper.showNext();
-                }
-                else {
+                } else {
                     flipper.setInAnimation(slide_in_left);
                     flipper.setOutAnimation(slide_out_right);
 
@@ -140,6 +193,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         itemsListVia.setAdapter(null);
         displayList(mViaFerrataList);
 
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        mLocationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                mLocation = location;
+                double distance = distFrom(location.getLatitude(), location.getLongitude(), 45, 3);
+                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " + distance + "km",
+                        Toast.LENGTH_LONG).show();
+                Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            public void onProviderEnabled(String provider) {
+                Log.i(TAG, "onProviderEnabled: ");
+            }
+
+            public void onProviderDisabled(String provider) {
+                Log.i(TAG, "onProviderDisabled: ");
+            }
+        };
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkPermission();
+    }
+
+    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = (earthRadius * c)/1000;
+
+        dist = Math.round(dist * 100);
+        dist = dist/100;
+
+        return dist;
+    }
+
+    private void checkPermission() {
+        // Register the listener with the Location Manager to receive location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MapsActivity.this,
+                    PERMISSIONS, PERMISSION_REQUEST_LOCALISATION);
+            return;
+        }
+        String provider = mLocationManager.getBestProvider(new Criteria(), false);
+        Location location = mLocationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            double distance = distFrom(location.getLatitude(), location.getLongitude(), 45, 3);
+            Toast.makeText(MapsActivity.this, location.getLatitude() + ",   " + location.getLongitude() + "Distance : " + distance + "km",
+                    Toast.LENGTH_SHORT).show();
+            Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
     }
 
     @Override
@@ -272,7 +390,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for(int i = 0; i<mViaFerrataList.size(); i++){
             ViaFerrataModel via = mViaFerrataList.get(i);
             String nom = via.getNom();
-            Log.d(TAG, "test22 Objet via" + via);
             String ville = via.getVille();
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
@@ -519,7 +636,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // preparing list data
         prepareListData();
-        listAdapter = new ExpListViewAdapterWithCheckbox(this, listDataHeader, listDataChild, listeDiff, listeZoneGeo, new OnParameterChangeListener() {
+        listAdapter = new ExpListViewAdapterWithCheckbox(this,
+                listDataHeader,
+                listDataChild,
+                listeDiff,
+                listeZoneGeo,
+                new OnParameterChangeListener() {
             @Override
             public void onChange() {
                 buttonCancel.setText(getResources().getString(R.string.cancelText));
@@ -539,7 +661,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Fonction qui vérifie si la via correspond aux filtres
-    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb, boolean filtreFavoris, boolean isFavorite, boolean filtreDone, boolean isDone){
+    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
+                                    List<Integer> listZoneGeo, int zoneGeoNb,
+                                    boolean filtreFavoris,
+                                    boolean isFavorite,
+                                    boolean filtreDone,
+                                    boolean isDone){
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -564,6 +691,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(filtreDone && !isDone){
             return false;
         }
+
         return true;
     }
 
@@ -601,7 +729,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
             // If all filters match we add the marker
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
+                    filtreFavoris, isFavorite, filtreDone, isDone)) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -628,6 +757,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .visible(false)
                 .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
         );
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
     }
 
 // Fonction qui recharge la liste en fonction des nouveaux filtres
@@ -643,7 +773,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final boolean isFavorite = mySharedPref.getBoolean(favId, false);
             final String doneId = "Done" + via.getNom();
             final boolean isDone = mySharedPref.getBoolean(doneId, false);
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
+                    filtreFavoris, isFavorite, filtreDone, isDone)) {
                 newList.add(via);
             }
         }
@@ -664,6 +795,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 nbOfFav++;
             }
         }
+        if (nbOfFav == 0){
+            switchFavorite.setEnabled(false);
+        }
         return String.valueOf(nbOfFav);
     }
 
@@ -680,6 +814,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 nbOfDone++;
             }
         }
+        if (nbOfDone == 0){
+            switchDone.setEnabled(false);
+        }
         return String.valueOf(nbOfDone);
     }
 
@@ -692,7 +829,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+            PermissionUtils.requestPermission(this, PERMISSION_REQUEST_LOCALISATION,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
@@ -703,7 +840,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onBackPressed() {
         if (mLayout != null &&
-                (mLayout.getPanelState() == PanelState.EXPANDED || mLayout.getPanelState() == PanelState.ANCHORED)) {
+                (mLayout.getPanelState() == PanelState.EXPANDED
+                        || mLayout.getPanelState() == PanelState.ANCHORED)) {
             mLayout.setTouchEnabled(true);
             mLayout.setEnabled(true);
             mLayout.setPanelState(PanelState.COLLAPSED);
@@ -715,19 +853,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+
+        if (requestCode != PERMISSION_REQUEST_LOCALISATION) {
             return;
         }
-
-        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Enable the my location layer if the permission has been granted.
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MapsActivity.this,
+                    getResources().getString(R.string.permission_granted),
+                    Toast.LENGTH_SHORT).show();
             enableMyLocation();
+
+            checkPermission();
         } else {
-            // Display the missing permission error dialog when the fragments resume.
+            Toast.makeText(MapsActivity.this,
+                    getResources().getString(R.string.permission_not_granted),
+                    Toast.LENGTH_SHORT).show();
             mPermissionDenied = true;
         }
     }
+
+
 
     @Override
     protected void onResumeFragments() {
