@@ -39,5 +39,29 @@
     <string name="shar">Partager</string>
     <string name="itinerary">Itineraire</string>
 
+    <!--   STYLE MAP    -->
+    <string name="style_json">
+        [{"stylers": [{"visibility": "on"}]},
+        {"elementType": "geometry.stroke","stylers": [{"visibility": "on"}]},
+        {"featureType": "administrative.country","elementType": "labels","stylers": [{"visibility": "off"}]},
+        {"featureType": "administrative.land_parcel","elementType": "labels","stylers": [{"visibility": "off"}]},
+        {"featureType": "administrative.locality","stylers": [{"visibility": "on"}]},
+        {"featureType": "administrative.locality","elementType": "labels","stylers": [{"visibility": "simplified"}]},
+        {"featureType": "administrative.province","elementType": "geometry.stroke","stylers": [{"color": "#f4a443"},{"visibility": "on"}]},
+        {"featureType": "landscape.natural","stylers": [{"visibility": "on"}]},
+        {"featureType": "poi","elementType": "labels.text","stylers": [{"visibility": "off"}]},
+        {"featureType": "poi.business","stylers": [{"visibility": "off"}]},
+        {"featureType": "poi.government","stylers": [{"visibility": "off"}]},
+        {"featureType": "poi.medical","stylers": [{"visibility": "off"}]},
+        {"featureType": "poi.park","stylers": [{"visibility": "on"}]},
+        {"featureType": "poi.park","elementType": "labels.text","stylers": [{"visibility": "off"}]},
+        {"featureType": "poi.place_of_worship","stylers": [{"visibility": "on"}]},
+        {"featureType": "poi.school","stylers": [{"visibility": "off"}]},
+        {"featureType": "poi.sports_complex","elementType": "geometry","stylers": [{"visibility": "on"}]},
+        {"featureType": "road","elementType": "labels","stylers": [{"visibility": "off"}]},
+        {"featureType": "road.highway","stylers": [{"visibility": "simplified"}]},
+        {"featureType": "road.local","elementType": "labels","stylers": [{"visibility": "off"}]},
+        {"featureType": "transit","stylers": [{"visibility": "off"}]}]
+    </string>
 
 </resources>

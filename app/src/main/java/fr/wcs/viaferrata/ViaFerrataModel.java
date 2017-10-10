@@ -368,8 +368,8 @@ public class ViaFerrataModel implements Parcelable{
         dptNom = in.readString();
         region = in.readString();
         difficulte = in.readInt();
-        longitude = in.readDouble();
         latitude = in.readDouble();
+        longitude = in.readDouble();
         description = in.readString();
         altitudeDepart = in.readString();
         altitudeArrivee = in.readString();

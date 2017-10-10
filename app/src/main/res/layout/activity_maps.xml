@@ -35,8 +35,6 @@
                         android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:cameraTargetLat="46.52863469527167"
-                        app:cameraTargetLng="2.43896484375"
                         app:mapType="normal"
                         app:uiCompass="true"
                         app:uiScrollGestures="true"

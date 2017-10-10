@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -48,7 +50,6 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
-import static fr.wcs.viaferrata.R.string.favorite;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -65,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton buttonSwitch;
     private Switch switchFavorite;
     private Switch switchDone;
+    private float zoom;
 
     boolean filtreFavoris;
     boolean filtreDone;
@@ -220,7 +222,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        final TextView t = findViewById(R.id.filter_text);
+        final TextView filtreText = findViewById(R.id.filter_text);
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonValider =  findViewById(R.id.buttonValider);
 
@@ -229,11 +231,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider.setVisibility(GONE);
 
         mMap = googleMap;
-        //MapStyleOptions style = new MapStyleOptions(
-        //  JsonMapPerso
-        // )
-        //mMap.setMapStyle(style);
-        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can'filtreText find style. Error: ", e);
+        }
         mMap.setLatLngBoundsForCameraTarget(Limite);
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
@@ -244,7 +254,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         float width = metrics.widthPixels;
         float height = metrics.heightPixels;
-        float zoom = 0;
+        zoom = 0;
         int orientation = this.getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -366,6 +376,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setEnabled(true);
                             mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
+
                             listeDiff = new HashMap<>();
                             listeZoneGeo = new HashMap<>();
                             listAdapter.setListeDiff(listeDiff);
@@ -394,6 +405,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             expListView.collapseGroup(0);
                             expListView.collapseGroup(1);
+                            buttonCancel.setText(getResources().getString(R.string.back));
 
                         }
                     });
@@ -401,8 +413,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onClick(View view) {
 
+                            listeDiff = listAdapter.getListeDiff();
+                            listeZoneGeo = listAdapter.getListeZoneGeo();
+
                             List<Integer> filtreDiff = new ArrayList<>();
                             List<Integer> filtreZoneGeo = new ArrayList<>();
+
+                            for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreDiff.add(position);
+                                }
+                            }
+
+                            for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreZoneGeo.add(position);
+                                }
+                            }
+
+                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty()) {
+                                buttonCancel.setText(getResources().getString(R.string.back));
+                            }
+                            else {
+                                buttonCancel.setText(getResources().getString(R.string.cancelText));
+                            }
 
                             if (filtreDiff.isEmpty()) {
                                 for (int i=0;i<6;i++){
@@ -414,9 +452,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     filtreZoneGeo.add(i);
                                 }
                             }
-                            Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
-                            Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
-
 
                             // Appelle la fonction qui réactualise les marqueurs sur la map
                             mMap.clear();
@@ -438,27 +473,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             Log.i(TAG, "Filtre favoris : " + String.valueOf(filtreFavoris));
                             Log.i(TAG, "Filtre fait : " + String.valueOf(filtreDone));
+                            Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
+                            Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
                         }
                     });
                     mLayout.setEnabled(false);
                     mLayout.setTouchEnabled(false);
-                    t.setVisibility(GONE);
-                    buttonCancel.setText(getResources().getString(R.string.back));
-                    buttonCancel.setVisibility(VISIBLE);
-                    buttonValider.setVisibility(VISIBLE);
 
                 }else if (mLayout != null && (mLayout.getPanelState() == PanelState.DRAGGING)){
-                    if (t.getVisibility() == VISIBLE ){
-                        t.setVisibility(GONE);
+                    if (filtreText.getVisibility() == VISIBLE ){
+                        filtreText.setVisibility(GONE);
+                        buttonSwitch.setVisibility(GONE);
+
                         buttonCancel.setVisibility(VISIBLE);
                         buttonValider.setVisibility(VISIBLE);
-                        buttonSwitch.setVisibility(GONE);
+
                     }
-                    else if (t.getVisibility() == GONE) {
-                        t.setVisibility(VISIBLE);
+                    else if (filtreText.getVisibility() == GONE) {
+                        filtreText.setVisibility(VISIBLE);
+                        buttonSwitch.setVisibility(VISIBLE);
+
                         buttonCancel.setVisibility(GONE);
                         buttonValider.setVisibility(GONE);
-                        buttonSwitch.setVisibility(VISIBLE);
+
                     }
                 }
 
@@ -468,11 +505,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
                     mLayout.setEnabled(true);
                     mLayout.setTouchEnabled(true);
-                    t.setVisibility(VISIBLE);
+                    filtreText.setVisibility(VISIBLE);
+                    buttonSwitch.setVisibility(VISIBLE);
+
                     buttonCancel.setVisibility(GONE);
                     buttonValider.setVisibility(GONE);
-                    buttonSwitch.setVisibility(VISIBLE);
-                    buttonCancel.setText(getResources().getString(R.string.back));
+
                 }
             }
         });
@@ -650,7 +688,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return false;
     }
 
-
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -674,10 +711,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             super.onBackPressed();
         }
     }
-
-
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
