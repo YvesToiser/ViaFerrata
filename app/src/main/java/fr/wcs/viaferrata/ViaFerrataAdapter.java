@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -50,21 +52,27 @@ public class ViaFerrataAdapter extends BaseAdapter {
         ViaFerrataModel viaFerrataModel = (ViaFerrataModel) getItem(position);
 
         viewHolder.textName.setText(viaFerrataModel.getNom());
-        viewHolder.textVille.setText(viaFerrataModel.getVille() + " (" + viaFerrataModel.getDptNb() + ") ");
+        viewHolder.textDpt.setText(viaFerrataModel.getDptNom());
         viewHolder.textDiff.setText(viaFerrataModel.getDifficulteInLetters());
+        viewHolder.btnFav.setBackgroundResource(R.drawable.etoileunchecked);
+        viewHolder.btnDone.setBackgroundResource(R.drawable.ic_done);
 
         return convertView;
     }
 
     private class ViewHolder {
         TextView textName;
-        TextView textVille;
+        TextView textDpt;
         TextView textDiff;
+        ImageButton btnFav;
+        ImageButton btnDone;
 
         public ViewHolder(View view) {
             textName = view.findViewById(R.id.textNom);
-            textVille = view.findViewById(R.id.textVille);
+            textDpt = view.findViewById(R.id.textDpt);
             textDiff = view.findViewById(R.id.textDiff);
+            btnFav = view.findViewById(R.id.buttonFav);
+            btnDone = view.findViewById(R.id.buttonDone);
         }
     }
 }
