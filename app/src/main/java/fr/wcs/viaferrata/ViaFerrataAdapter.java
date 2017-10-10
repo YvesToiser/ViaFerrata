@@ -50,7 +50,7 @@ public class ViaFerrataAdapter extends BaseAdapter {
         ViaFerrataModel viaFerrataModel = (ViaFerrataModel) getItem(position);
 
         viewHolder.textName.setText(viaFerrataModel.getNom());
-        viewHolder.textVille.setText(viaFerrataModel.getVille() + " (" + viaFerrataModel.getDptNb() + ") ");
+        viewHolder.textVille.setText(viaFerrataModel.getDptNom());
         viewHolder.textDiff.setText(viaFerrataModel.getDifficulteInLetters());
 
         return convertView;
@@ -63,7 +63,7 @@ public class ViaFerrataAdapter extends BaseAdapter {
 
         public ViewHolder(View view) {
             textName = view.findViewById(R.id.textNom);
-            textVille = view.findViewById(R.id.textVille);
+            textVille = view.findViewById(R.id.textDpt);
             textDiff = view.findViewById(R.id.textDiff);
         }
     }
