@@ -54,8 +54,7 @@ public class ViaFerrataAdapter extends BaseAdapter {
         viewHolder.textName.setText(viaFerrataModel.getNom());
         viewHolder.textDpt.setText(viaFerrataModel.getDptNom());
         viewHolder.textDiff.setText(viaFerrataModel.getDifficulteInLetters());
-        viewHolder.btnFav.setBackgroundResource(R.drawable.etoileunchecked);
-        viewHolder.btnDone.setBackgroundResource(R.drawable.ic_done);
+
 
         return convertView;
     }
@@ -64,15 +63,13 @@ public class ViaFerrataAdapter extends BaseAdapter {
         TextView textName;
         TextView textDpt;
         TextView textDiff;
-        ImageButton btnFav;
-        ImageButton btnDone;
+
 
         public ViewHolder(View view) {
             textName = view.findViewById(R.id.textNom);
             textDpt = view.findViewById(R.id.textDpt);
             textDiff = view.findViewById(R.id.textDiff);
-            btnFav = view.findViewById(R.id.buttonFav);
-            btnDone = view.findViewById(R.id.buttonDone);
+
         }
     }
 }

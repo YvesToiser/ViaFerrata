@@ -63,22 +63,6 @@
                 android:text="TextView"
                 android:textColor="@color/black" />
 
-            <ImageButton
-                android:id="@+id/buttonFav"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/etoileunchecked"
-                android:text="" />
-
-            <ImageButton
-                android:id="@+id/buttonDone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/ic_done"
-
-                android:text="" />
 
         </LinearLayout>
 
