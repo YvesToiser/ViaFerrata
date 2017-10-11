@@ -132,7 +132,6 @@ public class ViaActivity extends AppCompatActivity {
                             favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                         }else{
                             favButton.setBackgroundColor(getResources().getColor(R.color.transparent));
-
                         }
 
 
