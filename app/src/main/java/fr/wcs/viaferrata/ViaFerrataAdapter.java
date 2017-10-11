@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -55,20 +57,45 @@ public class ViaFerrataAdapter extends BaseAdapter {
         viewHolder.textDpt.setText(viaFerrataModel.getDptNom());
         viewHolder.textDiff.setText(viaFerrataModel.getDifficulteInLetters());
 
+        viewHolder.imgViewFav.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v){
+                    // Your code that you want to execute on this button click
+                    Toast.makeText(context, "Mazette! ça marche!", Toast.LENGTH_SHORT).show();
+                }
+
+            });
+        viewHolder.imgViewDone.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v){
+                // Your code that you want to execute on this button click
+                Toast.makeText(context, "Le bouton Done aussi!", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
 
         return convertView;
     }
+
+
 
     private class ViewHolder {
         TextView textName;
         TextView textDpt;
         TextView textDiff;
+        ImageView imgViewFav;
+        ImageView imgViewDone;
 
 
         public ViewHolder(View view) {
             textName = view.findViewById(R.id.textNom);
             textDpt = view.findViewById(R.id.textDpt);
             textDiff = view.findViewById(R.id.textDiff);
+            imgViewFav = view.findViewById(R.id.imageViewFavori);
+            imgViewDone = view.findViewById(R.id.imageViewDone);
 
         }
     }
