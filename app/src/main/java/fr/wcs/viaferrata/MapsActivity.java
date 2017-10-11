@@ -66,10 +66,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton buttonSwitch;
     private Switch switchFavorite;
     private Switch switchDone;
+    private CheckBox seekCheck;
     private float zoom;
 
     boolean filtreFavoris;
     boolean filtreDone;
+    int filtreDistance;
 
     private Marker marker;
     int drawableMarqueur = R.drawable.marqueur;
@@ -90,6 +92,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -101,8 +105,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switchFavorite = findViewById(R.id.switchFavorite);
         switchDone = findViewById(R.id.switchDone);
 
+<<<<<<< Updated upstream
         switchFavorite.setText(getString(R.string.favorite)+" ("+numberOfFavorites()+")");
         switchDone.setText(getString(R.string.done)+" ("+numberOfDone()+")");
+=======
+
+
+
+        final TextView seekText = findViewById(R.id.seekBarText);
+        final SeekBar seekBar = findViewById(R.id.seekBar);
+        seekBar.setMax(700);
+        seekBar.setProgress(0);
+
+        final LinearLayout seekLinear = findViewById(R.id.linearSeek);
+
+        seekCheck = findViewById(R.id.seekCheckBox);
+        seekCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    buttonCancel.setText(getResources().getString(R.string.cancelText));
+                    seekLinear.setVisibility(VISIBLE);
+                }
+                else {
+                    seekBar.setProgress(0);
+                    seekLinear.setVisibility(GONE);
+                }
+            }
+        });
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                String textProg = String.valueOf(progress) + " km";
+                filtreDistance = progress;
+                seekText.setText(textProg);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+>>>>>>> Stashed changes
 
         flipper = findViewById(R.id.flipper);
 
@@ -140,6 +188,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         itemsListVia.setAdapter(null);
         displayList(mViaFerrataList);
 
+<<<<<<< Updated upstream
+=======
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        mLocationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                mLocation = location;
+                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " ,
+                        Toast.LENGTH_LONG).show();
+                Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            public void onProviderEnabled(String provider) {
+                Log.i(TAG, "onProviderEnabled: ");
+            }
+
+            public void onProviderDisabled(String provider) {
+                Log.i(TAG, "onProviderDisabled: ");
+            }
+        };
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkPermission();
+    }
+
+    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = (earthRadius * c)/1000;
+
+        dist = Math.round(dist * 100);
+        dist = dist/100;
+
+        return dist;
+    }
+
+    private void checkPermission() {
+        // Register the listener with the Location Manager to receive location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MapsActivity.this,
+                    PERMISSIONS, PERMISSION_REQUEST_LOCALISATION);
+            return;
+        }
+        String provider = mLocationManager.getBestProvider(new Criteria(), false);
+        mLocation = mLocationManager.getLastKnownLocation(provider);
+        if (mLocation != null) {
+            double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
+            Toast.makeText(MapsActivity.this, mLocation.getLatitude() + ",   " + mLocation.getLongitude() + "Distance : " + distance + "km",
+                    Toast.LENGTH_SHORT).show();
+            Log.i(TAG,  "Location changed : " + mLocation.getLatitude() + "    ,   " + mLocation.getLongitude());
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+>>>>>>> Stashed changes
     }
 
     @Override
@@ -278,6 +393,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = via.getLongitude();
             final LatLng latlng = new LatLng(latitude, longitude);
 
+            //double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
+
             // get the shared pref
             mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
             String favId = "Fav" + via.getNom();
@@ -328,6 +445,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
+
+                switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
+                switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
 
                 listeDiff = listAdapter.getListeDiff();
                 listeZoneGeo = listAdapter.getListeZoneGeo();
@@ -395,6 +515,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             switchFavorite.setChecked(false);
                             switchDone.setChecked(false);
+                            seekCheck.setChecked(false);
 
                             mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
@@ -435,7 +556,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             }
 
-                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty()) {
+                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty() &&
+                                    !seekCheck.isChecked() &&
+                                    !switchFavorite.isChecked() && !switchDone.isChecked()) {
                                 buttonCancel.setText(getResources().getString(R.string.back));
                             }
                             else {
@@ -452,6 +575,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     filtreZoneGeo.add(i);
                                 }
                             }
+
 
                             // Appelle la fonction qui réactualise les marqueurs sur la map
                             mMap.clear();
@@ -539,7 +663,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Fonction qui vérifie si la via correspond aux filtres
+<<<<<<< Updated upstream
     public boolean allFiltersMatch (List<Integer> listDiff, int difficulte, List<Integer> listZoneGeo, int zoneGeoNb, boolean filtreFavoris, boolean isFavorite, boolean filtreDone, boolean isDone){
+=======
+    public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
+                                    List<Integer> listZoneGeo, int zoneGeoNb,
+                                    boolean filtreFavoris, boolean isFavorite,
+                                    boolean filtreDone, boolean isDone,
+                                    int filtreDistance, double distance){
+>>>>>>> Stashed changes
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -564,6 +696,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(filtreDone && !isDone){
             return false;
         }
+<<<<<<< Updated upstream
+=======
+        if (filtreDistance != 0 && filtreDistance < distance){
+            return false;
+        }
+
+>>>>>>> Stashed changes
         return true;
     }
 
@@ -587,6 +726,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean isFavorite = mySharedPref.getBoolean(favId, false);
             String doneId = "Done" + via.getNom();
             boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
             drawableMarqueur = R.drawable.marqueur;
             if(!isFavorite && isDone){
                 drawableMarqueur = R.drawable.marqueurfait;
@@ -601,7 +741,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
             // If all filters match we add the marker
+<<<<<<< Updated upstream
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
+=======
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
+>>>>>>> Stashed changes
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -643,7 +788,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final boolean isFavorite = mySharedPref.getBoolean(favId, false);
             final String doneId = "Done" + via.getNom();
             final boolean isDone = mySharedPref.getBoolean(doneId, false);
+<<<<<<< Updated upstream
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb, filtreFavoris, isFavorite, filtreDone, isDone)) {
+=======
+            double distance = distFrom(via.getLatitude(), via.getLongitude(), mLocation.getLatitude(), mLocation.getLongitude());
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
+>>>>>>> Stashed changes
                 newList.add(via);
             }
         }

@@ -38,6 +38,12 @@
     <string name="resetText">Annuler les filtres</string>
     <string name="shar">Partager</string>
     <string name="itinerary">Itineraire</string>
+<<<<<<< Updated upstream
+=======
+    <string name="permission_granted">Merci d\'avoir autorisé la géolocalisation.</string>
+    <string name="permission_not_granted">Vous avez refusé la géolocalisation !</string>
+    <string name="facebook_app_id">474523822919984</string>
+>>>>>>> Stashed changes
 
     <!--   STYLE MAP    -->
     <string name="style_json">
