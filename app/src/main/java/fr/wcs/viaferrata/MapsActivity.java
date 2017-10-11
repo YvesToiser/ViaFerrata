@@ -119,8 +119,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switchFavorite = findViewById(R.id.switchFavorite);
         switchDone = findViewById(R.id.switchDone);
 
-        switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
-        switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
 
         final LinearLayout seekLinear = findViewById(R.id.linearSeek);
 
@@ -441,6 +439,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
+
+                switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
+                switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
 
                 listeDiff = listAdapter.getListeDiff();
                 listeZoneGeo = listAdapter.getListeZoneGeo();

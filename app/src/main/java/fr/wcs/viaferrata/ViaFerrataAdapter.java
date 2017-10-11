@@ -72,9 +72,9 @@ public class ViaFerrataAdapter extends BaseAdapter {
         }
         boolean isDone = mySharedPref.getBoolean(doneId, false);
         if(isDone){
-            viewHolder.imgViewDone.setImageResource(R.drawable.etoilechecked);
+            viewHolder.imgViewDone.setImageResource(R.drawable.check);
         }else{
-            viewHolder.imgViewDone.setImageResource(R.drawable.ic_done);
+            viewHolder.imgViewDone.setImageResource(R.drawable.uncheck);
         }
 
 
@@ -117,9 +117,9 @@ public class ViaFerrataAdapter extends BaseAdapter {
                 final boolean isDoneNow = mySharedPref.getBoolean(doneId, false);
 
                 if(isDoneNow){
-                    viewHolder.imgViewDone.setImageResource(R.drawable.etoilechecked);
+                    viewHolder.imgViewDone.setImageResource(R.drawable.check);
                 }else{
-                    viewHolder.imgViewDone.setImageResource(R.drawable.ic_done);
+                    viewHolder.imgViewDone.setImageResource(R.drawable.uncheck);
                 }
             }
         });
