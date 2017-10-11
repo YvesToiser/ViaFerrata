@@ -43,7 +43,7 @@ public class ViaFerrataAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null){
             convertView = LayoutInflater.from(context)
@@ -64,6 +64,19 @@ public class ViaFerrataAdapter extends BaseAdapter {
         final String favId = "Fav" + viaFerrataModel.getNom();
         final String doneId = "Done" + viaFerrataModel.getNom();
         final String viaName = viaFerrataModel.getNom();
+        boolean isFavorite = mySharedPref.getBoolean(favId, false);
+        if(isFavorite){
+            viewHolder.imgViewFav.setImageResource(R.drawable.etoilechecked);
+        }else{
+            viewHolder.imgViewFav.setImageResource(R.drawable.etoileunchecked);
+        }
+        boolean isDone = mySharedPref.getBoolean(doneId, false);
+        if(isDone){
+            viewHolder.imgViewDone.setImageResource(R.drawable.etoilechecked);
+        }else{
+            viewHolder.imgViewDone.setImageResource(R.drawable.ic_done);
+        }
+
 
         viewHolder.imgViewFav.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,14 +89,14 @@ public class ViaFerrataAdapter extends BaseAdapter {
                 }else{
                     toastMessage = viaName+" "+"a été ajoutée à vos favoris.";
                 }
-                Toast toastFavorite = Toast.makeText(context, toastMessage, Toast.LENGTH_LONG);
+                Toast toastFavorite = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
                 toastFavorite.show();
                 mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
                 final boolean isFavoriteNow = mySharedPref.getBoolean(favId, false);
                 if(isFavoriteNow){
-                    // TODO actualiser l'image
+                    viewHolder.imgViewFav.setImageResource(R.drawable.etoilechecked);
                 }else{
-                    // TODO actualiser l'image
+                    viewHolder.imgViewFav.setImageResource(R.drawable.etoileunchecked);
                 }
             }
         });
@@ -98,15 +111,15 @@ public class ViaFerrataAdapter extends BaseAdapter {
                 }else{
                     toastMessage = "Vous avez fait la via Ferrata"+" : "+viaName+".";
                 }
-                Toast toastDone = Toast.makeText(context, toastMessage, Toast.LENGTH_LONG);
+                Toast toastDone = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
                 toastDone.show();
                 mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
                 final boolean isDoneNow = mySharedPref.getBoolean(doneId, false);
 
                 if(isDoneNow){
-                    // TODO actualiser l'image
+                    viewHolder.imgViewDone.setImageResource(R.drawable.etoilechecked);
                 }else{
-                    // TODO actualiser l'image
+                    viewHolder.imgViewDone.setImageResource(R.drawable.ic_done);
                 }
             }
         });

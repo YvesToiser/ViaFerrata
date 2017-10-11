@@ -69,18 +69,18 @@
             <ImageView
                 android:id="@+id/imageViewFavori"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.3"
-                app:srcCompat="@drawable/etoileunchecked" />
+                android:src="@drawable/etoileunchecked" />
 
             <ImageView
                 android:id="@+id/imageViewDone"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.3"
-                app:srcCompat="@drawable/ic_done" />
+                android:src="@drawable/ic_done" />
 
         </LinearLayout>
 
