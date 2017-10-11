@@ -26,6 +26,8 @@
         android:id="@+id/shareButton"
         android:title="@string/shar"
         android:icon="@drawable/ic_share"
+        android:actionProviderClass=
+            "android.widget.ShareActionProvider"
         />
     <item
         android:id="@+id/itineraryButton"

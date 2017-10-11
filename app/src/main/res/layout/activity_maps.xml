@@ -11,10 +11,9 @@
         android:id="@+id/slidingPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:gravity="top"
         app:umanoFadeColor="@android:color/transparent"
-        app:umanoPanelHeight="40dp"
+        app:umanoPanelHeight="60dp"
         app:umanoShadowHeight="15dp">
 
         <RelativeLayout
@@ -36,8 +35,6 @@
                         android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:cameraTargetLat="46.52863469527167"
-                        app:cameraTargetLng="2.43896484375"
                         app:mapType="normal"
                         app:uiCompass="true"
                         app:uiScrollGestures="true"
@@ -62,7 +59,6 @@
             android:clickable="true"
             android:focusable="false"
             android:orientation="vertical">
-
             <include
                 layout="@layout/slidinguppanel"
                 android:layout_width="match_parent"

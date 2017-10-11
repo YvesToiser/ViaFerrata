@@ -3,6 +3,7 @@ package fr.wcs.viaferrata;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
@@ -15,14 +16,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
-import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class ViaActivity extends AppCompatActivity {
 
@@ -40,6 +42,7 @@ public class ViaActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private ShareActionProvider mShareActionProvider;
 
 
     private static final String TAG = "ViaActivity";
@@ -52,6 +55,7 @@ public class ViaActivity extends AppCompatActivity {
 
         final BottomNavigationItemView favButton = (BottomNavigationItemView)findViewById(R.id.favButton);
         final BottomNavigationItemView doneButton = (BottomNavigationItemView)findViewById(R.id.doneButton);
+
 
         //Shared preferences
         Intent intentFav = getIntent();
@@ -156,9 +160,21 @@ public class ViaActivity extends AppCompatActivity {
 
                         break;
                     case R.id.shareButton:
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        String shareSubject = "Bonsoir";
+                        String shareBody = "Télécharge vite l'appli ViaFerrata et trouve ta prochaine sortie #sport et #nature !";
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                        startActivity(Intent.createChooser(sharingIntent, "Share via"));
+
 
                         break;
                     case R.id.itineraryButton:
+                        Intent intentGM = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + maviaferrata.getLatitude() + ", " + maviaferrata.getLongitude()));
+                                Log.i(TAG, String.valueOf(maviaferrata.getLatitude()));
+                        startActivity(intentGM);
 
                         break;
                 }

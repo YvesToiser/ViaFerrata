@@ -4,6 +4,7 @@
     package="fr.wcs.viaferrata">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/via_ferrata_logoplein_01"
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <!--
-         The API key for Google Maps-based APIs is defined as a string resource.
+         The API key for Google Maps-based APIs is defined as a stri"ng resource.
          (See the file "res/values/google_maps_api.xml").
          Note that the API key is linked to the encryption key used to sign the APK.
          You need a different API key for each encryption key, including the release key that is used to
@@ -27,7 +28,7 @@
 
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_maps"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -36,7 +37,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".MapsActivity" />
-        <activity android:name=".DetailActivity" />
         <activity
             android:name=".ViaActivity"
             android:label="@string/title_activity_via"
