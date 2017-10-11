@@ -1,6 +1,7 @@
 package fr.wcs.viaferrata;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
+import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class ViaFerrataAdapter extends BaseAdapter {
     private Context context;
@@ -56,27 +60,56 @@ public class ViaFerrataAdapter extends BaseAdapter {
         viewHolder.textName.setText(viaFerrataModel.getNom());
         viewHolder.textDpt.setText(viaFerrataModel.getDptNom());
         viewHolder.textDiff.setText(viaFerrataModel.getDifficulteInLetters());
+        mySharedPref = context.getSharedPreferences("SP",MODE_PRIVATE);
+        final String favId = "Fav" + viaFerrataModel.getNom();
+        final String doneId = "Done" + viaFerrataModel.getNom();
+        final String viaName = viaFerrataModel.getNom();
 
         viewHolder.imgViewFav.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v){
-                    // Your code that you want to execute on this button click
-                    Toast.makeText(context, "Mazette! ça marche!", Toast.LENGTH_SHORT).show();
-                }
-
-            });
-        viewHolder.imgViewDone.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v){
-                // Your code that you want to execute on this button click
-                Toast.makeText(context, "Le bouton Done aussi!", Toast.LENGTH_SHORT).show();
+                boolean isFavorite = mySharedPref.getBoolean(favId, false);
+                boolean isFavNewValue = !isFavorite;
+                String toastMessage;
+                if(isFavorite){
+                    toastMessage = viaName+" "+"ne fait plus partie de vos favoris.";
+                }else{
+                    toastMessage = viaName+" "+"a été ajoutée à vos favoris.";
+                }
+                Toast toastFavorite = Toast.makeText(context, toastMessage, Toast.LENGTH_LONG);
+                toastFavorite.show();
+                mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
+                final boolean isFavoriteNow = mySharedPref.getBoolean(favId, false);
+                if(isFavoriteNow){
+                    // TODO actualiser l'image
+                }else{
+                    // TODO actualiser l'image
+                }
             }
-
         });
+        viewHolder.imgViewDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                boolean isDone = mySharedPref.getBoolean(doneId, false);
+                boolean isDoneNewValue= !isDone;
+                String toastMessage;
+                if(isDone){
+                    toastMessage = "Vous n'avez pas fait la via Ferrata"+" : "+viaName+".";
+                }else{
+                    toastMessage = "Vous avez fait la via Ferrata"+" : "+viaName+".";
+                }
+                Toast toastDone = Toast.makeText(context, toastMessage, Toast.LENGTH_LONG);
+                toastDone.show();
+                mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
+                final boolean isDoneNow = mySharedPref.getBoolean(doneId, false);
 
-
+                if(isDoneNow){
+                    // TODO actualiser l'image
+                }else{
+                    // TODO actualiser l'image
+                }
+            }
+        });
         return convertView;
     }
 
