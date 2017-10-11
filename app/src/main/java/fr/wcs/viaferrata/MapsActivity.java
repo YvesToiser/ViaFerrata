@@ -54,15 +54,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
 
-import static android.R.id.progress;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static fr.wcs.viaferrata.HomeActivity.mViaFerrataList;
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
 
     private GoogleMap mMap;
@@ -125,8 +124,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switchFavorite = findViewById(R.id.switchFavorite);
         switchDone = findViewById(R.id.switchDone);
 
-        switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
-        switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
 
         seekLinear = findViewById(R.id.linearSeek);
 
@@ -320,8 +317,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
                 intent.putExtra("via", viaItem);
                 startActivity(intent);
-
-
             }
         });
     }
@@ -411,7 +406,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
 
-        Log.d(TAG, "Taille de la Via Ferrata au moment de l'affichage des markers" + mViaFerrataList.size());
         for(int i = 0; i<mViaFerrataList.size(); i++){
             ViaFerrataModel via = mViaFerrataList.get(i);
             String nom = via.getNom();
@@ -694,10 +688,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Fonction qui vérifie si la via correspond aux filtres
     public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
                                     List<Integer> listZoneGeo, int zoneGeoNb,
-
                                     boolean filtreFavoris, boolean isFavorite,
                                     boolean filtreDone, boolean isDone,
                                     int filtreDistance, double distance){
+
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -736,7 +730,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for(int i = 0; i<mViaFerrataList.size(); i++){
             ViaFerrataModel via = mViaFerrataList.get(i);
             String nom = via.getNom();
-            Log.d(TAG, "test28 listDiff" + listDiff);
             String ville = via.getVille();
             double latitude = via.getLatitude();
             double longitude = via.getLongitude();
@@ -773,7 +766,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
 
                 );
-                Log.d(TAG, "test28 Via Nb" + i + " marker added");
                 marker.setTag(via);
 
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {

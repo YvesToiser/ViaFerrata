@@ -33,7 +33,9 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     private OnParameterChangeListener listener;
 
 
-    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, Map<Integer, Boolean> listeDiff, Map<Integer, Boolean> listeZoneGeo, OnParameterChangeListener listener ){
+    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String,
+            List<String>> listDataChild, Map<Integer, Boolean> listeDiff, Map<Integer, Boolean> listeZoneGeo,
+                                          OnParameterChangeListener listener ){
 
         mContext = context;
         mListDataGroup = listDataGroup;

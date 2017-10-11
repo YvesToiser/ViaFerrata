@@ -141,7 +141,6 @@ public class ViaActivity extends AppCompatActivity {
                             favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                         }else{
                             favButton.setBackgroundColor(getResources().getColor(R.color.transparent));
-
                         }
 
 
@@ -182,7 +181,8 @@ public class ViaActivity extends AppCompatActivity {
                         break;
                     case R.id.itineraryButton:
                         Intent intentGM = new Intent(android.content.Intent.ACTION_VIEW,
-                                Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + maviaferrata.getLatitude() + ", " + maviaferrata.getLongitude()));
+                                Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + maviaferrata.getLatitude()
+                                        + ", " + maviaferrata.getLongitude()));
                                 Log.i(TAG, String.valueOf(maviaferrata.getLatitude()));
                         startActivity(intentGM);
 

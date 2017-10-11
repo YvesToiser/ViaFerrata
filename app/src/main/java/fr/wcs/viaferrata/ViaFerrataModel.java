@@ -36,7 +36,12 @@ public class ViaFerrataModel implements Parcelable{
     public ViaFerrataModel() {
     }
 
-    public ViaFerrataModel(String nom, String ville, int dptNb, String dptNom, String region, int difficulte, double latitude, double longitude, String description, String altitudeDepart, String altitudeArrivee, String denivele, String longueur, String prix, String nbPasserelle, String nbPontSinge, String nbEchelleFilet, String nbTyrolienne, String info, String horaireApproche, String horaireDuree, String horaireRetour, String infoAcces) {
+    public ViaFerrataModel(String nom, String ville, int dptNb, String dptNom, String region, int difficulte,
+                           double latitude, double longitude, String description, String altitudeDepart,
+                           String altitudeArrivee, String denivele, String longueur, String prix,
+                           String nbPasserelle, String nbPontSinge, String nbEchelleFilet, String nbTyrolienne,
+                           String info, String horaireApproche, String horaireDuree, String horaireRetour,
+                           String infoAcces) {
         this.nom = nom;
         this.ville = ville;
         this.dptNb = dptNb;
