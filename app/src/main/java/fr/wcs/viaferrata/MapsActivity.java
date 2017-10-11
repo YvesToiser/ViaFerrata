@@ -76,6 +76,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton buttonSwitch;
     private Switch switchFavorite;
     private Switch switchDone;
+    private TextView seekText;
+    private CheckBox seekCheck;
+    private SeekBar seekBar;
+    private LinearLayout seekLinear;
     private float zoom;
     private Location mLocation;
 
@@ -89,6 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     boolean filtreFavoris;
     boolean filtreDone;
+    int filtreDistance;
 
     private Marker marker;
     int drawableMarqueur = R.drawable.marqueur;
@@ -123,23 +128,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
         switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
 
-        final LinearLayout seekLinear = findViewById(R.id.linearSeek);
+        seekLinear = findViewById(R.id.linearSeek);
 
-        CheckBox seekCheck = findViewById(R.id.seekCheckBox);
-        seekCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    seekLinear.setVisibility(VISIBLE);
-                }
-                else {
-                    seekLinear.setVisibility(GONE);
-                }
-            }
-        });
-
-        final TextView seekText = findViewById(R.id.seekBarText);
-        SeekBar seekBar = findViewById(R.id.seekBar);
+        seekText = findViewById(R.id.seekBarText);
+        seekBar = findViewById(R.id.seekBar);
         seekBar.setMax(700);
         seekBar.setProgress(0);
 
@@ -147,6 +139,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 String textProg = String.valueOf(progress) + " km";
+                seekText.setText(textProg);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+
+
+        seekCheck = findViewById(R.id.seekCheckBox);
+        seekCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    buttonCancel.setText(getResources().getString(R.string.cancelText));
+                    seekLinear.setVisibility(VISIBLE);
+                }
+                else {
+                    seekBar.setProgress(0);
+                    seekLinear.setVisibility(GONE);
+                }
+            }
+        });
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                String textProg = String.valueOf(progress) + " km";
+                filtreDistance = progress;
                 seekText.setText(textProg);
             }
             @Override
@@ -198,8 +223,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 mLocation = location;
-                double distance = distFrom(location.getLatitude(), location.getLongitude(), 45, 3);
-                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " + distance + "km",
+
+                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " ,
                         Toast.LENGTH_LONG).show();
                 Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
             }
@@ -250,12 +275,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         String provider = mLocationManager.getBestProvider(new Criteria(), false);
-        Location location = mLocationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            double distance = distFrom(location.getLatitude(), location.getLongitude(), 45, 3);
-            Toast.makeText(MapsActivity.this, location.getLatitude() + ",   " + location.getLongitude() + "Distance : " + distance + "km",
+        mLocation = mLocationManager.getLastKnownLocation(provider);
+        if (mLocation != null) {
+            double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
+            Toast.makeText(MapsActivity.this, mLocation.getLatitude() + ",   " + mLocation.getLongitude() + "Distance : " + distance + "km",
                     Toast.LENGTH_SHORT).show();
-            Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
+            Log.i(TAG,  "Location changed : " + mLocation.getLatitude() + "    ,   " + mLocation.getLongitude());
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
     }
@@ -446,6 +471,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
 
+                switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
+                switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
+
                 listeDiff = listAdapter.getListeDiff();
                 listeZoneGeo = listAdapter.getListeZoneGeo();
 
@@ -512,6 +540,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             switchFavorite.setChecked(false);
                             switchDone.setChecked(false);
+                            seekCheck.setChecked(false);
 
                             mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
@@ -552,7 +581,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             }
 
-                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty()) {
+                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty() &&
+                                    !seekCheck.isChecked() &&
+                                    !switchFavorite.isChecked() && !switchDone.isChecked()) {
                                 buttonCancel.setText(getResources().getString(R.string.back));
                             }
                             else {
@@ -663,10 +694,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Fonction qui vérifie si la via correspond aux filtres
     public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
                                     List<Integer> listZoneGeo, int zoneGeoNb,
-                                    boolean filtreFavoris,
-                                    boolean isFavorite,
-                                    boolean filtreDone,
-                                    boolean isDone){
+
+                                    boolean filtreFavoris, boolean isFavorite,
+                                    boolean filtreDone, boolean isDone,
+                                    int filtreDistance, double distance){
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -689,6 +720,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return false;
         }
         if(filtreDone && !isDone){
+            return false;
+        }
+        if (filtreDistance != 0 && filtreDistance < distance){
             return false;
         }
 
@@ -715,6 +749,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean isFavorite = mySharedPref.getBoolean(favId, false);
             String doneId = "Done" + via.getNom();
             boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
             drawableMarqueur = R.drawable.marqueur;
             if(!isFavorite && isDone){
                 drawableMarqueur = R.drawable.marqueurfait;
@@ -730,7 +765,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             // If all filters match we add the marker
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
-                    filtreFavoris, isFavorite, filtreDone, isDone)) {
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -773,8 +808,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final boolean isFavorite = mySharedPref.getBoolean(favId, false);
             final String doneId = "Done" + via.getNom();
             final boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(via.getLatitude(), via.getLongitude(), mLocation.getLatitude(), mLocation.getLongitude());
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
-                    filtreFavoris, isFavorite, filtreDone, isDone)) {
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
                 newList.add(via);
             }
         }

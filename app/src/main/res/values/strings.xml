@@ -41,6 +41,7 @@
     <string name="permission_granted">Merci d\'avoir autorisé la géolocalisation.</string>
     <string name="permission_not_granted">Vous avez refusé la géolocalisation !</string>
 
+
     <!--   STYLE MAP    -->
     <string name="style_json">
         [{"stylers": [{"visibility": "on"}]},
