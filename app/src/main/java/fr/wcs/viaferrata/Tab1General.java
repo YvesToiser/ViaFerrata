@@ -77,8 +77,8 @@ public class Tab1General extends Fragment{
         String tempsvia = maviaferrata.getHoraireDuree();
         temps.setText(tempsvia);
 
-        int niveauvia = maviaferrata.getDifficulte();
-        niveau.setText(String.valueOf(niveauvia));
+        String niveauvia = maviaferrata.getDifficulteInWords();
+        niveau.setText(niveauvia);
 
         String nbPasserelles = maviaferrata.getNbPasserelle();
         passerelles.setText(nbPasserelles);
