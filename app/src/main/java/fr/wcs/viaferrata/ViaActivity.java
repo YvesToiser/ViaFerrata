@@ -23,6 +23,16 @@ import android.widget.Button;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.MessageDialog;
+import com.facebook.share.widget.SendButton;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
+
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 
@@ -42,7 +52,6 @@ public class ViaActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private ShareActionProvider mShareActionProvider;
 
 
     private static final String TAG = "ViaActivity";
@@ -56,8 +65,7 @@ public class ViaActivity extends AppCompatActivity {
         final BottomNavigationItemView favButton = (BottomNavigationItemView)findViewById(R.id.favButton);
         final BottomNavigationItemView doneButton = (BottomNavigationItemView)findViewById(R.id.doneButton);
 
-
-        //Shared preferences
+            //Shared preferences
         Intent intentFav = getIntent();
         final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
         mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
@@ -68,6 +76,7 @@ public class ViaActivity extends AppCompatActivity {
         final String doneId = "Done" + maviaferrata.getNom();
         final boolean isDone = mySharedPref.getBoolean(doneId, false);
         Log.i(TAG, "fav" +isFavorite);
+
 
         //initialiser bouton favori et fait
 
@@ -159,14 +168,15 @@ public class ViaActivity extends AppCompatActivity {
 
                         break;
                     case R.id.shareButton:
+
                         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                         sharingIntent.setType("text/plain");
                         String shareSubject = "Bonsoir";
-                        String shareBody = "Télécharge vite l'appli ViaFerrata et trouve ta prochaine sortie #sport et #nature !";
+                        String shareBody = "\nTélécharge vite l'appli ViaFerrata et trouve ta prochaine sortie #sport et #nature !\n\n";
+                        shareBody = shareBody + "https://play.google.com/store/apps/details?id=Orion.Soft \n\n";
                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                         startActivity(Intent.createChooser(sharingIntent, "Share via"));
-
 
                         break;
                     case R.id.itineraryButton:
@@ -194,6 +204,12 @@ public class ViaActivity extends AppCompatActivity {
         });*/
 
     }
+
+    /*@Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }*/
 
 
     /*@Override

@@ -11,6 +11,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -63,21 +64,54 @@ import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnMyLocationButtonClickListener {
 
+    // Variables globales
+    private static final String TAG = "MapActivity";
 
+    //Element du layout Map
     private GoogleMap mMap;
+    private Marker marker;
+    private ViewFlipper flipper;
+    private ToggleButton buttonSwitch;
+
+    // Variables du layout
+    private int drawableMarqueur = R.drawable.marqueur;
     private LatLngBounds Limite = new LatLngBounds(
             new LatLng(41.36, -5.16), new LatLng(51.1, 9.8));
-    //private Marker marker;
-    private static final String TAG = "MapActivity";
-    private SlidingUpPanelLayout mLayout;
-    private Button buttonCancel;
-    private Button buttonValider;
-    private ToggleButton buttonSwitch;
-    private Switch switchFavorite;
-    private Switch switchDone;
     private float zoom;
     private Location mLocation;
 
+
+
+    // Elements du panel
+    private SlidingUpPanelLayout mLayout;
+    private Button buttonCancel;
+    private Button buttonValider;
+    private Switch switchFavorite;
+    private Switch switchDone;
+    private LinearLayout seekLinear;
+    private TextView seekText;
+    private CheckBox seekCheck;
+    private SeekBar seekBar;
+    private ExpandableListView expListView;
+
+    // Variables du panel
+    private boolean filtreFavoris;
+    private boolean filtreDone;
+    private int filtreDistance;
+    private ExpListViewAdapterWithCheckbox listAdapter;
+    private ArrayList<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
+    private Map<Integer, Boolean> listeDiff = new HashMap<>();
+    private Map<Integer, Boolean> listeZoneGeo = new HashMap<>();
+    private List<Integer> filtreZoneGeo;
+    private List<Integer> filtreDiff;
+    private ListView itemsListVia;
+
+    // Animations
+    private Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
+
+
+    // Variables de permissions
     private LocationManager mLocationManager = null;
     private LocationListener mLocationListener = null;
     private static final int PERMISSION_REQUEST_LOCALISATION = 10;
@@ -85,23 +119,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-
-    boolean filtreFavoris;
-    boolean filtreDone;
-
-    private Marker marker;
-    int drawableMarqueur = R.drawable.marqueur;
-
-    ExpListViewAdapterWithCheckbox listAdapter;
-    ExpandableListView expListView;
-    ArrayList<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
-
-    Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
-    ViewFlipper flipper;
-
-    Map<Integer, Boolean> listeDiff = new HashMap<>();
-    Map<Integer, Boolean> listeZoneGeo = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,39 +128,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
 
+        // Definition des elements du panel
         switchFavorite = findViewById(R.id.switchFavorite);
         switchDone = findViewById(R.id.switchDone);
-
-
-        final LinearLayout seekLinear = findViewById(R.id.linearSeek);
-
-        CheckBox seekCheck = findViewById(R.id.seekCheckBox);
+        seekLinear = findViewById(R.id.linearSeek);
+        seekText = findViewById(R.id.seekBarText);
+        seekBar = findViewById(R.id.seekBar);
+        seekCheck = findViewById(R.id.seekCheckBox);
+        // Checkbox qui active le filtre par distance
         seekCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
+                    buttonCancel.setText(getResources().getString(R.string.cancelText));
                     seekLinear.setVisibility(VISIBLE);
                 }
                 else {
+                    seekBar.setProgress(0);
                     seekLinear.setVisibility(GONE);
                 }
             }
         });
-
-        final TextView seekText = findViewById(R.id.seekBarText);
-        SeekBar seekBar = findViewById(R.id.seekBar);
+        // Seekbar progress
         seekBar.setMax(700);
         seekBar.setProgress(0);
-
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 String textProg = String.valueOf(progress) + " km";
+                filtreDistance = progress;
                 seekText.setText(textProg);
             }
             @Override
@@ -154,9 +173,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
+        //Switch map/liste
         flipper = findViewById(R.id.flipper);
-
         slide_in_left = AnimationUtils.loadAnimation(this,
                 R.anim.in_left);
         slide_in_right = AnimationUtils.loadAnimation(this,
@@ -167,7 +185,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 R.anim.out_right);
 
         buttonSwitch = findViewById(R.id.buttonSwitch);
-
         buttonSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -190,13 +207,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         itemsListVia.setAdapter(null);
         displayList(mViaFerrataList);
 
+        // Recupere coordonnées geoloc
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
         mLocationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 mLocation = location;
-                double distance = distFrom(location.getLatitude(), location.getLongitude(), 45, 3);
-                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " + distance + "km",
+
+                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " ,
                         Toast.LENGTH_LONG).show();
                 Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
             }
@@ -204,7 +221,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onStatusChanged(String provider, int status, Bundle extras) {
 
             }
-
             public void onProviderEnabled(String provider) {
                 Log.i(TAG, "onProviderEnabled: ");
             }
@@ -213,7 +229,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.i(TAG, "onProviderDisabled: ");
             }
         };
-
     }
 
     @Override
@@ -222,41 +237,349 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         checkPermission();
     }
 
-    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double dist = (earthRadius * c)/1000;
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        final TextView filtreText = findViewById(R.id.filter_text);
+        buttonCancel = findViewById(R.id.buttonCancel);
+        buttonValider =  findViewById(R.id.buttonValider);
 
-        dist = Math.round(dist * 100);
-        dist = dist/100;
+        buttonCancel.setText(getResources().getString(R.string.back));
+        buttonCancel.setVisibility(GONE);
+        buttonValider.setVisibility(GONE);
 
-        return dist;
+        mMap = googleMap;
+        // Ajouter le style a la map
+        try {
+
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can'filtreText find style. Error: ", e);
+        }
+        mMap.setLatLngBoundsForCameraTarget(Limite);
+        mMap.setOnMyLocationButtonClickListener(this);
+        enableMyLocation();
+        // Fonction qui definit le zoom en fonction de l'orientation et de la largeur d'ecran
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float width = metrics.widthPixels;
+        float height = metrics.heightPixels;
+        zoom = 0;
+        int orientation = this.getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            zoom = width * 0.0003f + 4.78f;
+        }
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            zoom = height * 0.00018f + 4.7f;
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
+
+        // Creation de tout les marqueurs
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            String nom = via.getNom();
+            String ville = via.getVille();
+            double latitude = via.getLatitude();
+            double longitude = via.getLongitude();
+            final LatLng latlng = new LatLng(latitude, longitude);
+
+            // Recup les sharedpref et changer le marker
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            String favId = "Fav" + via.getNom();
+            boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            String doneId = "Done" + via.getNom();
+            boolean isDone = mySharedPref.getBoolean(doneId, false);
+            drawableMarqueur = R.drawable.marqueur;
+            if(!isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfait;
+            }
+            if(isFavorite && !isDone){
+                drawableMarqueur = R.drawable.marqueurfavoris;
+            }
+            if(isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfavorisfait;
+            }
+
+            marker = mMap.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .title(nom)
+                    .snippet(ville)
+                    .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+            );
+            marker.setTag(via);
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                    intent.putExtra("via", (ViaFerrataModel) marker.getTag() );
+                    Log.d(TAG, "Marker Tagg " + marker.getTag());
+                    startActivity(intent);
+                }
+            });
+        }
+
+        mLayout = findViewById(R.id.slidingPanel);
+        mLayout.addPanelSlideListener(new PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                Log.i(TAG, "onPanelSlide, offset " + slideOffset);
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
+
+                switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
+                switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
+
+                // Charger les listes de filtres en fonction des données du HashMap
+                listeDiff = listAdapter.getListeDiff();
+                listeZoneGeo = listAdapter.getListeZoneGeo();
+                filtreDiff = new ArrayList<>();
+                filtreZoneGeo = new ArrayList<>();
+                for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
+                    int position = entry.getKey();
+                    boolean value = entry.getValue();
+                    if (value) {
+                        filtreDiff.add(position);
+                    }
+                }
+                for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
+                    int position = entry.getKey();
+                    boolean value = entry.getValue();
+                    if (value) {
+                        filtreZoneGeo.add(position);
+                    }
+                }
+
+                // Changer le boutton cancel en cas de changement du layout
+                switchFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        filtreFavoris = isChecked;
+                        buttonCancel.setText(getResources().getString(R.string.cancelText));
+
+                    }
+                });
+                switchDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        filtreDone = isChecked;
+                        buttonCancel.setText(getResources().getString(R.string.cancelText));
+                    }
+                });
+
+                if (mLayout != null && (mLayout.getPanelState() == PanelState.EXPANDED)) {
+                    // Bouton cancel
+                    buttonCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            // Reset l'adapter
+                            listeDiff = new HashMap<>();
+                            listeZoneGeo = new HashMap<>();
+                            listAdapter.setListeDiff(listeDiff);
+                            listAdapter.setListeZoneGeo(listeZoneGeo);
+                            listAdapter.notifyDataSetChanged();
+
+                            // Reset les listes et reremplir les filtres diff/zonegeo
+                            filtreDiff = new ArrayList<>();
+                            filtreZoneGeo = new ArrayList<>();
+                                for (int i=0;i<6;i++){
+                                    filtreDiff.add(i);
+                                }
+                                for (int i=0;i<8;i++){
+                                    filtreZoneGeo.add(i);
+                                }
+
+                            // Reset le panel
+                            switchFavorite.setChecked(false);
+                            switchDone.setChecked(false);
+                            seekCheck.setChecked(false);
+                            expListView.collapseGroup(0);
+                            expListView.collapseGroup(1);
+                            buttonCancel.setText(getResources().getString(R.string.back));
+
+                            // Reset carte et liste
+                            mMap.clear();
+                            itemsListVia = findViewById(R.id.listVia);
+                            itemsListVia.setAdapter(null);
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
+                            rechargeList(filtreZoneGeo, filtreDiff);
+
+                            // Reactiver panel et le reduire
+                            mLayout.setEnabled(true);
+                            mLayout.setTouchEnabled(true);
+                            mLayout.setPanelState(PanelState.COLLAPSED);
+
+                        }
+                    });
+                    // Bouton valider
+                    buttonValider.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Remplir les listes avec les données du map
+                            /*listeDiff = listAdapter.getListeDiff();
+                            listeZoneGeo = listAdapter.getListeZoneGeo();
+                            filtreDiff = new ArrayList<>();
+                            filtreZoneGeo = new ArrayList<>();
+                            for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreDiff.add(position);
+                                }
+                            }
+                            for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
+                                int position = entry.getKey();
+                                boolean value = entry.getValue();
+                                if (value) {
+                                    filtreZoneGeo.add(position);
+                                }
+                            }*/
+
+                            // Si rien n'est modifié laisser le bouton "retour" sinon "annuler filtres"
+                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty() &&
+                                    !seekCheck.isChecked() &&
+                                    !switchFavorite.isChecked() && !switchDone.isChecked()) {
+                                buttonCancel.setText(getResources().getString(R.string.back));
+                            }
+                            else {
+                                buttonCancel.setText(getResources().getString(R.string.cancelText));
+                            }
+
+                            // Remplir les filtres diff/niveau s'ils sont vides
+                            if (filtreDiff.isEmpty()) {
+                                for (int i=0;i<6;i++){
+                                    filtreDiff.add(i);
+                                }
+                            }
+                            if (filtreZoneGeo.isEmpty()) {
+                                for (int i=0;i<8;i++){
+                                    filtreZoneGeo.add(i);
+                                }
+                            }
+
+                            // Appelle la fonction qui réactualise la carte et la liste
+                            mMap.clear();
+                            itemsListVia = findViewById(R.id.listVia);
+                            itemsListVia.setAdapter(null);
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
+                            rechargeList(filtreZoneGeo, filtreDiff);
+
+                            // Ferme les list checkbox
+                            expListView.collapseGroup(0);
+                            expListView.collapseGroup(1);
+
+                            // Activer le panel
+                            mLayout.setEnabled(true);
+                            mLayout.setTouchEnabled(true);
+                            mLayout.setPanelState(PanelState.COLLAPSED);
+                            marker.setVisible(false);
+                        }
+                    });
+                    mLayout.setEnabled(false);
+                    mLayout.setTouchEnabled(false);
+
+                }else if (mLayout != null && (mLayout.getPanelState() == PanelState.DRAGGING)){
+                    // Affichage des boutons en fonction du statut du text visible
+                    if (filtreText.getVisibility() == VISIBLE ){
+                        filtreText.setVisibility(GONE);
+                        buttonSwitch.setVisibility(GONE);
+
+                        buttonCancel.setVisibility(VISIBLE);
+                        buttonValider.setVisibility(VISIBLE);
+
+                    }
+                    else if (filtreText.getVisibility() == GONE) {
+                        filtreText.setVisibility(VISIBLE);
+                        buttonSwitch.setVisibility(VISIBLE);
+
+                        buttonCancel.setVisibility(GONE);
+                        buttonValider.setVisibility(GONE);
+
+                    }
+                }else if (mLayout != null && (mLayout.getPanelState() == PanelState.ANCHORED)) {
+                    mLayout.setPanelState(PanelState.COLLAPSED);
+                }else if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
+                    mLayout.setEnabled(true);
+                    mLayout.setTouchEnabled(true);
+                    filtreText.setVisibility(VISIBLE);
+                    buttonSwitch.setVisibility(VISIBLE);
+
+                    buttonCancel.setVisibility(GONE);
+                    buttonValider.setVisibility(GONE);
+                }
+            }
+        });
+
+        expListView = findViewById(R.id.lvExp);
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                expListView.collapseGroup((groupPosition + 1) % 2);
+            }
+        });
+
+        // Preparer et instorer le list adapter
+        prepareListData();
+        listAdapter = new ExpListViewAdapterWithCheckbox(this,
+                listDataHeader,
+                listDataChild,
+                listeDiff,
+                listeZoneGeo,
+                new OnParameterChangeListener() {
+                    @Override
+                    public void onChange() {
+                        buttonCancel.setText(getResources().getString(R.string.cancelText));
+                    }
+                });
+        expListView.setAdapter(listAdapter);
+
+
     }
 
-    private void checkPermission() {
-        // Register the listener with the Location Manager to receive location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MapsActivity.this,
-                    PERMISSIONS, PERMISSION_REQUEST_LOCALISATION);
-            return;
-        }
-        String provider = mLocationManager.getBestProvider(new Criteria(), false);
-        Location location = mLocationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            double distance = distFrom(location.getLatitude(), location.getLongitude(), 45, 3);
-            Toast.makeText(MapsActivity.this, location.getLatitude() + ",   " + location.getLongitude() + "Distance : " + distance + "km",
-                    Toast.LENGTH_SHORT).show();
-            Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
     }
 
+    // Fonction qui active la localisation sur l'API
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission(this, PERMISSION_REQUEST_LOCALISATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mLayout != null &&
+                (mLayout.getPanelState() == PanelState.EXPANDED
+                        || mLayout.getPanelState() == PanelState.ANCHORED)) {
+            mLayout.setTouchEnabled(true);
+            mLayout.setEnabled(true);
+            mLayout.setPanelState(PanelState.COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    // Fonction qui change l'indicateur des listes et le place a droite
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -296,6 +619,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    // Fonction qui definit les filtres Zone géographique et par difficulté
     private void prepareListData() {
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
@@ -333,335 +657,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDataChild.put(listDataHeader.get(1), niveau);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        final TextView filtreText = findViewById(R.id.filter_text);
-        buttonCancel = findViewById(R.id.buttonCancel);
-        buttonValider =  findViewById(R.id.buttonValider);
-
-        buttonCancel.setText(getResources().getString(R.string.back));
-        buttonCancel.setVisibility(GONE);
-        buttonValider.setVisibility(GONE);
-
-        mMap = googleMap;
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
-            boolean success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json));
-
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.");
-            }
-        } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "Can'filtreText find style. Error: ", e);
-        }
-        mMap.setLatLngBoundsForCameraTarget(Limite);
-        mMap.setOnMyLocationButtonClickListener(this);
-        enableMyLocation();
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        Log.d(TAG, "largeur : " + metrics.widthPixels + " hauteur : " + metrics.heightPixels);
-
-        float width = metrics.widthPixels;
-        float height = metrics.heightPixels;
-        zoom = 0;
-        int orientation = this.getResources().getConfiguration().orientation;
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-
-            zoom = width * 0.0003f + 4.78f;
-            Log.d(TAG, "Portrait" + zoom);
-        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            zoom = height * 0.00018f + 4.7f;
-            Log.d(TAG, "Paysage" + zoom);
-        }
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
-
-        for(int i = 0; i<mViaFerrataList.size(); i++){
-            ViaFerrataModel via = mViaFerrataList.get(i);
-            String nom = via.getNom();
-            String ville = via.getVille();
-            double latitude = via.getLatitude();
-            double longitude = via.getLongitude();
-            final LatLng latlng = new LatLng(latitude, longitude);
-
-            // get the shared pref
-            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-            String favId = "Fav" + via.getNom();
-            boolean isFavorite = mySharedPref.getBoolean(favId, false);
-            String doneId = "Done" + via.getNom();
-            boolean isDone = mySharedPref.getBoolean(doneId, false);
-            drawableMarqueur = R.drawable.marqueur;
-            if(!isFavorite && isDone){
-                drawableMarqueur = R.drawable.marqueurfait;
-
-            }
-            if(isFavorite && !isDone){
-                drawableMarqueur = R.drawable.marqueurfavoris;
-
-            }
-            if(isFavorite && isDone){
-                drawableMarqueur = R.drawable.marqueurfavorisfait;
-
-            }
-            marker = mMap.addMarker(new MarkerOptions()
-                    .position(latlng)
-                    .title(nom)
-                    .snippet(ville)
-                    .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
-            );
-
-
-            marker.setTag(via);
-
-            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
-                    intent.putExtra("via", (ViaFerrataModel) marker.getTag() );
-                    Log.d(TAG, "Marker Tagg " + marker.getTag());
-                    startActivity(intent);
-                }
-            });
-        }
-
-        mLayout = findViewById(R.id.slidingPanel);
-        mLayout.addPanelSlideListener(new PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                Log.i(TAG, "onPanelSlide, offset " + slideOffset);
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
-
-                switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
-                switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
-
-                listeDiff = listAdapter.getListeDiff();
-                listeZoneGeo = listAdapter.getListeZoneGeo();
-
-                List<Integer> filtreDiff = new ArrayList<>();
-                List<Integer> filtreZoneGeo = new ArrayList<>();
-
-                for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
-                    int position = entry.getKey();
-                    boolean value = entry.getValue();
-                    if (value) {
-                        filtreDiff.add(position);
-                    }
-                }
-
-                for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
-                    int position = entry.getKey();
-                    boolean value = entry.getValue();
-                    if (value) {
-                        filtreZoneGeo.add(position);
-                    }
-                }
-
-
-
-                Log.i(TAG, "onPanelStateChanged " + newState);
-                switchFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                        filtreFavoris = isChecked;
-                        buttonCancel.setText(getResources().getString(R.string.cancelText));
-
-                    }
-                });
-                switchDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                        filtreDone = isChecked;
-                        buttonCancel.setText(getResources().getString(R.string.cancelText));
-                    }
-                });
-                if (mLayout != null && (mLayout.getPanelState() == PanelState.EXPANDED)) {
-                    buttonCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mLayout.setEnabled(true);
-                            mLayout.setTouchEnabled(true);
-                            mLayout.setPanelState(PanelState.COLLAPSED);
-
-                            listeDiff = new HashMap<>();
-                            listeZoneGeo = new HashMap<>();
-                            listAdapter.setListeDiff(listeDiff);
-                            listAdapter.setListeZoneGeo(listeZoneGeo);
-                            listAdapter.notifyDataSetChanged();
-
-                            List<Integer> filtreDiff = new ArrayList<>();
-                            List<Integer> filtreZoneGeo = new ArrayList<>();
-
-                                for (int i=0;i<6;i++){
-                                    filtreDiff.add(i);
-                                }
-                                for (int i=0;i<8;i++){
-                                    filtreZoneGeo.add(i);
-                                }
-
-                            switchFavorite.setChecked(false);
-                            switchDone.setChecked(false);
-
-                            mMap.clear();
-                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
-
-                            final ListView itemsListVia = findViewById(R.id.listVia);
-                            itemsListVia.setAdapter(null);
-                            rechargeList(filtreZoneGeo, filtreDiff);
-
-                            expListView.collapseGroup(0);
-                            expListView.collapseGroup(1);
-                            buttonCancel.setText(getResources().getString(R.string.back));
-
-                        }
-                    });
-                    buttonValider.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            listeDiff = listAdapter.getListeDiff();
-                            listeZoneGeo = listAdapter.getListeZoneGeo();
-
-                            List<Integer> filtreDiff = new ArrayList<>();
-                            List<Integer> filtreZoneGeo = new ArrayList<>();
-
-                            for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
-                                int position = entry.getKey();
-                                boolean value = entry.getValue();
-                                if (value) {
-                                    filtreDiff.add(position);
-                                }
-                            }
-
-                            for (Map.Entry<Integer, Boolean> entry : listeZoneGeo.entrySet()){
-                                int position = entry.getKey();
-                                boolean value = entry.getValue();
-                                if (value) {
-                                    filtreZoneGeo.add(position);
-                                }
-                            }
-
-                            if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty()) {
-                                buttonCancel.setText(getResources().getString(R.string.back));
-                            }
-                            else {
-                                buttonCancel.setText(getResources().getString(R.string.cancelText));
-                            }
-
-                            if (filtreDiff.isEmpty()) {
-                                for (int i=0;i<6;i++){
-                                    filtreDiff.add(i);
-                                }
-                            }
-                            if (filtreZoneGeo.isEmpty()) {
-                                for (int i=0;i<8;i++){
-                                    filtreZoneGeo.add(i);
-                                }
-                            }
-
-                            // Appelle la fonction qui réactualise les marqueurs sur la map
-                            mMap.clear();
-                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
-
-                            // Appelle la fonction qui réactualise la liste
-                            final ListView itemsListVia = findViewById(R.id.listVia);
-                            itemsListVia.setAdapter(null);
-                            rechargeList(filtreZoneGeo, filtreDiff);
-
-                            expListView.collapseGroup(0);
-                            expListView.collapseGroup(1);
-
-
-                            mLayout.setEnabled(true);
-                            mLayout.setTouchEnabled(true);
-                            mLayout.setPanelState(PanelState.COLLAPSED);
-                            marker.setVisible(false);
-
-                            Log.i(TAG, "Filtre favoris : " + String.valueOf(filtreFavoris));
-                            Log.i(TAG, "Filtre fait : " + String.valueOf(filtreDone));
-                            Log.i(TAG, "filtre zone géo : " + filtreZoneGeo.toString());
-                            Log.i(TAG, "filtre difficulté : " + filtreDiff.toString());
-                        }
-                    });
-                    mLayout.setEnabled(false);
-                    mLayout.setTouchEnabled(false);
-
-                }else if (mLayout != null && (mLayout.getPanelState() == PanelState.DRAGGING)){
-                    if (filtreText.getVisibility() == VISIBLE ){
-                        filtreText.setVisibility(GONE);
-                        buttonSwitch.setVisibility(GONE);
-
-                        buttonCancel.setVisibility(VISIBLE);
-                        buttonValider.setVisibility(VISIBLE);
-
-                    }
-                    else if (filtreText.getVisibility() == GONE) {
-                        filtreText.setVisibility(VISIBLE);
-                        buttonSwitch.setVisibility(VISIBLE);
-
-                        buttonCancel.setVisibility(GONE);
-                        buttonValider.setVisibility(GONE);
-
-                    }
-                }
-
-                else if (mLayout != null && (mLayout.getPanelState() == PanelState.ANCHORED)) {
-                    mLayout.setPanelState(PanelState.COLLAPSED);
-                }
-                else if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
-                    mLayout.setEnabled(true);
-                    mLayout.setTouchEnabled(true);
-                    filtreText.setVisibility(VISIBLE);
-                    buttonSwitch.setVisibility(VISIBLE);
-
-                    buttonCancel.setVisibility(GONE);
-                    buttonValider.setVisibility(GONE);
-
-                }
-            }
-        });
-
-        expListView = findViewById(R.id.lvExp);
-
-        // preparing list data
-        prepareListData();
-        listAdapter = new ExpListViewAdapterWithCheckbox(this,
-                listDataHeader,
-                listDataChild,
-                listeDiff,
-                listeZoneGeo,
-                new OnParameterChangeListener() {
-            @Override
-            public void onChange() {
-                buttonCancel.setText(getResources().getString(R.string.cancelText));
-            }
-        });
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                expListView.collapseGroup((groupPosition + 1) % 2);
-            }
-        });
-
-    }
-
     // Fonction qui vérifie si la via correspond aux filtres
     public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
                                     List<Integer> listZoneGeo, int zoneGeoNb,
                                     boolean filtreFavoris, boolean isFavorite,
-                                    boolean filtreDone, boolean isDone){
+                                    boolean filtreDone, boolean isDone,
+                                    int filtreDistance, double distance){
+
         // Difficulty filter
         boolean difficultyMatches = false;
         for (int j = 0; j<listDiff.size(); j++){
@@ -684,6 +686,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return false;
         }
         if(filtreDone && !isDone){
+            return false;
+        }
+        if (filtreDistance != 0 && filtreDistance < distance){
             return false;
         }
 
@@ -709,6 +714,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean isFavorite = mySharedPref.getBoolean(favId, false);
             String doneId = "Done" + via.getNom();
             boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
             drawableMarqueur = R.drawable.marqueur;
             if(!isFavorite && isDone){
                 drawableMarqueur = R.drawable.marqueurfait;
@@ -724,7 +730,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             // If all filters match we add the marker
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
-                    filtreFavoris, isFavorite, filtreDone, isDone)) {
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(latlng)
                         .title(nom)
@@ -753,7 +759,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
     }
 
-// Fonction qui recharge la liste en fonction des nouveaux filtres
+    // Fonction qui recharge la liste en fonction des nouveaux filtres
     public void rechargeList(List<Integer> listZoneGeo, List<Integer> listDiff){
         // Filtre la liste des via dans une nouvelle liste
         final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
@@ -766,8 +772,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final boolean isFavorite = mySharedPref.getBoolean(favId, false);
             final String doneId = "Done" + via.getNom();
             final boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(via.getLatitude(), via.getLongitude(), mLocation.getLatitude(), mLocation.getLongitude());
             if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
-                    filtreFavoris, isFavorite, filtreDone, isDone)) {
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
                 newList.add(via);
             }
         }
@@ -789,6 +796,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         if (nbOfFav == 0){
+            switchFavorite.setChecked(false);
             switchFavorite.setEnabled(false);
         }
         return String.valueOf(nbOfFav);
@@ -808,41 +816,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         if (nbOfDone == 0){
+            switchDone.setChecked(false);
             switchDone.setEnabled(false);
         }
         return String.valueOf(nbOfDone);
     }
 
-    @Override
-    public boolean onMyLocationButtonClick() {
-        return false;
+    // Fonction qui calcule la distance entre deux marqueurs selon leurs coordonnées
+    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = (earthRadius * c)/1000;
+
+        dist = Math.round(dist * 100);
+        dist = dist/100;
+
+        return dist;
     }
 
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, PERMISSION_REQUEST_LOCALISATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mMap != null) {
-            // Access to the location has been granted to the app.
-            mMap.setMyLocationEnabled(true);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mLayout != null &&
-                (mLayout.getPanelState() == PanelState.EXPANDED
-                        || mLayout.getPanelState() == PanelState.ANCHORED)) {
-            mLayout.setTouchEnabled(true);
-            mLayout.setEnabled(true);
-            mLayout.setPanelState(PanelState.COLLAPSED);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
+    // Toutes les fonctions de permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -866,7 +863,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
+    private void checkPermission() {
+        // Register the listener with the Location Manager to receive location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MapsActivity.this,
+                    PERMISSIONS, PERMISSION_REQUEST_LOCALISATION);
+            return;
+        }
+        String provider = mLocationManager.getBestProvider(new Criteria(), false);
+        mLocation = mLocationManager.getLastKnownLocation(provider);
+        if (mLocation != null) {
+            double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
+            Toast.makeText(MapsActivity.this, mLocation.getLatitude() + ",   " + mLocation.getLongitude() + "Distance : " + distance + "km",
+                    Toast.LENGTH_SHORT).show();
+            Log.i(TAG,  "Location changed : " + mLocation.getLatitude() + "    ,   " + mLocation.getLongitude());
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+    }
 
     @Override
     protected void onResumeFragments() {
@@ -877,6 +891,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mPermissionDenied = false;
         }
     }
+
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
