@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference viaFerrataRef = database.getReference("viaFerrata");
 
-        viaFerrataRef.orderByChild("nom").addValueEventListener(new ValueEventListener() {
+        viaFerrataRef.orderByChild("dptNb").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot data : dataSnapshot.getChildren()) {
