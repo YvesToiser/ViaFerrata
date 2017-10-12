@@ -426,7 +426,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onClick(View view) {
                             //Remplir les listes avec les données du map
-                            /*listeDiff = listAdapter.getListeDiff();
+                            listeDiff = listAdapter.getListeDiff();
                             listeZoneGeo = listAdapter.getListeZoneGeo();
                             filtreDiff = new ArrayList<>();
                             filtreZoneGeo = new ArrayList<>();
@@ -443,7 +443,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 if (value) {
                                     filtreZoneGeo.add(position);
                                 }
-                            }*/
+                            }
 
                             // Si rien n'est modifié laisser le bouton "retour" sinon "annuler filtres"
                             if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty() &&
@@ -877,7 +877,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
             Toast.makeText(MapsActivity.this, mLocation.getLatitude() + ",   " + mLocation.getLongitude() + "Distance : " + distance + "km",
                     Toast.LENGTH_SHORT).show();
-            Log.i(TAG,  "Location changed : " + mLocation.getLatitude() + "    ,   " + mLocation.getLongitude());
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
     }

@@ -41,5 +41,37 @@
         design:menu="@menu/bottom_menu"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            style="@style/bottom_menu"
+            android:src="?attr/actionModeCloseDrawable" />
+
+        <ImageButton
+            android:id="@+id/itineraryButton"
+            style="@style/bottom_menu"
+            android:src="@drawable/ic_itinerary" />
+
+        <ImageButton
+            android:id="@+id/favButton"
+            style="@style/bottom_menu"
+            android:src="@drawable/etoileunchecked" />
+
+        <ImageButton
+            android:id="@+id/doneButton"
+            style="@style/bottom_menu"
+            android:paddingTop="5dp"
+            android:src="@drawable/uncheck" />
+
+        <ImageButton
+            android:id="@+id/shareButton"
+            style="@style/bottom_menu"
+            android:src="@drawable/ic_share" />
+    </LinearLayout>
+
 
 </LinearLayout>
