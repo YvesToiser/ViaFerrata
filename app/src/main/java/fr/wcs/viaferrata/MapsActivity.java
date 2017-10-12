@@ -103,8 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String, List<String>> listDataChild;
     private Map<Integer, Boolean> listeDiff = new HashMap<>();
     private Map<Integer, Boolean> listeZoneGeo = new HashMap<>();
-    private List<Integer> filtreZoneGeo;
-    private List<Integer> filtreDiff;
+    private List<Integer> filtreZoneGeo = new ArrayList<>();;
+    private List<Integer> filtreDiff = new ArrayList<>();;
     private ListView itemsListVia;
 
     // Animations
@@ -189,14 +189,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
+                    itemsListVia = findViewById(R.id.listVia);
+                    itemsListVia.setAdapter(null);
+                    rechargeList(filtreZoneGeo, filtreDiff);
                     flipper.setOutAnimation(slide_out_left);
                     flipper.setInAnimation(slide_in_right);
-
                     flipper.showNext();
                 } else {
+                    mMap.clear();
+                    rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                     flipper.setInAnimation(slide_in_left);
                     flipper.setOutAnimation(slide_out_right);
-
                     flipper.showPrevious();
                 }
             }
@@ -282,48 +285,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
 
         // Creation de tout les marqueurs
-        for(int i = 0; i<mViaFerrataList.size(); i++){
-            ViaFerrataModel via = mViaFerrataList.get(i);
-            String nom = via.getNom();
-            String ville = via.getVille();
-            double latitude = via.getLatitude();
-            double longitude = via.getLongitude();
-            final LatLng latlng = new LatLng(latitude, longitude);
-
-            // Recup les sharedpref et changer le marker
-            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-            String favId = "Fav" + via.getNom();
-            boolean isFavorite = mySharedPref.getBoolean(favId, false);
-            String doneId = "Done" + via.getNom();
-            boolean isDone = mySharedPref.getBoolean(doneId, false);
-            drawableMarqueur = R.drawable.marqueur;
-            if(!isFavorite && isDone){
-                drawableMarqueur = R.drawable.marqueurfait;
-            }
-            if(isFavorite && !isDone){
-                drawableMarqueur = R.drawable.marqueurfavoris;
-            }
-            if(isFavorite && isDone){
-                drawableMarqueur = R.drawable.marqueurfavorisfait;
-            }
-
-            marker = mMap.addMarker(new MarkerOptions()
-                    .position(latlng)
-                    .title(nom)
-                    .snippet(ville)
-                    .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
-            );
-            marker.setTag(via);
-            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
-                    intent.putExtra("via", (ViaFerrataModel) marker.getTag() );
-                    Log.d(TAG, "Marker Tagg " + marker.getTag());
-                    startActivity(intent);
-                }
-            });
+        for (int i=0;i<6;i++){
+            filtreDiff.add(i);
         }
+        for (int i=0;i<8;i++){
+            filtreZoneGeo.add(i);
+        }
+        rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
         mLayout = findViewById(R.id.slidingPanel);
         mLayout.addPanelSlideListener(new PanelSlideListener() {
@@ -342,8 +310,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Charger les listes de filtres en fonction des données du HashMap
                 listeDiff = listAdapter.getListeDiff();
                 listeZoneGeo = listAdapter.getListeZoneGeo();
-                filtreDiff = new ArrayList<>();
-                filtreZoneGeo = new ArrayList<>();
+              //  filtreDiff = new ArrayList<>();
+               // filtreZoneGeo = new ArrayList<>();
                 for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
                     int position = entry.getKey();
                     boolean value = entry.getValue();
@@ -409,9 +377,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             // Reset carte et liste
                             mMap.clear();
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                             itemsListVia = findViewById(R.id.listVia);
                             itemsListVia.setAdapter(null);
-                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                             rechargeList(filtreZoneGeo, filtreDiff);
 
                             // Reactiver panel et le reduire
@@ -469,9 +437,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             // Appelle la fonction qui réactualise la carte et la liste
                             mMap.clear();
+                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
+
                             itemsListVia = findViewById(R.id.listVia);
                             itemsListVia.setAdapter(null);
-                            rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                             rechargeList(filtreZoneGeo, filtreDiff);
 
                             // Ferme les list checkbox
@@ -875,9 +844,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocation = mLocationManager.getLastKnownLocation(provider);
         if (mLocation != null) {
             double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
-            Toast.makeText(MapsActivity.this, mLocation.getLatitude() + ",   " + mLocation.getLongitude() + "Distance : " + distance + "km",
-                    Toast.LENGTH_SHORT).show();
-            Log.i(TAG,  "Location changed : " + mLocation.getLatitude() + "    ,   " + mLocation.getLongitude());
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
     }
