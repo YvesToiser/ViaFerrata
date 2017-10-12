@@ -53,17 +53,13 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference viaFerrataRef = database.getReference("viaFerrata");
 
-        viaFerrataRef.orderByChild("nom").addValueEventListener(new ValueEventListener() {
+        viaFerrataRef.orderByChild("dptNb").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot data : dataSnapshot.getChildren()) {
-
                     ViaFerrataModel viaFerrata = data.getValue(ViaFerrataModel.class);
                     mViaFerrataList.add(viaFerrata);
-
                 }
-                Log.e(TAG, "onDataChange: " + mViaFerrataList );
-                Log.d(TAG, "onDataChange: Nb ViaFerrata" + mViaFerrataList.size());
 
             }
 
@@ -72,20 +68,5 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        Log.d(TAG, "onDataChange Exit: Nb ViaFerrata" + mViaFerrataList.size());
-
-
-        // Everything below will be replaced by splashscreen
-
-       /* Button buttonRecherche=(Button)findViewById(R.id.buttonRecherche);
-
-        buttonRecherche.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                Intent intentSearch=new Intent(HomeActivity.this,MapsActivity.class);
-                startActivity(intentSearch);
-            }
-        });*/
-        // Until here
-
     }
 }
