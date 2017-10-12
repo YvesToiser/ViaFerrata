@@ -637,6 +637,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 difficultyMatches=true;
             }
         }
+        if(listDiff.size()==0){difficultyMatches=true;}
         if(!difficultyMatches){
             return false;
         }
@@ -645,6 +646,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int j = 0; j<listZoneGeo.size(); j++){
             if(listZoneGeo.get(j)==zoneGeoNb){zoneGeoMatches=true;}
         }
+        if(listZoneGeo.size()==0){zoneGeoMatches=true;}
+
         if(!zoneGeoMatches){
             return false;
         }
