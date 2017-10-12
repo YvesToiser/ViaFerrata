@@ -196,7 +196,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     flipper.setInAnimation(slide_in_right);
                     flipper.showNext();
                 } else {
-                    mMap.clear();
                     rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                     flipper.setInAnimation(slide_in_left);
                     flipper.setOutAnimation(slide_out_right);
@@ -310,8 +309,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Charger les listes de filtres en fonction des données du HashMap
                 listeDiff = listAdapter.getListeDiff();
                 listeZoneGeo = listAdapter.getListeZoneGeo();
-              //  filtreDiff = new ArrayList<>();
-               // filtreZoneGeo = new ArrayList<>();
+                filtreDiff.clear();
+                filtreZoneGeo.clear();
                 for (Map.Entry<Integer, Boolean> entry : listeDiff.entrySet()){
                     int position = entry.getKey();
                     boolean value = entry.getValue();
@@ -376,7 +375,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             buttonCancel.setText(getResources().getString(R.string.back));
 
                             // Reset carte et liste
-                            mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                             itemsListVia = findViewById(R.id.listVia);
                             itemsListVia.setAdapter(null);
@@ -394,7 +392,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onClick(View view) {
                             //Remplir les listes avec les données du map
-                            /*listeDiff = listAdapter.getListeDiff();
+                            listeDiff = listAdapter.getListeDiff();
                             listeZoneGeo = listAdapter.getListeZoneGeo();
                             filtreDiff = new ArrayList<>();
                             filtreZoneGeo = new ArrayList<>();
@@ -411,7 +409,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 if (value) {
                                     filtreZoneGeo.add(position);
                                 }
-                            }*/
+                            }
 
                             // Si rien n'est modifié laisser le bouton "retour" sinon "annuler filtres"
                             if (filtreDiff.isEmpty() && filtreZoneGeo.isEmpty() &&
@@ -436,7 +434,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
 
                             // Appelle la fonction qui réactualise la carte et la liste
-                            mMap.clear();
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
                             itemsListVia = findViewById(R.id.listVia);
@@ -666,7 +663,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Fonction qui recharge les marqueurs sur la map
     public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
-
+        mMap.clear();
         // Check all vias again
         for(int i = 0; i<mViaFerrataList.size(); i++){
             ViaFerrataModel via = mViaFerrataList.get(i);
