@@ -16,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 // Eclipse wanted me to use a sparse array instead of my hashmaps, I just suppressed that suggestion
 @SuppressLint("UseSparseArrays")

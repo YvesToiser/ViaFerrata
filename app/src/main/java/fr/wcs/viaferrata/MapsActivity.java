@@ -214,19 +214,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 mLocation = location;
-
-                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " ,
-                        Toast.LENGTH_LONG).show();
-                Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
             }
-
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
             }
             public void onProviderEnabled(String provider) {
                 Log.i(TAG, "onProviderEnabled: ");
             }
-
             public void onProviderDisabled(String provider) {
                 Log.i(TAG, "onProviderDisabled: ");
             }

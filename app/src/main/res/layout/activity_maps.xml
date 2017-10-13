@@ -24,7 +24,8 @@
             <ViewFlipper
                 android:id="@+id/flipper"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -46,7 +47,14 @@
                     android:id="@+id/listVia"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="80dp"/>
+                    android:dividerHeight="4dp"
+                    android:divider="@color/colorPrimary"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:paddingBottom="70dp"
+                    android:background="@color/white"
+                    />
 
             </ViewFlipper>
 
@@ -76,7 +84,7 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="18dp"
         android:background="@drawable/toggle_button"
         android:gravity="center_horizontal"
         android:textOff=""
