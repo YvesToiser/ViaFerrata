@@ -382,6 +382,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can'filtreText find style. Error: ", e);
         }
+
+        mMap.getUiSettings().setMapToolbarEnabled (false);
         mMap.setLatLngBoundsForCameraTarget(Limite);
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
@@ -684,6 +686,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+
+
 
     // Fonction qui vérifie si la via correspond aux filtres
     public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
