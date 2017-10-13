@@ -45,7 +45,8 @@
                 <ListView
                     android:id="@+id/listVia"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="80dp"/>
 
             </ViewFlipper>
 

@@ -38,22 +38,8 @@ import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 public class ViaActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
-
-
     private static final String TAG = "ViaActivity";
 
 
@@ -77,9 +63,15 @@ public class ViaActivity extends AppCompatActivity {
         final boolean isDone = mySharedPref.getBoolean(doneId, false);
         Log.i(TAG, "fav" +isFavorite);
 
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        //TODO changer menu en bouton
         //initialiser bouton favori et fait
-
         if(isFavorite){
             favButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }else{
@@ -95,19 +87,6 @@ public class ViaActivity extends AppCompatActivity {
         }
 
 
-
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomButton);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
@@ -148,23 +127,16 @@ public class ViaActivity extends AppCompatActivity {
                     case R.id.doneButton:
                         final boolean isDone = mySharedPref.getBoolean(doneId, false);
                         boolean isDoneNewValue= !isDone;
-                        if(isDone){
-                            toastMessage = "Vous n'avez pas fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
-                        }else{
-                            toastMessage = "Vous avez fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
-                        }
-                        Toast toastDone = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
-                        toastDone.show();
                         mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
                         final boolean isDoneNow = mySharedPref.getBoolean(doneId, false);
-                        Log.i(TAG, "done" +isDoneNow);
-
-                        if(isDoneNow){
-                            doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                        }else{
+                        if(isDone){
                             doneButton.setBackgroundColor(getResources().getColor(R.color.transparent));
-
+                            toastMessage = "Vous n'avez pas fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
+                        }else{
+                            doneButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                            toastMessage = "Vous avez fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                         }
+                        Toast.makeText(ViaActivity.this, toastMessage, Toast.LENGTH_LONG).show();
 
                         break;
                     case R.id.shareButton:
@@ -188,36 +160,12 @@ public class ViaActivity extends AppCompatActivity {
 
                         break;
                 }
-
-
                 return false;
             }
         });
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
     }
-
-    /*@Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }*/
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_via, menu);
-        return true;
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -234,11 +182,6 @@ public class ViaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Delete PlaceholderFragment class from here
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
