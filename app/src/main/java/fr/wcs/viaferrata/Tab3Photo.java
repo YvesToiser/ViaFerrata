@@ -2,6 +2,8 @@ package fr.wcs.viaferrata;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -58,6 +60,7 @@ public class Tab3Photo extends Fragment {
     private Button mTakeImage;
     private Button mSelectImage;
     private Button mUploadImage;
+    private Button mCancel;
     private ImageView mImageView;
     private Uri mFilePath;
     private StorageReference mStorageReference;
@@ -65,16 +68,16 @@ public class Tab3Photo extends Fragment {
     private String mViaName = "";
     private String imageName;
     private Bitmap mThumbNail;
+    private FloatingActionButton mFloatingActionButton;
+    private AlertDialog dialog;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.tab3photo, container, false);
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        final View rootview = inflater.inflate(R.layout.tab3photo, container, false);
 
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        mTakeImage = (Button) rootview.findViewById(R.id.takeImage);
-        mSelectImage = (Button) rootview.findViewById(R.id.selectImage);
-        mUploadImage = (Button) rootview.findViewById(R.id.uploadImage);
-        mImageView = (ImageView) rootview.findViewById(R.id.imageSelected);
+        mUploadImage = (Button) rootview.findViewById(R.id.cancelAction);
+        mFloatingActionButton = (FloatingActionButton) rootview.findViewById(R.id.floatingActionButton);
 
 
         Intent intent = getActivity().getIntent();
@@ -82,38 +85,65 @@ public class Tab3Photo extends Fragment {
         mViaName = maviaferrata.getNom();
 
 
-        //take picture from camera
-        mTakeImage.setOnClickListener(new View.OnClickListener() {
+        //Alert dialog on floating action button
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(v.getContext());
+                View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_photo,container,false);
+                mTakeImage = (Button) mView.findViewById(R.id.takeImage);
+                mSelectImage = (Button) mView.findViewById(R.id.selectImage);
+                mImageView = (ImageView) mView.findViewById(R.id.imageSelected);
+                mCancel = (Button) mView.findViewById(R.id.cancelAction);
 
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //take picture from camera
+                mTakeImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                startActivityForResult(intent, TAKE_IMAGE_REQUEST);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, TAKE_IMAGE_REQUEST);
+                    }
+                });
+
+
+                //choose picture from gallery
+                mSelectImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent, "Selectionner une image"), PICK_IMAGE_REQUEST);
+                    }
+                });
+
+                mBuilder.setView(mView);
+                dialog = mBuilder.create();
+                dialog.show();
+
+                mCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
             }
         });
 
 
-        //choose picture from gallery
-        mSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Selectionner une image"), PICK_IMAGE_REQUEST);
-            }
-        });
 
 
         //Upload image
-        mUploadImage.setOnClickListener(new View.OnClickListener() {
+       /* mUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-        });
+        });*/
 
         return rootview;
     }
@@ -140,8 +170,6 @@ public class Tab3Photo extends Fragment {
             //PERMISSIONS WRITE EXTERNAL
             mThumbNail = (Bitmap) data.getExtras().get("data");
             checkPermission();
-
-
             mImageView.setImageBitmap((Bitmap) data.getExtras().get("data"));
         }
 
@@ -160,7 +188,7 @@ public class Tab3Photo extends Fragment {
 
         //on recupere image suite à acces des permission
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        mThumbNail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        mThumbNail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
         File dest = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
         FileOutputStream fo;
@@ -179,6 +207,7 @@ public class Tab3Photo extends Fragment {
         mFilePath = Uri.fromFile(dest);
         uploadFromPath(mFilePath);
 
+
     }
 
     @Override
@@ -188,13 +217,14 @@ public class Tab3Photo extends Fragment {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //La personne a accepté les permissions
+                    checkPermission();
+                } else {
+
                     //La personne a refusé les permissions, on re-demande en boucle
                     //TODO: Afficher toast à la place pour expliquer pourquoi ca ne marchera pas
-                    //checkPermission();
-                } else {
-                    //La personne a accepté les permissions
 
-                    checkPermission();
+
 
                 }
             }
@@ -204,17 +234,16 @@ public class Tab3Photo extends Fragment {
     public void uploadFromPath(final Uri path) {
         if (path != null) {
 
-            final ProgressBar progressDialog = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyleSmall);
+            //final ProgressBar progressDialog = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyleSmall);
 
-
-            //
             StorageReference viaRef = mStorageReference.child("image/" + mViaName + "/" + path.getLastPathSegment());
             viaRef.putFile(path)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             //progressDialog.setVisibility(View.GONE);
-                            Toast.makeText(getActivity().getApplicationContext(), "File Uploaded "+path.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -251,7 +280,7 @@ public class Tab3Photo extends Fragment {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            Toast.makeText(getActivity().getApplicationContext(), "File Uploaded "+path.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
