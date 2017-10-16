@@ -676,7 +676,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean isFavorite = mySharedPref.getBoolean(favId, false);
             String doneId = "Done" + via.getNom();
             boolean isDone = mySharedPref.getBoolean(doneId, false);
-            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
+            double locLat;
+            if(mLocation != null){
+                locLat = mLocation.getLatitude();
+            }else{
+                locLat = 0;
+            }
+            double locLong;
+            if(mLocation != null){
+                locLong = mLocation.getLongitude();
+            }else{
+                locLong = 0;
+            }
+
+            double distance = distFrom(latitude, longitude, locLat, locLong);
             drawableMarqueur = R.drawable.marqueur;
             if(!isFavorite && isDone){
                 drawableMarqueur = R.drawable.marqueurfait;
