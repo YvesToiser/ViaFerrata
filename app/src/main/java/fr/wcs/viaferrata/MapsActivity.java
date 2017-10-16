@@ -214,19 +214,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 mLocation = location;
-
-                Toast.makeText(MapsActivity.this, location.getLatitude() + "    ,   " + location.getLongitude() + "Distance : " ,
-                        Toast.LENGTH_LONG).show();
-                Log.i(TAG,  "Location changed : " + location.getLatitude() + "    ,   " + location.getLongitude());
             }
-
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
             }
             public void onProviderEnabled(String provider) {
                 Log.i(TAG, "onProviderEnabled: ");
             }
-
             public void onProviderDisabled(String provider) {
                 Log.i(TAG, "onProviderDisabled: ");
             }
@@ -664,104 +657,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-
-
-    // Fonction qui retourne le nombre de favoris
-    public String numberOfFavorites (){
-        int nbOfFav = 0;
-        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
-        for(int i = 0; i<mViaFerrataList.size(); i++){
-            ViaFerrataModel via = mViaFerrataList.get(i);
-            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-            final String favId = "Fav" + via.getNom();
-            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
-            if(isFavorite){
-                nbOfFav++;
-            }
-        }
-        if (nbOfFav == 0){
-            switchFavorite.setChecked(false);
-            switchFavorite.setEnabled(false);
-        }
-        return String.valueOf(nbOfFav);
-    }
-
-    // Fonction qui retourne le nombre de done
-    public String numberOfDone (){
-        int nbOfDone = 0;
-        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
-        for(int i = 0; i<mViaFerrataList.size(); i++){
-            ViaFerrataModel via = mViaFerrataList.get(i);
-            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-            final String doneId = "Done" + via.getNom();
-            final boolean isDone = mySharedPref.getBoolean(doneId, false);
-            if(isDone){
-                nbOfDone++;
-            }
-        }
-        if (nbOfDone == 0){
-            switchDone.setChecked(false);
-            switchDone.setEnabled(false);
-        }
-        return String.valueOf(nbOfDone);
-    }
-
-    // Fonction qui calcule la distance entre deux marqueurs selon leurs coordonnées
-    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double dist = (earthRadius * c)/1000;
-
-        dist = Math.round(dist * 100);
-        dist = dist/100;
-
-        return dist;
-    }
-
-    // Toutes les fonctions de permissions
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
-        if (requestCode != PERMISSION_REQUEST_LOCALISATION) {
-            return;
-        }
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MapsActivity.this,
-                    getResources().getString(R.string.permission_granted),
-                    Toast.LENGTH_SHORT).show();
-            enableMyLocation();
-
-            checkPermission();
-        } else {
-            Toast.makeText(MapsActivity.this,
-                    getResources().getString(R.string.permission_not_granted),
-                    Toast.LENGTH_SHORT).show();
-            mPermissionDenied = true;
-        }
-    }
-
-    private void checkPermission() {
-        // Register the listener with the Location Manager to receive location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MapsActivity.this,
-                    PERMISSIONS, PERMISSION_REQUEST_LOCALISATION);
-            return;
-        }
-        String provider = mLocationManager.getBestProvider(new Criteria(), false);
-        mLocation = mLocationManager.getLastKnownLocation(provider);
-        if (mLocation != null) {
-            double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-    }
     // Fonction qui recharge les marqueurs sur la map
     public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
         mMap.clear();
@@ -848,9 +743,107 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Affiche la nouvelle liste
         displayList(newList);
     }
+    // Fonction qui recharge les marqueurs sur la map
+
+    // Fonction qui retourne le nombre de favoris
+    public String numberOfFavorites () {
+        int nbOfFav = 0;
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for (int i = 0; i < mViaFerrataList.size(); i++) {
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            mySharedPref = getSharedPreferences("SP", MODE_PRIVATE);
+            final String favId = "Fav" + via.getNom();
+            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            if (isFavorite) {
+                nbOfFav++;
+            }
+        }
+        if (nbOfFav == 0) {
+            switchFavorite.setChecked(false);
+            switchFavorite.setEnabled(false);
+        }
+        return String.valueOf(nbOfFav);
+    }
+
+    // Fonction qui retourne le nombre de done
+    public String numberOfDone () {
+        int nbOfDone = 0;
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for (int i = 0; i < mViaFerrataList.size(); i++) {
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            mySharedPref = getSharedPreferences("SP", MODE_PRIVATE);
+            final String doneId = "Done" + via.getNom();
+            final boolean isDone = mySharedPref.getBoolean(doneId, false);
+            if (isDone) {
+                nbOfDone++;
+            }
+        }
+        if (nbOfDone == 0) {
+            switchDone.setChecked(false);
+            switchDone.setEnabled(false);
+        }
+        return String.valueOf(nbOfDone);
+    }
+
+    // Fonction qui calcule la distance entre deux marqueurs selon leurs coordonnées
+    public static double distFrom ( double lat1, double lng1, double lat2, double lng2){
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double dist = (earthRadius * c) / 1000;
+
+        dist = Math.round(dist * 100);
+        dist = dist / 100;
+
+        return dist;
+    }
+
+    // Toutes les fonctions de permissions
+    @Override
+    public void onRequestPermissionsResult ( int requestCode, @NonNull String[] permissions,
+    @NonNull int[] grantResults){
+
+        if (requestCode != PERMISSION_REQUEST_LOCALISATION) {
+            return;
+        }
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MapsActivity.this,
+                    getResources().getString(R.string.permission_granted),
+                    Toast.LENGTH_SHORT).show();
+            enableMyLocation();
+
+            checkPermission();
+        } else {
+            Toast.makeText(MapsActivity.this,
+                    getResources().getString(R.string.permission_not_granted),
+                    Toast.LENGTH_SHORT).show();
+            mPermissionDenied = true;
+        }
+    }
+
+    private void checkPermission () {
+        // Register the listener with the Location Manager to receive location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsActivity.this,
+                    PERMISSIONS, PERMISSION_REQUEST_LOCALISATION);
+            return;
+        }
+        String provider = mLocationManager.getBestProvider(new Criteria(), false);
+        mLocation = mLocationManager.getLastKnownLocation(provider);
+        if (mLocation != null) {
+            double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+    }
 
     @Override
-    protected void onResumeFragments() {
+    protected void onResumeFragments () {
         super.onResumeFragments();
         if (mPermissionDenied) {
             // Permission was not granted, display error dialog.
@@ -859,9 +852,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void showMissingPermissionError() {
+    private void showMissingPermissionError () {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 }
-
