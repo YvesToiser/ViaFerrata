@@ -23,15 +23,6 @@ import android.widget.Button;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.MessageDialog;
-import com.facebook.share.widget.SendButton;
-import com.facebook.share.widget.ShareButton;
-import com.facebook.share.widget.ShareDialog;
 
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
@@ -64,11 +55,11 @@ public class ViaActivity extends AppCompatActivity {
         Log.i(TAG, "fav" +isFavorite);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
         //TODO changer menu en bouton
         //initialiser bouton favori et fait

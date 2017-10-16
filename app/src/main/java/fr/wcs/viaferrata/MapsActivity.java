@@ -664,92 +664,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-    // Fonction qui recharge les marqueurs sur la map
-    public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
-        mMap.clear();
-        // Check all vias again
-        for(int i = 0; i<mViaFerrataList.size(); i++){
-            ViaFerrataModel via = mViaFerrataList.get(i);
-            String nom = via.getNom();
-            String ville = via.getVille();
-            double latitude = via.getLatitude();
-            double longitude = via.getLongitude();
-            final LatLng latlng = new LatLng(latitude, longitude);
-            int difficulte = via.getDifficulte()-1;
-            int zoneGeoNb = via.getRegionNumber();
-            // get the shared pref
-            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-            String favId = "Fav" + via.getNom();
-            boolean isFavorite = mySharedPref.getBoolean(favId, false);
-            String doneId = "Done" + via.getNom();
-            boolean isDone = mySharedPref.getBoolean(doneId, false);
-            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
-            drawableMarqueur = R.drawable.marqueur;
-            if(!isFavorite && isDone){
-                drawableMarqueur = R.drawable.marqueurfait;
 
-            }
-            if(isFavorite && !isDone){
-                drawableMarqueur = R.drawable.marqueurfavoris;
-
-            }
-            if(isFavorite && isDone){
-                drawableMarqueur = R.drawable.marqueurfavorisfait;
-
-            }
-            // If all filters match we add the marker
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
-                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
-                marker = mMap.addMarker(new MarkerOptions()
-                        .position(latlng)
-                        .title(nom)
-                        .snippet(ville)
-                        .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
-
-                );
-                marker.setTag(via);
-
-                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                    @Override
-                    public void onInfoWindowClick(Marker marker) {
-                        Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
-                        intent.putExtra("via", (ViaFerrataModel) marker.getTag());
-                        startActivity(intent);
-                    }
-                });
-            }
-        }
-        // Phantom marker . This is a hack to solve problem of last marker not showing
-        marker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .visible(false)
-                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
-        );
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
-    }
-
-    // Fonction qui recharge la liste en fonction des nouveaux filtres
-    public void rechargeList(List<Integer> listZoneGeo, List<Integer> listDiff){
-        // Filtre la liste des via dans une nouvelle liste
-        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
-        for(int i = 0; i<mViaFerrataList.size(); i++){
-            ViaFerrataModel via = mViaFerrataList.get(i);
-            int difficulte = via.getDifficulte()-1;
-            int zoneGeoNb = via.getRegionNumber();
-            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-            final String favId = "Fav" + via.getNom();
-            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
-            final String doneId = "Done" + via.getNom();
-            final boolean isDone = mySharedPref.getBoolean(doneId, false);
-            double distance = distFrom(via.getLatitude(), via.getLongitude(), mLocation.getLatitude(), mLocation.getLongitude());
-            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
-                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
-                newList.add(via);
-            }
-        }
-        // Affiche la nouvelle liste
-        displayList(newList);
-    }
 
     // Fonction qui retourne le nombre de favoris
     public String numberOfFavorites (){
@@ -846,6 +761,92 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double distance = distFrom(mLocation.getLatitude(), mLocation.getLongitude(), 45, 3);
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+    }
+    // Fonction qui recharge les marqueurs sur la map
+    public void rechargeMarkersOnMap(List<Integer> listZoneGeo, List<Integer> listDiff){
+        mMap.clear();
+        // Check all vias again
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            String nom = via.getNom();
+            String ville = via.getVille();
+            double latitude = via.getLatitude();
+            double longitude = via.getLongitude();
+            final LatLng latlng = new LatLng(latitude, longitude);
+            int difficulte = via.getDifficulte()-1;
+            int zoneGeoNb = via.getRegionNumber();
+            // get the shared pref
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            String favId = "Fav" + via.getNom();
+            boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            String doneId = "Done" + via.getNom();
+            boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
+            drawableMarqueur = R.drawable.marqueur;
+            if(!isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfait;
+
+            }
+            if(isFavorite && !isDone){
+                drawableMarqueur = R.drawable.marqueurfavoris;
+
+            }
+            if(isFavorite && isDone){
+                drawableMarqueur = R.drawable.marqueurfavorisfait;
+
+            }
+            // If all filters match we add the marker
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
+                marker = mMap.addMarker(new MarkerOptions()
+                        .position(latlng)
+                        .title(nom)
+                        .snippet(ville)
+                        .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+
+                );
+                marker.setTag(via);
+
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
+                        intent.putExtra("via", (ViaFerrataModel) marker.getTag());
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
+        // Phantom marker . This is a hack to solve problem of last marker not showing
+        marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .visible(false)
+                .icon(BitmapDescriptorFactory.fromResource(drawableMarqueur))
+        );
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
+    }
+
+    // Fonction qui recharge la liste en fonction des nouveaux filtres
+    public void rechargeList(List<Integer> listZoneGeo, List<Integer> listDiff){
+        // Filtre la liste des via dans une nouvelle liste
+        final ArrayList<ViaFerrataModel> newList = new ArrayList<>();
+        for(int i = 0; i<mViaFerrataList.size(); i++){
+            ViaFerrataModel via = mViaFerrataList.get(i);
+            int difficulte = via.getDifficulte()-1;
+            int zoneGeoNb = via.getRegionNumber();
+            mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+            final String favId = "Fav" + via.getNom();
+            final boolean isFavorite = mySharedPref.getBoolean(favId, false);
+            final String doneId = "Done" + via.getNom();
+            final boolean isDone = mySharedPref.getBoolean(doneId, false);
+            double distance = distFrom(via.getLatitude(), via.getLongitude(), mLocation.getLatitude(), mLocation.getLongitude());
+            if(allFiltersMatch(listDiff, difficulte, listZoneGeo, zoneGeoNb,
+                    filtreFavoris, isFavorite, filtreDone, isDone, filtreDistance, distance)) {
+                newList.add(via);
+            }
+        }
+        // Affiche la nouvelle liste
+        displayList(newList);
     }
 
     @Override

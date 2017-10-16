@@ -33,7 +33,6 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     testCompile 'junit:junit:4.12'
 }
 configurations.all {

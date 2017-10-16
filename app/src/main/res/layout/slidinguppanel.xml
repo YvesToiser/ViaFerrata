@@ -4,7 +4,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -77,22 +77,16 @@
             android:id="@+id/lvExp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:groupIndicator="@drawable/group_indicator"/>
+            android:groupIndicator="@drawable/group_indicator"
+            android:scrollbars="none" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/colorPrimary"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/filter_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/filter_text"
-            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,6 +104,16 @@
                 style="@style/buttonSlidePannel"
                 android:text="@string/validate" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/filter_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/filter_text"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
