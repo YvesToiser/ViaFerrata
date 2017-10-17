@@ -73,12 +73,14 @@
                 android:textColor="@android:color/black" />
         </LinearLayout>
 
-        <ExpandableListView
+        <com.idunnololz.widgets.AnimatedExpandableListView
             android:id="@+id/lvExp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:footerDividersEnabled="false"
             android:groupIndicator="@drawable/group_indicator"
-            android:scrollbars="none" />
+            android:headerDividersEnabled="false"
+            android:scrollbars="horizontal" />
 
     </LinearLayout>
 
@@ -87,6 +89,16 @@
         android:layout_height="60dp"
         android:background="@color/colorPrimary"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/filter_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/filter_text"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,16 +116,6 @@
                 style="@style/buttonSlidePannel"
                 android:text="@string/validate" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/filter_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/filter_text"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
 
     </LinearLayout>
 

@@ -243,9 +243,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider.setVisibility(GONE);
 
         mMap = googleMap;
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
         // Ajouter le style a la map
         try {
-
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json));
@@ -590,7 +590,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Adding child data
         List<String> zoneGeo = new ArrayList<>();
         zoneGeo.add("Auverge-Rhône-Alpes");
-        zoneGeo.add("Bourgogne Franche Comté");
+        zoneGeo.add("Bourgogne-Franche-Comté");
         zoneGeo.add("Corse");
         zoneGeo.add("Grand-Est");
         zoneGeo.add("Normandie");
@@ -676,7 +676,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean isFavorite = mySharedPref.getBoolean(favId, false);
             String doneId = "Done" + via.getNom();
             boolean isDone = mySharedPref.getBoolean(doneId, false);
-            double distance = distFrom(latitude, longitude, mLocation.getLatitude(), mLocation.getLongitude());
+            double locLat;
+            if(mLocation != null){
+                locLat = mLocation.getLatitude();
+            }else{
+                locLat = 0;
+            }
+            double locLong;
+            if(mLocation != null){
+                locLong = mLocation.getLongitude();
+            }else{
+                locLong = 0;
+            }
+            double distance = distFrom(latitude, longitude, locLat, locLong);
             drawableMarqueur = R.drawable.marqueur;
             if(!isFavorite && isDone){
                 drawableMarqueur = R.drawable.marqueurfait;

@@ -4,28 +4,29 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/lblListItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/lblListItem"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="30dp"
-        android:textSize="15sp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="28dp" />
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="28dp"
+        android:text="New Text"
+        android:textSize="15sp" />
 
     <CheckBox
+        android:id="@+id/lstcheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:focusable="false"
-        android:id="@+id/lstcheckBox"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="-5dp"
         android:layout_alignBottom="@+id/lblListItem"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginBottom="-5dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:focusable="false"
+        android:text="" />
 
 </RelativeLayout>
