@@ -1,9 +1,7 @@
 package fr.wcs.viaferrata;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
@@ -26,16 +23,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +40,6 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class Tab3Photo extends Fragment {
-
 
     public static final String VIA_STORAGE_PATH = "image/";
     public static final String VIA_DATABASE_PATH = "image/";
@@ -68,11 +60,8 @@ public class Tab3Photo extends Fragment {
     private ImageView mImageView;
     private Uri mFilePath;
     private StorageReference mStorageReference;
-    private DatabaseReference mDatabaseReference;
     private String mViaName = "";
-    private String imageName;
-    private Bitmap mThumbNail;
-    private FloatingActionButton mFloatingActionButton;
+    private Button mFloatingActionButton;
     private AlertDialog dialog;
 
     @Override
@@ -81,7 +70,7 @@ public class Tab3Photo extends Fragment {
 
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mUploadImage = (Button) rootview.findViewById(R.id.cancelAction);
-        mFloatingActionButton = (FloatingActionButton) rootview.findViewById(R.id.floatingActionButton);
+        mFloatingActionButton = (Button) rootview.findViewById(R.id.floatingActionButton);
 
 
         Intent intent = getActivity().getIntent();
@@ -109,7 +98,6 @@ public class Tab3Photo extends Fragment {
                         dispatchTakePictureIntent();
                     }
                 });
-
 
                 //choose picture from gallery
                 mSelectImage.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +149,6 @@ public class Tab3Photo extends Fragment {
         } else if (requestCode == TAKE_IMAGE_REQUEST) {
             checkPermission();
         }
-
     }
 
 
@@ -239,9 +226,6 @@ public class Tab3Photo extends Fragment {
         mImageView.setImageBitmap(bitmap);
     }
 
-
-
-
     public void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
@@ -252,10 +236,7 @@ public class Tab3Photo extends Fragment {
             return;
         }
         //si la personne arrive ici elle a les droits
-
-
 //        mThumbNail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
         uploadFromPath(mCurrentPhotoUri);
         Bitmap bitmap = null;
         try {
@@ -264,8 +245,6 @@ public class Tab3Photo extends Fragment {
             e.printStackTrace();
         }
         mImageView.setImageBitmap(bitmap);
-
-
     }
 
     @Override
@@ -282,8 +261,6 @@ public class Tab3Photo extends Fragment {
                     //La personne a refusé les permissions, on re-demande en boucle
                     //TODO: Afficher toast à la place pour expliquer pourquoi ca ne marchera pas
 
-
-
                 }
             }
         }
@@ -291,8 +268,6 @@ public class Tab3Photo extends Fragment {
 
     public void uploadFromPath(final Uri path) {
         if (path != null) {
-
-
             StorageReference viaRef = mStorageReference.child("image/" + mViaName + "/" + path.getLastPathSegment());
             viaRef.putFile(path)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -321,40 +296,7 @@ public class Tab3Photo extends Fragment {
                     });
 
         } else {
-//
-//            //progressDialog.show();
-//            mImageView.setDrawingCacheEnabled(true);
-//            mImageView.buildDrawingCache();
-//            Bitmap bitmap = mImageView.getDrawingCache();
-//            ByteArrayOutputStream baas = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baas);
-//            byte[] data = baas.toByteArray();
-//            StorageReference viaRef = mStorageReference.child("image/" + mViaName + "/");
-//            viaRef.putBytes(data)
-//
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//
-//                            Toast.makeText(getActivity().getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//
-//                            Toast.makeText(getActivity().getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-//
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = 100.0 * (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            System.out.println("Upload is " + progress + "% done");
-//                            int currentprogress = (int) progress;
-//
-//                        }
-//                    });
+
         }
     }
 
