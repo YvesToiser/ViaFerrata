@@ -2,6 +2,7 @@ package fr.wcs.viaferrata;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -334,6 +335,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
 
                 if (mLayout != null && (mLayout.getPanelState() == PanelState.EXPANDED)) {
+                    int currentOrientation = getResources().getConfiguration().orientation;
+                    if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                    }
+                    else {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+                    }
                     // Bouton cancel
                     buttonCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -463,6 +471,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }else if (mLayout != null && (mLayout.getPanelState() == PanelState.ANCHORED)) {
                     mLayout.setPanelState(PanelState.COLLAPSED);
                 }else if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                     mLayout.setEnabled(true);
                     mLayout.setTouchEnabled(true);
                     filtreText.setVisibility(VISIBLE);
