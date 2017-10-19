@@ -120,7 +120,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
