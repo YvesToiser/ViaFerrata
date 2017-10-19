@@ -130,6 +130,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        TextView textOmbre = findViewById(R.id.button2);
+        textOmbre.setElevation(200);
+
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
