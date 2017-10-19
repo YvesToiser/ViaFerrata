@@ -100,7 +100,6 @@ public class ViaActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
 
-
                     case R.id.favButton:
                         final boolean isFavorite = mySharedPref.getBoolean(favId, false);
                         boolean isFavNewValue = !isFavorite;
