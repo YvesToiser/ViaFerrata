@@ -56,7 +56,6 @@
                         android:id="@+id/listVia"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginBottom="0dp"
                         android:background="@color/white"
                         android:divider="@color/colorPrimary"
                         android:dividerHeight="1dp"
@@ -71,13 +70,8 @@
 
                     <TextView
                         android:id="@+id/button2"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginStart="0dp"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         android:background="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"

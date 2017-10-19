@@ -281,12 +281,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Limite.getCenter(), zoom));
 
         // Creation de tout les marqueurs
-        for (int i=0;i<6;i++){
-            filtreDiff.add(i);
-        }
-        for (int i=0;i<8;i++){
-            filtreZoneGeo.add(i);
-        }
         rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
         mLayout = findViewById(R.id.slidingPanel);
@@ -356,12 +350,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             // Reset les listes et reremplir les filtres diff/zonegeo
                             filtreDiff = new ArrayList<>();
                             filtreZoneGeo = new ArrayList<>();
-                                for (int i=0;i<6;i++){
-                                    filtreDiff.add(i);
-                                }
-                                for (int i=0;i<8;i++){
-                                    filtreZoneGeo.add(i);
-                                }
+        
 
                             // Reset le panel
                             switchFavorite.setChecked(false);
@@ -431,18 +420,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             else {
                                 buttonCancel.setText(getResources().getString(R.string.cancelText));
-                            }
-
-                            // Remplir les filtres diff/niveau s'ils sont vides
-                            if (filtreDiff.isEmpty()) {
-                                for (int i=0;i<6;i++){
-                                    filtreDiff.add(i);
-                                }
-                            }
-                            if (filtreZoneGeo.isEmpty()) {
-                                for (int i=0;i<8;i++){
-                                    filtreZoneGeo.add(i);
-                                }
                             }
 
                             // Appelle la fonction qui réactualise la carte et la liste
