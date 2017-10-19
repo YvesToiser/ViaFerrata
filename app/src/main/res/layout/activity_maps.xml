@@ -26,8 +26,13 @@
             <ViewFlipper
                 android:id="@+id/flipper"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:layout_height="match_parent">
+
+
+                <include
+                    layout="@layout/list_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -45,18 +50,6 @@
                         tools:context="fr.wcs.viaferrata.MapsActivity" />
                 </FrameLayout>
 
-                <ListView
-                    android:id="@+id/listVia"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:background="@color/white"
-                    android:divider="@color/colorPrimary"
-                    android:dividerHeight="1dp"
-                    android:paddingBottom="70dp" />
-
             </ViewFlipper>
 
         </RelativeLayout>
@@ -65,7 +58,6 @@
             android:id="@+id/dragView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
             android:clickable="true"
             android:focusable="false"
             android:orientation="vertical">

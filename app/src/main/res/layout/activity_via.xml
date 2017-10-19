@@ -71,7 +71,7 @@
         <ImageButton
             android:id="@+id/shareButton"
             style="@style/bottom_menu"
-            android:src="@drawable/ic_share" />
+            app:srcCompat="?attr/actionModeShareDrawable" />
     </LinearLayout>
 
 
