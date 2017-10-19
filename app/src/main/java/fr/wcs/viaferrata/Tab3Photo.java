@@ -3,11 +3,12 @@ package fr.wcs.viaferrata;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,27 +18,34 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
@@ -48,6 +56,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class Tab3Photo extends Fragment {
 
+    private final String TAG = "TEST";
 
     public static final String VIA_STORAGE_PATH = "image/";
     public static final String VIA_DATABASE_PATH = "image/";
@@ -66,27 +75,60 @@ public class Tab3Photo extends Fragment {
     private Button mUploadImage;
     private Button mCancel;
     private ImageView mImageView;
+    private ImageView mImageViewTest;
     private Uri mFilePath;
     private StorageReference mStorageReference;
-    private DatabaseReference mDatabaseReference;
+    private FirebaseStorage mStorage;
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private String mViaName = "";
     private String imageName;
     private Bitmap mThumbNail;
     private FloatingActionButton mFloatingActionButton;
     private AlertDialog dialog;
+    private ProgressBar mProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final View rootview = inflater.inflate(R.layout.tab3photo, container, false);
 
+        mStorage = FirebaseStorage.getInstance();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mUploadImage = (Button) rootview.findViewById(R.id.cancelAction);
         mFloatingActionButton = (FloatingActionButton) rootview.findViewById(R.id.floatingActionButton);
+        mProgressBar = (ProgressBar) rootview.findViewById(R.id.progressBar2);
+        mImageViewTest = (ImageView) rootview.findViewById(R.id.imageViewTest);
+
 
 
         Intent intent = getActivity().getIntent();
         final ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
         mViaName = maviaferrata.getNom();
+
+        final ArrayList<String> photoList = new ArrayList<>();
+        DatabaseReference galleryPhotoRef = mDatabase.getReference("photos");
+        galleryPhotoRef.orderByChild("viaName").equalTo(mViaName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot photoSnapshot : dataSnapshot.getChildren()){
+                    PhotoModel myPhotoModel = photoSnapshot.getValue(PhotoModel.class);
+
+                    photoList.add(myPhotoModel.getPhotoUri());
+                    String uri = myPhotoModel.getPhotoUri();
+                    Log.d("test", "photolist image trouvee en bdd "+ uri);
+                    StorageReference gsReference = mStorage.getReferenceFromUrl(uri);
+                    Glide.with(getActivity())
+                            .using(new FirebaseImageLoader())
+                            .load(gsReference)
+                            .into(mImageViewTest);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         //Alert dialog on floating action button
@@ -152,6 +194,8 @@ public class Tab3Photo extends Fragment {
             uploadFromPath(mFilePath);
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mFilePath);
+
+                // TODO : utiliser glide pour afficher l'image et faire une roation en fonction des exif
                 mImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -180,6 +224,7 @@ public class Tab3Photo extends Fragment {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
+
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -194,7 +239,7 @@ public class Tab3Photo extends Fragment {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-;
+                ;
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -207,39 +252,46 @@ public class Tab3Photo extends Fragment {
         }
     }
 
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.getContext().sendBroadcast(mediaScanIntent);
-    }
+    /*private void rotateImage(Bitmap bitmap) {
+        ExifInterface exifInterface = null;
+        try {
+            exifInterface = new ExifInterface(mCurrentPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+        Matrix matrix = new Matrix();
+        switch (orientation){
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(270);
+                break;
+            default:
+        }
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),bitmap.getHeight(),matrix, true);
+    }*/
 
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = mImageView.getWidth();
-        int targetH = mImageView.getHeight();
+    /*private Bitmap setReducedImageSize(){
+        int targetImageViewWidht = mImageView.getWidth();
+        int targetImageViewHeight = mImageView.getHeight();
 
-        // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
+        BitmapFactory.decodeFile(mCurrentPhotoPath,bmOptions);
 
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int cameraImageWidth =bmOptions.outWidth;
+        int cameraImageHeight =bmOptions.outHeight;
 
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        mImageView.setImageBitmap(bitmap);
-    }
-
-
+        int scaleFactor = Math.min(cameraImageWidth/targetImageViewHeight, cameraImageHeight/targetImageViewHeight);
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(mCurrentPhotoPath,bmOptions);
+    }*/
 
 
     public void checkPermission() {
@@ -260,9 +312,11 @@ public class Tab3Photo extends Fragment {
         Bitmap bitmap = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),mCurrentPhotoUri);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         mImageView.setImageBitmap(bitmap);
 
 
@@ -293,11 +347,13 @@ public class Tab3Photo extends Fragment {
         if (path != null) {
 
 
-            StorageReference viaRef = mStorageReference.child("image/" + mViaName + "/" + path.getLastPathSegment());
+
+            StorageReference viaRef = mStorageReference.child("image/" + mViaName.replace(" ", "_") + "/" + path.getLastPathSegment());
             viaRef.putFile(path)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mProgressBar.setVisibility(View.GONE);
 
                             Toast.makeText(getActivity().getApplicationContext(), "Image envoyée ", Toast.LENGTH_LONG).show();
                             dialog.dismiss();
@@ -306,56 +362,30 @@ public class Tab3Photo extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            //progressDialog.setVisibility(View.GONE);
+
                             Toast.makeText(getActivity().getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
 
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = 100.0 * (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            dialog.dismiss();
+                            float progress = 100f * ((float)taskSnapshot.getBytesTransferred() / (float)taskSnapshot.getTotalByteCount());
                             System.out.println("Upload is " + progress + "% done");
-                            int currentprogress = (int) progress;
-                            //progressDialog.setVisibility(View.VISIBLE);
+                            int currentProgress = (int) progress;
+                            mProgressBar.setProgress(currentProgress);
+                            mProgressBar.setVisibility(View.VISIBLE);
+
+
+
                         }
                     });
 
-        } else {
-//
-//            //progressDialog.show();
-//            mImageView.setDrawingCacheEnabled(true);
-//            mImageView.buildDrawingCache();
-//            Bitmap bitmap = mImageView.getDrawingCache();
-//            ByteArrayOutputStream baas = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baas);
-//            byte[] data = baas.toByteArray();
-//            StorageReference viaRef = mStorageReference.child("image/" + mViaName + "/");
-//            viaRef.putBytes(data)
-//
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//
-//                            Toast.makeText(getActivity().getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//
-//                            Toast.makeText(getActivity().getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-//
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = 100.0 * (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            System.out.println("Upload is " + progress + "% done");
-//                            int currentprogress = (int) progress;
-//
-//                        }
-//                    });
+
+            DatabaseReference imageRef = mDatabase.getReference("photos");
+            PhotoModel newPhoto = new PhotoModel(mViaName,viaRef.toString());
+            imageRef.push().setValue(newPhoto);
+
         }
     }
-
 }
