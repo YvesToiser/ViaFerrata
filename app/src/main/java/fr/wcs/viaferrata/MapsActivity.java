@@ -575,8 +575,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 getResources().getDrawable(R.drawable.group_indicator);
         int drawable_width = drawable_groupIndicator.getMinimumWidth();
         expListView.setIndicatorBoundsRelative(
-            expListView.getWidth()-drawable_width-40,
-            expListView.getWidth()- 40);
+            expListView.getWidth()-drawable_width-30,
+            expListView.getWidth()-30);
 
     }
 
@@ -777,7 +777,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Affiche la nouvelle liste
         displayList(newList);
     }
-    // Fonction qui recharge les marqueurs sur la map
 
     // Fonction qui retourne le nombre de favoris
     public String numberOfFavorites () {
