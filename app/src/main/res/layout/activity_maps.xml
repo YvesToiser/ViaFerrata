@@ -11,8 +11,10 @@
         android:id="@+id/slidingPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="false"
         android:gravity="top"
-        app:umanoFadeColor="@android:color/transparent"
+        app:umanoFadeColor="@android:color/darker_gray"
+        app:umanoOverlay="true"
         app:umanoPanelHeight="60dp"
         app:umanoShadowHeight="15dp">
 
@@ -47,14 +49,13 @@
                     android:id="@+id/listVia"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:dividerHeight="1dp"
-                    android:divider="@color/colorPrimary"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:paddingBottom="70dp"
                     android:background="@color/white"
-                    />
+                    android:divider="@color/colorPrimary"
+                    android:dividerHeight="1dp"
+                    android:paddingBottom="70dp" />
 
             </ViewFlipper>
 
@@ -68,6 +69,7 @@
             android:clickable="true"
             android:focusable="false"
             android:orientation="vertical">
+
             <include
                 layout="@layout/slidinguppanel"
                 android:layout_width="match_parent"

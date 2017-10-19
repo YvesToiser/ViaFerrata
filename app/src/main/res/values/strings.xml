@@ -70,5 +70,6 @@
         {"featureType": "road.local","elementType": "labels","stylers": [{"visibility": "off"}]},
         {"featureType": "transit","stylers": [{"visibility": "off"}]}]
     </string>
+    <string name="distance_filter">Filtrer par distance :</string>
 
 </resources>

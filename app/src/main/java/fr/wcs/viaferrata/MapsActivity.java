@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.idunnololz.widgets.AnimatedExpandableListView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
@@ -92,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView seekText;
     private CheckBox seekCheck;
     private SeekBar seekBar;
-    private ExpandableListView expListView;
+    private AnimatedExpandableListView expListView;
 
     // Variables du panel
     private boolean filtreFavoris;
@@ -294,7 +295,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             @Override
-            public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
+            public void onPanelStateChanged(final View panel, PanelState previousState, PanelState newState) {
 
                 switchFavorite.setText(getString(R.string.favorite) + " (" + numberOfFavorites() + ")");
                 switchDone.setText(getString(R.string.done) + " (" + numberOfDone() + ")");
@@ -365,7 +366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             seekCheck.setChecked(false);
                             expListView.collapseGroup(0);
                             expListView.collapseGroup(1);
-                            buttonCancel.setText(getResources().getString(R.string.back));
+
 
                             // Reset carte et liste
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
@@ -375,8 +376,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             // Reactiver panel et le reduire
                             mLayout.setEnabled(true);
-                            mLayout.setTouchEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
+                            mLayout.setTouchEnabled(true);
+
+                            mLayout.addPanelSlideListener(new PanelSlideListener() {
+                                @Override
+                                public void onPanelSlide(View panel, float slideOffset) {
+
+                                }
+
+                                @Override
+                                public void onPanelStateChanged(View panel, PanelState previousState, PanelState newState) {
+                                    if (mLayout != null && (mLayout.getPanelState() == PanelState.COLLAPSED)){
+                                        buttonCancel.setText(getResources().getString(R.string.back));
+                                    }
+                                }
+                            });
+
 
                         }
                     });
@@ -480,10 +496,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         expListView = findViewById(R.id.lvExp);
+        // Fonction qui ferme l'autre filtre quand on en ouvre un
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                expListView.collapseGroup((groupPosition + 1) % 2);
+                expListView.collapseGroupWithAnimation((groupPosition + 1) % 2);
+            }
+        });
+        // Fonction qui ouvre et ferme les expList avec animation
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
+                if (expListView.isGroupExpanded(groupPosition)) {
+                    expListView.collapseGroupWithAnimation(groupPosition);
+                } else {
+                    expListView.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
             }
         });
 
@@ -542,21 +571,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
         Drawable drawable_groupIndicator =
                 getResources().getDrawable(R.drawable.group_indicator);
         int drawable_width = drawable_groupIndicator.getMinimumWidth();
+        expListView.setIndicatorBoundsRelative(
+            expListView.getWidth()-drawable_width-40,
+            expListView.getWidth()- 40);
 
-        if(android.os.Build.VERSION.SDK_INT <
-                android.os.Build.VERSION_CODES.JELLY_BEAN_MR2){
-            expListView.setIndicatorBounds(
-                    expListView.getWidth()-drawable_width*2,
-                    expListView.getWidth()-drawable_width);
-        }else{
-            expListView.setIndicatorBoundsRelative(
-                    expListView.getWidth()-drawable_width*2,
-                    expListView.getWidth()-drawable_width);
-        }
     }
 
     // Fonction qui remplit la liste
@@ -584,8 +605,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDataChild = new HashMap<>();
 
         // Adding child data
+        listDataHeader.add("Difficulté");
         listDataHeader.add("Zone géographique");
-        listDataHeader.add("Niveau");
+
 
         // Adding child data
         List<String> zoneGeo = new ArrayList<>();
@@ -612,8 +634,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         niveau.add("Très difficile (TD)");
         niveau.add("Extremement difficile (ED)");
 
-        listDataChild.put(listDataHeader.get(0), zoneGeo);
-        listDataChild.put(listDataHeader.get(1), niveau);
+        listDataChild.put(listDataHeader.get(0), niveau);
+        listDataChild.put(listDataHeader.get(1), zoneGeo);
     }
 
     // Fonction qui vérifie si la via correspond aux filtres
