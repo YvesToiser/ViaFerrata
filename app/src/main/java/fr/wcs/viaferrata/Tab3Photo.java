@@ -3,6 +3,7 @@ package fr.wcs.viaferrata;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +19,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,8 +50,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by wilderjm on 27/09/17.
@@ -78,7 +83,7 @@ public class Tab3Photo extends Fragment {
     private ImageView mImageViewTest;
     private Uri mFilePath;
     private StorageReference mStorageReference;
-    private FirebaseStorage mStorage;
+    public FirebaseStorage mStorage;
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private String mViaName = "";
     private String imageName;
@@ -86,6 +91,13 @@ public class Tab3Photo extends Fragment {
     private FloatingActionButton mFloatingActionButton;
     private AlertDialog dialog;
     private ProgressBar mProgressBar;
+
+    //recyclerview object
+    private RecyclerView recyclerView;
+
+    //adapter object
+    private RecyclerView.Adapter adapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -95,8 +107,11 @@ public class Tab3Photo extends Fragment {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mUploadImage = (Button) rootview.findViewById(R.id.cancelAction);
         mFloatingActionButton = (FloatingActionButton) rootview.findViewById(R.id.floatingActionButton);
-        mProgressBar = (ProgressBar) rootview.findViewById(R.id.progressBar2);
-        mImageViewTest = (ImageView) rootview.findViewById(R.id.imageViewTest);
+
+
+        recyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
 
@@ -104,6 +119,7 @@ public class Tab3Photo extends Fragment {
         final ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
         mViaName = maviaferrata.getNom();
 
+        //RECUPERATION DES PHOTOS
         final ArrayList<String> photoList = new ArrayList<>();
         DatabaseReference galleryPhotoRef = mDatabase.getReference("photos");
         galleryPhotoRef.orderByChild("viaName").equalTo(mViaName).addValueEventListener(new ValueEventListener() {
@@ -113,15 +129,21 @@ public class Tab3Photo extends Fragment {
                     PhotoModel myPhotoModel = photoSnapshot.getValue(PhotoModel.class);
 
                     photoList.add(myPhotoModel.getPhotoUri());
-                    String uri = myPhotoModel.getPhotoUri();
+
+           /*         String uri = myPhotoModel.getPhotoUri();
                     Log.d("test", "photolist image trouvee en bdd "+ uri);
                     StorageReference gsReference = mStorage.getReferenceFromUrl(uri);
                     Glide.with(getActivity())
                             .using(new FirebaseImageLoader())
                             .load(gsReference)
-                            .into(mImageViewTest);
+                            .into(mImageViewTest);*/
 
                 }
+                //creating adapter
+                adapter = new GalleryAdapter(getActivity(), photoList);
+
+                //adding adapter to recyclerview
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
@@ -142,6 +164,8 @@ public class Tab3Photo extends Fragment {
                 mSelectImage = (Button) mView.findViewById(R.id.selectImage);
                 mImageView = (ImageView) mView.findViewById(R.id.imageSelected);
                 mCancel = (Button) mView.findViewById(R.id.cancelAction);
+                mProgressBar = (ProgressBar) mView.findViewById(R.id.progressBar2);
+                mProgressBar.setVisibility(View.GONE);
 
                 //take picture from camera
                 mTakeImage.setOnClickListener(new View.OnClickListener() {
@@ -194,13 +218,10 @@ public class Tab3Photo extends Fragment {
             uploadFromPath(mFilePath);
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mFilePath);
-
-                // TODO : utiliser glide pour afficher l'image et faire une roation en fonction des exif
                 mImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
 
         } else if (requestCode == TAKE_IMAGE_REQUEST) {
             checkPermission();
@@ -369,7 +390,7 @@ public class Tab3Photo extends Fragment {
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            dialog.dismiss();
+
                             float progress = 100f * ((float)taskSnapshot.getBytesTransferred() / (float)taskSnapshot.getTotalByteCount());
                             System.out.println("Upload is " + progress + "% done");
                             int currentProgress = (int) progress;
