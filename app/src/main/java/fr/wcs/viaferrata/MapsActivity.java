@@ -593,9 +593,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDataChild = new HashMap<>();
 
         // Adding child data
-        listDataHeader.add("Difficulté");
         listDataHeader.add("Zone géographique");
-
+        listDataHeader.add("Difficulté");
 
         // Adding child data
         List<String> zoneGeo = new ArrayList<>();
@@ -622,8 +621,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         niveau.add("Très difficile (TD)");
         niveau.add("Extremement difficile (ED)");
 
-        listDataChild.put(listDataHeader.get(0), niveau);
-        listDataChild.put(listDataHeader.get(1), zoneGeo);
+        listDataChild.put(listDataHeader.get(0), zoneGeo);
+        listDataChild.put(listDataHeader.get(1), niveau);
     }
 
     // Fonction qui vérifie si la via correspond aux filtres
