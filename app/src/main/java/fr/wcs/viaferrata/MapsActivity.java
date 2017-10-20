@@ -838,11 +838,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             enableMyLocation();
 
             checkPermission();
-        } else {
-            Toast.makeText(MapsActivity.this,
-                    getResources().getString(R.string.permission_not_granted),
-                    Toast.LENGTH_SHORT).show();
-            mPermissionDenied = true;
         }
     }
 

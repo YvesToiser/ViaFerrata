@@ -60,16 +60,19 @@ public abstract class PermissionUtils {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             mFinishActivity = getArguments().getBoolean(ARGUMENT_FINISH_ACTIVITY);
 
+            // this alert dialog is shown when the permission has been accepted! It should not
             return new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.location_permission_denied)
                     .setPositiveButton(android.R.string.ok, null)
                     .create();
+           // return null;
         }
 
         @Override
         public void onDismiss(DialogInterface dialog) {
             super.onDismiss(dialog);
             if (mFinishActivity) {
+               // This toast appears with no reason
                 Toast.makeText(getActivity(), R.string.permission_required_toast,
                         Toast.LENGTH_SHORT).show();
                 getActivity().finish();

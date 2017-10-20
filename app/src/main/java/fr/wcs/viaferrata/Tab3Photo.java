@@ -318,14 +318,14 @@ public class Tab3Photo extends Fragment {
     }*/
 
     public void checkPermission() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    PERMISSIONS, PERMISSION_WRITE_EXTERNAL_STORAGE);
-
-        }
+//        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED
+//                && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(),
+//                    PERMISSIONS, PERMISSION_WRITE_EXTERNAL_STORAGE);
+//
+//        }
         //si la personne arrive ici elle a les droits
 
         uploadFromPath(mCurrentPhotoUri);
