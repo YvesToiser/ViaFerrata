@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,8 +28,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -45,6 +49,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -88,9 +93,12 @@ public class Tab3Photo extends Fragment {
     private String mViaName = "";
     private String imageName;
     private Bitmap mThumbNail;
-    private FloatingActionButton mFloatingActionButton;
+    private ImageButton mFloatingActionButton;
     private AlertDialog dialog;
     private ProgressBar mProgressBar;
+    private ImageView mBeMyFirst;
+    private TextView mUploadInfo;
+    private TextView mInfoDialog;
 
     //recyclerview object
     private RecyclerView recyclerView;
@@ -106,12 +114,19 @@ public class Tab3Photo extends Fragment {
         mStorage = FirebaseStorage.getInstance();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mUploadImage = (Button) rootview.findViewById(R.id.cancelAction);
-        mFloatingActionButton = (FloatingActionButton) rootview.findViewById(R.id.floatingActionButton);
+        mFloatingActionButton = (ImageButton) rootview.findViewById(R.id.floatingActionButton);
+        mBeMyFirst = (ImageView) rootview.findViewById(R.id.beMyFirstImg);
 
 
         recyclerView = (RecyclerView) rootview.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        RecyclerView.LayoutManager mLayoutManager;
+        int orientation = getResources().getConfiguration().orientation;
+        int portrait =  getResources().getConfiguration().ORIENTATION_PORTRAIT;
+        if (orientation == portrait) mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        else mLayoutManager = new GridLayoutManager(getActivity(), 3);
+        recyclerView.setLayoutManager(mLayoutManager);
 
 
 
@@ -120,15 +135,15 @@ public class Tab3Photo extends Fragment {
         mViaName = maviaferrata.getNom();
 
         //RECUPERATION DES PHOTOS
-        final ArrayList<String> photoList = new ArrayList<>();
         DatabaseReference galleryPhotoRef = mDatabase.getReference("photos");
         galleryPhotoRef.orderByChild("viaName").equalTo(mViaName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> photoList = new ArrayList<>();
                 for (DataSnapshot photoSnapshot : dataSnapshot.getChildren()){
                     PhotoModel myPhotoModel = photoSnapshot.getValue(PhotoModel.class);
 
-                    photoList.add(myPhotoModel.getPhotoUri());
+                    photoList.add(0, myPhotoModel.getPhotoUri());
 
            /*         String uri = myPhotoModel.getPhotoUri();
                     Log.d("test", "photolist image trouvee en bdd "+ uri);
@@ -141,6 +156,9 @@ public class Tab3Photo extends Fragment {
                 }
                 //creating adapter
                 adapter = new GalleryAdapter(getActivity(), photoList);
+                if(photoList.size() > 0){
+                    mBeMyFirst.setVisibility(View.GONE);
+                }
 
                 //adding adapter to recyclerview
                 recyclerView.setAdapter(adapter);
@@ -158,6 +176,7 @@ public class Tab3Photo extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(v.getContext());
                 View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_photo,container,false);
                 mTakeImage = (Button) mView.findViewById(R.id.takeImage);
@@ -165,6 +184,8 @@ public class Tab3Photo extends Fragment {
                 mImageView = (ImageView) mView.findViewById(R.id.imageSelected);
                 mCancel = (Button) mView.findViewById(R.id.cancelAction);
                 mProgressBar = (ProgressBar) mView.findViewById(R.id.progressBar2);
+                mUploadInfo = (TextView) mView.findViewById(R.id.uploadInfo);
+                mInfoDialog = (TextView) mView.findViewById(R.id.info_photo);
                 mProgressBar.setVisibility(View.GONE);
 
                 //take picture from camera
@@ -197,6 +218,8 @@ public class Tab3Photo extends Fragment {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
                     }
                 });
 
@@ -223,7 +246,7 @@ public class Tab3Photo extends Fragment {
                 e.printStackTrace();
             }
 
-        } else if (requestCode == TAKE_IMAGE_REQUEST) {
+        } else if (requestCode == TAKE_IMAGE_REQUEST && resultCode == RESULT_OK) {
             checkPermission();
         }
 
@@ -273,7 +296,7 @@ public class Tab3Photo extends Fragment {
         }
     }
 
-    /*private void rotateImage(Bitmap bitmap) {
+    private Bitmap rotateImage(Bitmap bitmap) {
         ExifInterface exifInterface = null;
         try {
             exifInterface = new ExifInterface(mCurrentPhotoPath);
@@ -292,10 +315,12 @@ public class Tab3Photo extends Fragment {
             case ExifInterface.ORIENTATION_ROTATE_270:
                 matrix.setRotate(270);
                 break;
+
             default:
         }
         Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),bitmap.getHeight(),matrix, true);
-    }*/
+        return rotatedBitmap;
+    }
 
     /*private Bitmap setReducedImageSize(){
         int targetImageViewWidht = mImageView.getWidth();
@@ -322,7 +347,7 @@ public class Tab3Photo extends Fragment {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(),
                     PERMISSIONS, PERMISSION_WRITE_EXTERNAL_STORAGE);
-            return;
+
         }
         //si la personne arrive ici elle a les droits
 
@@ -337,7 +362,7 @@ public class Tab3Photo extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        bitmap = rotateImage(bitmap);
         mImageView.setImageBitmap(bitmap);
 
 
@@ -367,17 +392,35 @@ public class Tab3Photo extends Fragment {
     public void uploadFromPath(final Uri path) {
         if (path != null) {
 
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),mCurrentPhotoUri);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] data = baos.toByteArray();
 
             StorageReference viaRef = mStorageReference.child("image/" + mViaName.replace(" ", "_") + "/" + path.getLastPathSegment());
-            viaRef.putFile(path)
+   //         viaRef.putFile(path)
+            viaRef.putBytes(data)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mProgressBar.setVisibility(View.GONE);
+                            mUploadInfo.setVisibility(View.GONE);
+                            mTakeImage.setVisibility(View.GONE);
+                            mSelectImage.setVisibility(View.GONE);
+                            mCancel.setVisibility(View.GONE);
+                            mInfoDialog.setVisibility(View.GONE);
 
                             Toast.makeText(getActivity().getApplicationContext(), "Image envoyée ", Toast.LENGTH_LONG).show();
                             dialog.dismiss();
+                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -396,6 +439,13 @@ public class Tab3Photo extends Fragment {
                             int currentProgress = (int) progress;
                             mProgressBar.setProgress(currentProgress);
                             mProgressBar.setVisibility(View.VISIBLE);
+                            mUploadInfo.setText("Envoi en cours :" + String.valueOf(currentProgress) +"%");
+                            mUploadInfo.setVisibility(View.VISIBLE);
+                            mTakeImage.setVisibility(View.GONE);
+                            mSelectImage.setVisibility(View.GONE);
+                            mCancel.setVisibility(View.GONE);
+                            mInfoDialog.setVisibility(View.GONE);
+
 
 
 

@@ -18,14 +18,23 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <android.support.design.widget.FloatingActionButton
+    <ImageView
+        android:id="@+id/beMyFirstImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/photo_camera"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_menu_camera"
-        android:backgroundTint="@color/colorPrimary"
+        android:padding="10dp"
+        android:src="@android:drawable/ic_menu_camera"
+        android:background="@drawable/add_photo_btn"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
