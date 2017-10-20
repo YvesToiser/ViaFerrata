@@ -44,34 +44,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/backButton"
             style="@style/bottom_menu"
-            android:src="?attr/actionModeCloseDrawable" />
+            app:srcCompat="@drawable/back_btn" />
 
         <ImageButton
             android:id="@+id/itineraryButton"
             style="@style/bottom_menu"
-            android:src="@drawable/ic_itinerary" />
+            app:srcCompat="@drawable/itinerary_btn" />
 
         <ImageButton
             android:id="@+id/favButton"
             style="@style/bottom_menu"
-            android:src="@drawable/etoileunchecked" />
+            app:srcCompat="@drawable/etoileunchecked" />
 
         <ImageButton
             android:id="@+id/doneButton"
             style="@style/bottom_menu"
             android:paddingTop="5dp"
-            android:src="@drawable/uncheck" />
+            app:srcCompat="@drawable/uncheck" />
 
         <ImageButton
             android:id="@+id/shareButton"
             style="@style/bottom_menu"
-            app:srcCompat="?attr/actionModeShareDrawable" />
+            app:srcCompat="@drawable/share_btn" />
     </LinearLayout>
 
 

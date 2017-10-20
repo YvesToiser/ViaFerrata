@@ -24,6 +24,7 @@ public class ViaActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private static final String TAG = "ViaActivity";
+    int displayedChild;
 
 
     @Override
@@ -65,10 +66,22 @@ public class ViaActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        Intent intent = getIntent();
+        displayedChild = intent.getIntExtra("displayedChild", 0);
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ViaActivity.this, MapsActivity.class);
+                boolean checkMapList;
+                if (displayedChild == 0) {
+                    checkMapList = false;
+                }
+                else {
+                    checkMapList = true;
+                }
+                intent.putExtra("displayedChild", displayedChild);
+                intent.putExtra("checkMapList", checkMapList);
                 startActivity(intent);
             }
         });
@@ -188,6 +201,15 @@ public class ViaActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(ViaActivity.this, MapsActivity.class);
+        boolean checkMapList;
+        if (displayedChild == 0) {
+            checkMapList = false;
+        }
+        else {
+            checkMapList = true;
+        }
+        intent.putExtra("displayedChild", displayedChild);
+        intent.putExtra("checkMapList", checkMapList);
         startActivity(intent);
     }
 }

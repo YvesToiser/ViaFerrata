@@ -15,9 +15,7 @@
         android:text="TextView"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:layout_marginLeft="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp" />
@@ -26,21 +24,23 @@
         android:id="@+id/viaVilleStat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="19dp"
         android:text="@string/viaVilleStatic"
         app:layout_constraintTop_toBottomOf="@+id/viaName"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_marginLeft="30dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/viaVille"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginTop="7dp"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaName"
         app:layout_constraintTop_toBottomOf="@+id/viaVilleStat"
-        android:layout_marginLeft="26dp" />
+        android:layout_marginStart="43dp" />
 
     <TextView
         android:id="@+id/viaDepartementStat"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaVille"
         app:layout_constraintTop_toBottomOf="@+id/viaDepartementStat" />
 
@@ -74,9 +74,9 @@
         android:id="@+id/viaRegion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="7dp"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaDepartement"
         app:layout_constraintTop_toBottomOf="@+id/viaRegionStat" />
 
@@ -85,25 +85,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/viaNiveauStatic"
-        tools:layout_editor_absoluteX="316dp"
-        tools:layout_editor_absoluteY="51dp" />
+        android:layout_marginRight="28dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="72dp" />
 
     <TextView
         android:id="@+id/viaNiveau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="28dp"
+        android:layout_marginTop="10dp"
         android:text="TextView"
-        android:textSize="24sp"
-        tools:layout_editor_absoluteX="268dp"
-        tools:layout_editor_absoluteY="68dp" />
+        android:textSize="18sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viaNiveauStatic" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout">
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <ImageView
             android:id="@+id/echelleImage"
@@ -139,12 +146,17 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="366dp"
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="386dp"
-        android:id="@+id/linearLayout">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.5">
 
         <TextView
             android:id="@+id/viaEchelle"
