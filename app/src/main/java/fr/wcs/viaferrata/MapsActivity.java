@@ -112,7 +112,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Animations
     private Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
 
-
     // Variables de permissions
     private LocationManager mLocationManager = null;
     private LocationListener mLocationListener = null;
@@ -189,6 +188,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 R.anim.out_right);
 
         buttonSwitch = findViewById(R.id.buttonSwitch);
+
+        Intent intent = getIntent();
+        int dispChild = intent.getIntExtra("displayedChild", 0);
+        boolean checkMapList = intent.getBooleanExtra("checkMapList", false);
+        flipper.setDisplayedChild(dispChild);
+        buttonSwitch.setChecked(checkMapList);
+
         buttonSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -582,6 +588,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ViaFerrataModel viaItem = myListOfVia.get(i);
                 Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
                 intent.putExtra("via", viaItem);
+                intent.putExtra("displayedChild", 1);
                 startActivity(intent);
             }
         });
@@ -728,6 +735,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onInfoWindowClick(Marker marker) {
                         Intent intent = new Intent(MapsActivity.this, ViaActivity.class);
                         intent.putExtra("via", (ViaFerrataModel) marker.getTag());
+                        intent.putExtra("displayedChild", 0);
                         startActivity(intent);
                     }
                 });

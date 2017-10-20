@@ -19,6 +19,6 @@
         android:layout_weight="1"
         android:adjustViewBounds="false"
         android:scaleType="centerCrop"
-        android:src="@drawable/spash"/>
+        android:src="@drawable/animnonamelarge" />
 
 </LinearLayout>
