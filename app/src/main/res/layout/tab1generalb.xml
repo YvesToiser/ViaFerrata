@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,13 +10,17 @@
 
     <TextView
         android:id="@+id/viaName"
-        android:layout_width="match_parent"
+        android:layout_width="366dp"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="@+id/viaNameStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaNameStatic" />
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/viaVilleStat"
@@ -24,17 +28,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:text="@string/viaVilleStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaNameStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaName" />
+        app:layout_constraintTop_toBottomOf="@+id/viaName"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/viaVille"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:text="TextView"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaName"
-        app:layout_constraintTop_toBottomOf="@+id/viaVilleStat" />
+        app:layout_constraintTop_toBottomOf="@+id/viaVilleStat"
+        android:layout_marginLeft="26dp" />
 
     <TextView
         android:id="@+id/viaDepartementStat"
@@ -51,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaVille"
         app:layout_constraintTop_toBottomOf="@+id/viaDepartementStat" />
 
@@ -69,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaDepartement"
         app:layout_constraintTop_toBottomOf="@+id/viaRegionStat" />
 
@@ -77,21 +85,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/viaNiveauStatic"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="438dp" />
+        tools:layout_editor_absoluteX="316dp"
+        tools:layout_editor_absoluteY="51dp" />
 
     <TextView
         android:id="@+id/viaNiveau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="455dp" />
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="268dp"
+        tools:layout_editor_absoluteY="68dp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout">
 
         <ImageView
             android:id="@+id/echelleImage"
@@ -127,11 +139,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="366dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="387dp">
+        tools:layout_editor_absoluteY="386dp"
+        android:id="@+id/linearLayout">
 
         <TextView
             android:id="@+id/viaEchelle"
@@ -182,4 +195,4 @@
             tools:layout_editor_absoluteY="414dp" />
     </LinearLayout>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
