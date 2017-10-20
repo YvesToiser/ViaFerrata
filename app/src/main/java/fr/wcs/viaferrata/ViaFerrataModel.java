@@ -231,7 +231,7 @@ public class ViaFerrataModel implements Parcelable{
     }
 
     public String getNbPasserelle() {
-        if(nbPasserelle=="?" || nbPasserelle==""){
+        if(nbPasserelle.equals("?") || nbPasserelle.isEmpty()){
             return "N.C";
         }
         return nbPasserelle;
@@ -242,7 +242,7 @@ public class ViaFerrataModel implements Parcelable{
     }
 
     public String getNbPontSinge() {
-        if(nbPontSinge=="?" || nbPontSinge==""){
+        if(nbPontSinge.equals("?") || nbPontSinge.isEmpty()){
             return "N.C";
         }
         return nbPontSinge;
@@ -253,7 +253,7 @@ public class ViaFerrataModel implements Parcelable{
     }
 
     public String getNbEchelleFilet() {
-        if(nbEchelleFilet=="?" || nbEchelleFilet==""){
+        if(nbEchelleFilet.equals("?") || nbEchelleFilet.isEmpty()){
             return "N.C";
         }
         return nbEchelleFilet;
@@ -264,7 +264,7 @@ public class ViaFerrataModel implements Parcelable{
     }
 
     public String getNbTyrolienne() {
-        if(nbTyrolienne=="?" || nbTyrolienne==""){
+        if(nbTyrolienne.equals("?") || nbTyrolienne.isEmpty()){
             return "N.C";
         }
         return nbTyrolienne;
