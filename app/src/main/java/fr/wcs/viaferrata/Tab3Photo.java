@@ -1,14 +1,11 @@
 package fr.wcs.viaferrata;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -16,14 +13,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -48,7 +40,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +49,6 @@ import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by wilderjm on 27/09/17.
@@ -67,7 +57,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class Tab3Photo extends Fragment {
 
     private final String TAG = "TEST";
-
     public static final String VIA_STORAGE_PATH = "image/";
     public static final String VIA_DATABASE_PATH = "image/";
     public static final int REQUEST_CODE = 1234;
@@ -129,7 +118,6 @@ public class Tab3Photo extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
 
 
-
         Intent intent = getActivity().getIntent();
         final ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
         mViaName = maviaferrata.getNom();
@@ -144,16 +132,8 @@ public class Tab3Photo extends Fragment {
                     PhotoModel myPhotoModel = photoSnapshot.getValue(PhotoModel.class);
 
                     photoList.add(0, myPhotoModel.getPhotoUri());
-
-           /*         String uri = myPhotoModel.getPhotoUri();
-                    Log.d("test", "photolist image trouvee en bdd "+ uri);
-                    StorageReference gsReference = mStorage.getReferenceFromUrl(uri);
-                    Glide.with(getActivity())
-                            .using(new FirebaseImageLoader())
-                            .load(gsReference)
-                            .into(mImageViewTest);*/
-
                 }
+
                 //creating adapter
                 adapter = new GalleryAdapter(getActivity(), photoList);
                 if(photoList.size() > 0){
@@ -196,7 +176,6 @@ public class Tab3Photo extends Fragment {
                         dispatchTakePictureIntent();
                     }
                 });
-
 
                 //choose picture from gallery
                 mSelectImage.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +228,6 @@ public class Tab3Photo extends Fragment {
         } else if (requestCode == TAKE_IMAGE_REQUEST && resultCode == RESULT_OK) {
             checkPermission();
         }
-
     }
 
 
@@ -339,7 +317,6 @@ public class Tab3Photo extends Fragment {
         return BitmapFactory.decodeFile(mCurrentPhotoPath,bmOptions);
     }*/
 
-
     public void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
@@ -351,9 +328,6 @@ public class Tab3Photo extends Fragment {
         }
         //si la personne arrive ici elle a les droits
 
-
-//        mThumbNail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
         uploadFromPath(mCurrentPhotoUri);
         Bitmap bitmap = null;
         try {
@@ -364,8 +338,6 @@ public class Tab3Photo extends Fragment {
         }
         bitmap = rotateImage(bitmap);
         mImageView.setImageBitmap(bitmap);
-
-
     }
 
     @Override
@@ -381,8 +353,6 @@ public class Tab3Photo extends Fragment {
 
                     //La personne a refusé les permissions, on re-demande en boucle
                     //TODO: Afficher toast à la place pour expliquer pourquoi ca ne marchera pas
-
-
 
                 }
             }
@@ -407,6 +377,7 @@ public class Tab3Photo extends Fragment {
             StorageReference viaRef = mStorageReference.child("image/" + mViaName.replace(" ", "_") + "/" + path.getLastPathSegment());
    //         viaRef.putFile(path)
             viaRef.putBytes(data)
+
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -445,18 +416,12 @@ public class Tab3Photo extends Fragment {
                             mSelectImage.setVisibility(View.GONE);
                             mCancel.setVisibility(View.GONE);
                             mInfoDialog.setVisibility(View.GONE);
-
-
-
-
                         }
                     });
-
 
             DatabaseReference imageRef = mDatabase.getReference("photos");
             PhotoModel newPhoto = new PhotoModel(mViaName,viaRef.toString());
             imageRef.push().setValue(newPhoto);
-
         }
     }
 }

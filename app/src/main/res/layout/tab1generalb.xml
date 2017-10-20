@@ -1,66 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="15dp"
+    android:orientation="vertical"
     tools:context="fr.wcs.viaferrata.ViaActivity">
-
-<android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/viaNameStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/viaNameStatic"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"/>
 
     <TextView
         android:id="@+id/viaName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="@+id/viaNameStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaNameStatic"
-        android:layout_marginStart="8dp"/>
-
-    <TextView
-        android:id="@+id/viaPrixstatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/viaPrix"
-        app:layout_constraintRight_toLeftOf="@+id/viaPrix"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/viaPrix"
-        android:layout_marginEnd="8dp"/>
-
-    <TextView
-        android:id="@+id/viaPrix"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="8dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/viaNameStatic" />
 
     <TextView
         android:id="@+id/viaVilleStat"
@@ -69,7 +25,7 @@
         android:layout_marginTop="15dp"
         android:text="@string/viaVilleStatic"
         app:layout_constraintLeft_toLeftOf="@+id/viaNameStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaName"/>
+        app:layout_constraintTop_toBottomOf="@+id/viaName" />
 
     <TextView
         android:id="@+id/viaVille"
@@ -78,7 +34,7 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintLeft_toLeftOf="@+id/viaName"
-        app:layout_constraintTop_toBottomOf="@+id/viaVilleStat"/>
+        app:layout_constraintTop_toBottomOf="@+id/viaVilleStat" />
 
     <TextView
         android:id="@+id/viaDepartementStat"
@@ -87,7 +43,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/viaDepartementStatic"
         app:layout_constraintLeft_toLeftOf="@+id/viaVilleStat"
-        app:layout_constraintTop_toBottomOf="@+id/viaVille"/>
+        app:layout_constraintTop_toBottomOf="@+id/viaVille" />
 
     <TextView
         android:id="@+id/viaDepartement"
@@ -96,7 +52,7 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintLeft_toLeftOf="@+id/viaVille"
-        app:layout_constraintTop_toBottomOf="@+id/viaDepartementStat"/>
+        app:layout_constraintTop_toBottomOf="@+id/viaDepartementStat" />
 
     <TextView
         android:id="@+id/viaRegionStat"
@@ -105,7 +61,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/viaRegionStatic"
         app:layout_constraintLeft_toLeftOf="@+id/viaDepartementStat"
-        app:layout_constraintTop_toBottomOf="@+id/viaDepartement"/>
+        app:layout_constraintTop_toBottomOf="@+id/viaDepartement" />
 
     <TextView
         android:id="@+id/viaRegion"
@@ -114,230 +70,116 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintLeft_toLeftOf="@+id/viaDepartement"
-        app:layout_constraintTop_toBottomOf="@+id/viaRegionStat"/>
-
-    <TextView
-        android:id="@+id/viaDescriptionStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/viaDescriptionStatic"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaRegion"
-        app:layout_constraintLeft_toLeftOf="@+id/viaRegionStat"/>
-
-    <TextView
-        android:id="@+id/viaDescription"
-        android:layout_width="344dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="@+id/viaRegion"
-        app:layout_constraintTop_toBottomOf="@+id/viaDescriptionStatic"/>
-
-    <TextView
-        android:id="@+id/viaAltDpStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/viaAltDepartStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaDescriptionStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaDescription"/>
-
-    <TextView
-        android:id="@+id/viaAltDep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaAltDpStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaAltDpStatic"
-        app:layout_constraintRight_toRightOf="@+id/viaAltDpStatic"
-        app:layout_constraintHorizontal_bias="0.538"/>
-
-    <TextView
-        android:id="@+id/viaAltArrStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:text="@string/viaAltArriveeStatic"
-        app:layout_constraintBottom_toBottomOf="@+id/viaAltDpStatic"
-        app:layout_constraintLeft_toRightOf="@+id/viaAltDpStatic"
-        android:layout_marginStart="16dp"
-        />
-
-    <TextView
-        android:id="@+id/viaAltArr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaAltArrStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaAltArrStatic"
-        />
-
-    <TextView
-        android:id="@+id/viaTempsStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/viaDureeStatic"
-        app:layout_constraintBottom_toBottomOf="@+id/viaAltArrStatic"
-        app:layout_constraintLeft_toRightOf="@+id/viaAltArrStatic"
-        />
-
-    <TextView
-        android:id="@+id/viaDuree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="@+id/viaTempsStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaTempsStatic"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/viaRegionStat" />
 
     <TextView
         android:id="@+id/viaNiveauStatic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="@string/viaNiveauStatic"
-        app:layout_constraintLeft_toRightOf="@+id/viaTempsStatic"
-        android:layout_marginLeft="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/viaTempsStatic"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"/>
+        tools:layout_editor_absoluteX="123dp"
+        tools:layout_editor_absoluteY="438dp" />
 
     <TextView
         android:id="@+id/viaNiveau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="@+id/viaNiveauStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaNiveauStatic"
-        />
+        tools:layout_editor_absoluteX="123dp"
+        tools:layout_editor_absoluteY="455dp" />
 
-    <TextView
-        android:id="@+id/viaPasserelleStatic"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/echelleImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/echelle" />
+
+        <ImageView
+            android:id="@+id/tyrolImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/tyrolienne" />
+
+        <ImageView
+            android:id="@+id/pontSingeImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/pont_de_singe" />
+
+        <ImageView
+            android:id="@+id/passerelleImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/passerelle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/viaPasserelleStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaAltDpStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaAltDep"/>
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="387dp">
 
-    <TextView
-        android:id="@+id/viaPasserelles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaPasserelleStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaPasserelleStatic"
-        app:layout_constraintRight_toRightOf="@+id/viaPasserelleStatic"/>
+        <TextView
+            android:id="@+id/viaEchelle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="207dp"
+            tools:layout_editor_absoluteY="414dp" />
 
-    <TextView
-        android:id="@+id/viaPontSingeStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="@string/viaPontSingeStatic"
-        app:layout_constraintBottom_toBottomOf="@+id/viaPasserelleStatic"
-        app:layout_constraintLeft_toRightOf="@+id/viaPasserelleStatic"
-        android:layout_marginStart="8dp"/>
+        <TextView
+            android:id="@+id/viaTyrol"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="298dp"
+            tools:layout_editor_absoluteY="414dp" />
 
-    <TextView
-        android:id="@+id/viapontSinge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaPontSingeStatic"
-        app:layout_constraintRight_toRightOf="@+id/viaPontSingeStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaPontSingeStatic"/>
+        <TextView
+            android:id="@+id/viapontSinge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="106dp"
+            tools:layout_editor_absoluteY="414dp" />
 
-    <TextView
-        android:id="@+id/viaEchelleStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="@string/viaEchelleStatic"
-        app:layout_constraintBottom_toBottomOf="@+id/viaPontSingeStatic"
-        app:layout_constraintLeft_toRightOf="@+id/viaPontSingeStatic"
-        android:layout_marginStart="8dp"/>
+        <TextView
+            android:id="@+id/viaPasserelles"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="15dp"
+            tools:layout_editor_absoluteY="414dp" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/viaEchelle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaEchelleStatic"
-        app:layout_constraintRight_toRightOf="@+id/viaEchelleStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaEchelleStatic"/>
-
-    <TextView
-        android:id="@+id/viaTyrolStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="@string/viaTyrolStatic"
-        app:layout_constraintBottom_toBottomOf="@+id/viaEchelleStatic"
-        app:layout_constraintLeft_toRightOf="@+id/viaEchelleStatic"
-        android:layout_marginStart="8dp"/>
-
-    <TextView
-        android:id="@+id/viaTyrol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/viaTyrolStatic"
-        app:layout_constraintRight_toRightOf="@+id/viaTyrolStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaTyrolStatic"/>
-
-    <TextView
-        android:id="@+id/viaAccesStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:text="@string/viaAccesStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaPasserelleStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaPasserelles"
-        />
-
-    <TextView
-        android:id="@+id/viaAcces"
-        android:layout_width="344dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="@+id/viaAccesStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaAccesStatic"/>
-
-    <TextView
-        android:id="@+id/viaInfoStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/viaInfoStatic"
-        app:layout_constraintLeft_toLeftOf="@+id/viaAccesStatic"
-        app:layout_constraintTop_toBottomOf="@+id/viaAcces"/>
-
-    <TextView
-        android:id="@+id/viaInfo"
-        android:layout_width="344dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="@+id/viaAcces"
-        app:layout_constraintTop_toBottomOf="@+id/viaInfoStatic"
-        android:layout_marginStart="8dp"/>
-
-</android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
