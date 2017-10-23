@@ -25,11 +25,11 @@
             <TextView
                 android:id="@+id/textNom"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textSize="17dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="17dp" />
 
         </LinearLayout>
 
