@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -32,10 +33,14 @@ public class ViaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
 
+
+
         //Shared preferences
         Intent intentFav = getIntent();
         final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
         mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+
+
 
         final ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         final ImageButton itineraryButton = (ImageButton) findViewById(R.id.itineraryButton);
@@ -65,6 +70,13 @@ public class ViaActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+
+        if(intentFav.getStringExtra("fragment")!=null && intentFav.getStringExtra("fragment").equals("photo")){
+            //TODO go to fragment photo
+            mViewPager.setCurrentItem(1);
+            Log.e("BIBI", "on doit charger le fragment ici!!");
+        }
 
         Intent intent = getIntent();
         displayedChild = intent.getIntExtra("displayedChild", 0);

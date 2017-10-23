@@ -79,7 +79,7 @@ public class Tab3Photo extends Fragment {
     private StorageReference mStorageReference;
     public FirebaseStorage mStorage;
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    private String mViaName = "";
+    public static String mViaName = "";
     private String imageName;
     private Bitmap mThumbNail;
     private ImageButton mFloatingActionButton;
@@ -94,6 +94,8 @@ public class Tab3Photo extends Fragment {
 
     //adapter object
     private RecyclerView.Adapter adapter;
+
+    public static ViaFerrataModel maviaferrata;
 
 
     @Override
@@ -119,7 +121,7 @@ public class Tab3Photo extends Fragment {
 
 
         Intent intent = getActivity().getIntent();
-        final ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
+        maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
         mViaName = maviaferrata.getNom();
 
         //RECUPERATION DES PHOTOS
@@ -362,7 +364,7 @@ public class Tab3Photo extends Fragment {
     public void uploadFromPath(final Uri path) {
         if (path != null) {
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            /*ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),mCurrentPhotoUri);
@@ -372,11 +374,11 @@ public class Tab3Photo extends Fragment {
             }
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            byte[] data = baos.toByteArray();
+            byte[] data = baos.toByteArray();*/
 
             StorageReference viaRef = mStorageReference.child("image/" + mViaName.replace(" ", "_") + "/" + path.getLastPathSegment());
-   //         viaRef.putFile(path)
-            viaRef.putBytes(data)
+            viaRef.putFile(path)
+            //viaRef.putBytes(data)
 
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

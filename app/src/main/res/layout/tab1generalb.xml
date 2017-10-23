@@ -85,32 +85,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/viaNiveauStatic"
-        android:layout_marginRight="28dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="72dp" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/viaRegion"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/viaRegionStat"/>
 
     <TextView
         android:id="@+id/viaNiveau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="28dp"
-        android:layout_marginTop="10dp"
         android:text="TextView"
         android:textSize="18sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viaNiveauStatic" />
+        android:layout_marginTop="7dp"
+        app:layout_constraintTop_toBottomOf="@+id/viaNiveauStatic"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/viaRegion"/>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="0dp"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viaNiveau"
+        android:id="@+id/linearLayout2">
 
         <ImageView
             android:id="@+id/echelleImage"
