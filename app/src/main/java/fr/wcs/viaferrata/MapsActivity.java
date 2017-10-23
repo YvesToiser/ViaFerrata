@@ -20,15 +20,19 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -54,6 +58,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +142,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
+        itemsListVia = findViewById(R.id.listVia);
+        itemsListVia.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         // Definition des elements du panel
         switchFavorite = findViewById(R.id.switchFavorite);
@@ -574,13 +588,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, AbsListView.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
     // Fonction qui remplit la liste
     private void displayList (ArrayList<ViaFerrataModel> viaferrataList){
         final ArrayList<ViaFerrataModel> myListOfVia = viaferrataList;
         final ListView itemsListVia = findViewById(R.id.listVia);
 
+        Collections.sort(viaferrataList, new Comparator<ViaFerrataModel>() {
+            @Override
+            public int compare(ViaFerrataModel t1, ViaFerrataModel t2) {
+                return t1.getNom().compareTo(t2.getNom());
+            }
+        });
+
         ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, viaferrataList);
         itemsListVia.setAdapter(adapter);
+        setListViewHeightBasedOnChildren(itemsListVia);
 
         itemsListVia.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
