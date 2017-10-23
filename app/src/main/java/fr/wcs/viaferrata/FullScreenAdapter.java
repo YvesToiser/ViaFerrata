@@ -82,6 +82,7 @@ public class FullScreenAdapter extends PagerAdapter{
                 Intent intent = new Intent(context, ViaActivity.class);
                 intent.putExtra("via", myVia);
                 intent.putExtra("fragment", "photo");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

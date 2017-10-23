@@ -18,8 +18,10 @@
             <ImageView
                 android:id="@+id/imageViewOfViaG"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="180dp"
+                android:adjustViewBounds="false"
+                android:cropToPadding="true"
+                android:scaleType="centerCrop"/>
 
         </RelativeLayout>
 
