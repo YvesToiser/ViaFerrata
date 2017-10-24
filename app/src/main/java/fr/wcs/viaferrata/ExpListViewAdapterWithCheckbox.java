@@ -16,11 +16,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.idunnololz.widgets.AnimatedExpandableListView;
 
 // Eclipse wanted me to use a sparse array instead of my hashmaps, I just suppressed that suggestion
 @SuppressLint("UseSparseArrays")
-public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
+public class ExpListViewAdapterWithCheckbox extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
 
     // Define activity context
     private Context mContext;
@@ -109,7 +110,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     }
 
     @Override
-    public int getChildrenCount(int groupPosition) {
+    public int getRealChildrenCount(int groupPosition) {
         return mListDataChild.get(mListDataGroup.get(groupPosition)).size();
     }
 
@@ -124,7 +125,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final int mGroupPosition = groupPosition;
         final int mChildPosition = childPosition;
