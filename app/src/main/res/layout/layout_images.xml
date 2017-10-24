@@ -14,7 +14,6 @@
             android:layout_height="wrap_content"
             android:minHeight="100dp">
 
-
             <ImageView
                 android:id="@+id/imageViewOfViaG"
                 android:layout_width="match_parent"
@@ -22,6 +21,17 @@
                 android:adjustViewBounds="false"
                 android:cropToPadding="true"
                 android:scaleType="centerCrop"/>
+
+            <ProgressBar
+                android:id="@+id/progressImageLoad"
+                style="@android:style/Widget.Material.ProgressBar.Large"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="100"
+                android:progress="50"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
 
         </RelativeLayout>
 
