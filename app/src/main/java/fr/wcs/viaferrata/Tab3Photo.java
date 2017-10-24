@@ -376,7 +376,7 @@ public class Tab3Photo extends Fragment {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             byte[] data = baos.toByteArray();*/
 
-            StorageReference viaRef = mStorageReference.child("image/" + mViaName.replace(" ", "_") + "/" + path.getLastPathSegment());
+            final StorageReference viaRef = mStorageReference.child("image/" + mViaName.replace(" ", "_") + "/" + path.getLastPathSegment());
             viaRef.putFile(path)
             //viaRef.putBytes(data)
 
@@ -393,6 +393,9 @@ public class Tab3Photo extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "Image envoyée ", Toast.LENGTH_LONG).show();
                             dialog.dismiss();
                             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                            DatabaseReference imageRef = mDatabase.getReference("photos");
+                            PhotoModel newPhoto = new PhotoModel(mViaName,viaRef.toString());
+                            imageRef.push().setValue(newPhoto);
 
                         }
                     })
@@ -420,10 +423,6 @@ public class Tab3Photo extends Fragment {
                             mInfoDialog.setVisibility(View.GONE);
                         }
                     });
-
-            DatabaseReference imageRef = mDatabase.getReference("photos");
-            PhotoModel newPhoto = new PhotoModel(mViaName,viaRef.toString());
-            imageRef.push().setValue(newPhoto);
         }
     }
 }
