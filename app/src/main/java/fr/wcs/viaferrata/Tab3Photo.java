@@ -78,7 +78,7 @@ public class Tab3Photo extends Fragment {
     private Uri mFilePath;
     private StorageReference mStorageReference;
     public FirebaseStorage mStorage;
-    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     public static String mViaName = "";
     private String imageName;
     private Bitmap mThumbNail;

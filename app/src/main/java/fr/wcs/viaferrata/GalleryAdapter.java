@@ -68,10 +68,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             super(itemView);
 
             imageView = (ImageView) itemView.findViewById(R.id.imageViewOfViaG);
-        //    imageView.setMaxHeight(imageView.getWidth());
-       //     imageView.setMinimumHeight(imageView.getWidth());
-            Log.e("itemview WIDTH", String.valueOf(itemView.getWidth()));
-            Log.e("itemview HEIGTH", String.valueOf(itemView.getHeight()));
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
