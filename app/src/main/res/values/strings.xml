@@ -11,6 +11,13 @@
     <string name="favorite">Favoris</string>
     <string name="back">Retour</string>
 
+    <string-array name="spinner">
+        <item>Nom</item>
+        <item>Département(n°)</item>
+        <item>Département(nom)</item>
+        <item>Difficulté</item>
+    </string-array>
+
     <!--    String ViaAvtivity    -->
     <string name="viaNameStatic">Non de la Via Ferrata :</string>
     <string name="viaVilleStatic">Ville :</string>

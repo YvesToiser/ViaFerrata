@@ -27,6 +27,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -35,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private CheckBox seekCheck;
     private SeekBar seekBar;
     private AnimatedExpandableListView expListView;
+    private Spinner spinner;
 
     // Variables du panel
     private boolean filtreFavoris;
@@ -114,6 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Integer> filtreZoneGeo = new ArrayList<>();;
     private List<Integer> filtreDiff = new ArrayList<>();;
     private ListView itemsListVia;
+    private String sortBy;
 
     // Animations
     private Animation slide_in_left, slide_in_right, slide_out_left, slide_out_right;
@@ -142,14 +146,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonValider = findViewById(R.id.buttonValider);
         buttonCancel.setVisibility(GONE);
         buttonValider.setVisibility(GONE);
-        itemsListVia = findViewById(R.id.listVia);
-        itemsListVia.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                view.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
 
         // Definition des elements du panel
         switchFavorite = findViewById(R.id.switchFavorite);
@@ -190,6 +186,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+
+                if (pos == 0) {
+                    sortBy = "Nom";
+                }
+
+                else if (pos == 1) {
+                    sortBy = "DepartementNum";
+                }
+
+                else if (pos == 2) {
+                    sortBy = "DepartementNom";
+                }
+                else if (pos == 3) {
+                    sortBy = "Difficulté";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         //Switch map/liste
         flipper = findViewById(R.id.flipper);
         slide_in_left = AnimationUtils.loadAnimation(this,
@@ -216,10 +243,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     itemsListVia = findViewById(R.id.listVia);
                     itemsListVia.setAdapter(null);
                     rechargeList(filtreZoneGeo, filtreDiff);
+                    spinner.setVisibility(VISIBLE);
                     flipper.setOutAnimation(slide_out_left);
                     flipper.setInAnimation(slide_in_right);
                     flipper.showNext();
                 } else {
+                    spinner.setVisibility(GONE);
                     rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
                     flipper.setInAnimation(slide_in_left);
                     flipper.setOutAnimation(slide_out_right);
@@ -613,13 +642,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void displayList (ArrayList<ViaFerrataModel> viaferrataList){
         final ArrayList<ViaFerrataModel> myListOfVia = viaferrataList;
         final ListView itemsListVia = findViewById(R.id.listVia);
+        if (sortBy == "Nom") {
+            Collections.sort(viaferrataList, new Comparator<ViaFerrataModel>() {
+                @Override
+                public int compare(ViaFerrataModel t1, ViaFerrataModel t2) {
+                    return t1.getNom().compareTo(t2.getNom());
+                }
+            });
+        }
 
-        Collections.sort(viaferrataList, new Comparator<ViaFerrataModel>() {
-            @Override
-            public int compare(ViaFerrataModel t1, ViaFerrataModel t2) {
-                return t1.getNom().compareTo(t2.getNom());
-            }
-        });
+        else if (sortBy == "DepartementNum") {
+            Collections.sort(viaferrataList, new Comparator<ViaFerrataModel>() {
+                @Override
+                public int compare(ViaFerrataModel t1, ViaFerrataModel t2) {
+                    return String.valueOf(t1.getDptNb()).compareTo(String.valueOf(t2.getDptNb()));
+                }
+            });
+        }
+
+        else if (sortBy == "DepartementNom") {
+            Collections.sort(viaferrataList, new Comparator<ViaFerrataModel>() {
+                @Override
+                public int compare(ViaFerrataModel t1, ViaFerrataModel t2) {
+                    return t1.getDptNom().compareTo(t2.getDptNom());
+                }
+            });
+        }
+
+        else if (sortBy == "Difficulté") {
+            Collections.sort(viaferrataList, new Comparator<ViaFerrataModel>() {
+                @Override
+                public int compare(ViaFerrataModel t1, ViaFerrataModel t2) {
+                    return (t1.getDifficulteNb().compareTo(t2.getDifficulteNb()));
+                }
+            });
+        }
+
+
 
         ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, viaferrataList);
         itemsListVia.setAdapter(adapter);
