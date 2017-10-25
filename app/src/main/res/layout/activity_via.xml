@@ -64,13 +64,13 @@
         <ImageButton
             android:id="@+id/favButton"
             style="@style/bottom_menu"
-            app:srcCompat="@drawable/etoileunchecked" />
+            app:srcCompat="@drawable/fav_off_btn" />
 
         <ImageButton
             android:id="@+id/doneButton"
             style="@style/bottom_menu"
             android:paddingTop="5dp"
-            app:srcCompat="@drawable/uncheck" />
+            app:srcCompat="@drawable/fait_off_btn" />
 
         <ImageButton
             android:id="@+id/shareButton"

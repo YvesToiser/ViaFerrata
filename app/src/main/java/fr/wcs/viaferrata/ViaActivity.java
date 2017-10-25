@@ -44,17 +44,17 @@ public class ViaActivity extends AppCompatActivity {
         final String favId = "Fav" + maviaferrata.getNom();
         final boolean isFavorite = mySharedPref.getBoolean(favId, false);
         if (isFavorite) {
-            favButton.setImageResource(R.drawable.etoilechecked);
+            favButton.setImageResource(R.drawable.fav_ok_btn);
         }else {
-            favButton.setImageResource(R.drawable.etoileunchecked);
+            favButton.setImageResource(R.drawable.fav_off_btn);
         }
 
         final String doneId = "Done" + maviaferrata.getNom();
         final boolean isDone = mySharedPref.getBoolean(doneId, false);
         if (isDone) {
-            doneButton.setImageResource(R.drawable.check);
+            doneButton.setImageResource(R.drawable.fait_ok_btn);
         }else {
-            doneButton.setImageResource(R.drawable.uncheck);
+            doneButton.setImageResource(R.drawable.fait_off_btn);
         }
         // End of shared preferences
 
@@ -107,10 +107,10 @@ public class ViaActivity extends AppCompatActivity {
                 boolean isFavNewValue = !isFavorite;
                 String toastMessage;
                 if(isFavNewValue){
-                    favButton.setImageResource(R.drawable.etoilechecked);
+                    favButton.setImageResource(R.drawable.fav_ok_btn);
                     toastMessage = maviaferrata.getNom()+" "+"a été ajoutée à vos favoris.";
                 }else{
-                    favButton.setImageResource(R.drawable.etoileunchecked);
+                    favButton.setImageResource(R.drawable.fav_off_btn);
                     toastMessage = maviaferrata.getNom()+" "+"ne fait plus partie de vos favoris.";
 
                 }
@@ -126,10 +126,10 @@ public class ViaActivity extends AppCompatActivity {
                 boolean isDoneNewValue= !isDone;
                 String toastMessage;
                 if(isDoneNewValue){
-                    doneButton.setImageResource(R.drawable.check);
+                    doneButton.setImageResource(R.drawable.fait_ok_btn);
                     toastMessage = "Vous avez fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                 }else{
-                    doneButton.setImageResource(R.drawable.uncheck);
+                    doneButton.setImageResource(R.drawable.fait_off_btn);
                     toastMessage = "Vous n'avez pas fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                 }
                 mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
