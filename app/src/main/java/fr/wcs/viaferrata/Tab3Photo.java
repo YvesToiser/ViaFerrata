@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
@@ -40,13 +39,11 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -56,32 +53,19 @@ import static android.app.Activity.RESULT_OK;
 
 public class Tab3Photo extends Fragment {
 
-    private final String TAG = "TEST";
-    public static final String VIA_STORAGE_PATH = "image/";
-    public static final String VIA_DATABASE_PATH = "image/";
-    public static final int REQUEST_CODE = 1234;
     public static final int PERMISSION_WRITE_EXTERNAL_STORAGE = 99;
-    public static final int PERMISSION_READ_EXTERNAL_STORAGE = 98;
     private static final int PICK_IMAGE_REQUEST = 2;
     private static final int TAKE_IMAGE_REQUEST = 4;
-    private static final int CAMERA_IMAGE_REQUEST = 101;
-    private static final String[] PERMISSIONS = new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    };
     private Button mTakeImage;
     private Button mSelectImage;
     private Button mUploadImage;
     private Button mCancel;
     private ImageView mImageView;
-    private ImageView mImageViewTest;
     private Uri mFilePath;
     private StorageReference mStorageReference;
     public FirebaseStorage mStorage;
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     public static String mViaName = "";
-    private String imageName;
-    private Bitmap mThumbNail;
     private ImageButton mFloatingActionButton;
     private AlertDialog dialog;
     private ProgressBar mProgressBar;

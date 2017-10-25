@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 
@@ -27,26 +25,21 @@ public class ViaActivity extends AppCompatActivity {
     private static final String TAG = "ViaActivity";
     int displayedChild;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
-
-
-
-        //Shared preferences
-        Intent intentFav = getIntent();
-        final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
-        mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-
-
 
         final ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         final ImageButton itineraryButton = (ImageButton) findViewById(R.id.itineraryButton);
         final ImageButton favButton = (ImageButton) findViewById(R.id.favButton);
         final ImageButton doneButton = (ImageButton) findViewById(R.id.doneButton);
         final ImageButton shareButton = (ImageButton) findViewById(R.id.shareButton);
+
+        //Shared preferences
+        Intent intentFav = getIntent();
+        final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
+        mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
 
         final String favId = "Fav" + maviaferrata.getNom();
         final boolean isFavorite = mySharedPref.getBoolean(favId, false);
@@ -63,6 +56,7 @@ public class ViaActivity extends AppCompatActivity {
         }else {
             doneButton.setImageResource(R.drawable.uncheck);
         }
+        // End of shared preferences
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
@@ -71,11 +65,8 @@ public class ViaActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-
         if(intentFav.getStringExtra("fragment")!=null && intentFav.getStringExtra("fragment").equals("photo")){
-            //TODO go to fragment photo
             mViewPager.setCurrentItem(1);
-            Log.e("BIBI", "on doit charger le fragment ici!!");
         }
 
         Intent intent = getIntent();
@@ -97,6 +88,7 @@ public class ViaActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         itineraryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,6 +99,7 @@ public class ViaActivity extends AppCompatActivity {
                 startActivity(intentGM);
             }
         });
+
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +118,7 @@ public class ViaActivity extends AppCompatActivity {
                 mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
             }
         });
+
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +136,7 @@ public class ViaActivity extends AppCompatActivity {
                 Toast.makeText(ViaActivity.this, toastMessage, Toast.LENGTH_LONG).show();
             }
         });
+
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,16 +152,7 @@ public class ViaActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -193,7 +179,6 @@ public class ViaActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
 
