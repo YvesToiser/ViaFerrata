@@ -22,8 +22,8 @@
     <string name="viaRegionStatic">Région :</string>
     <string name="viaNiveauStatic">Niveau :</string>
     <string name="shareVia">Partager via : </string>
-    <string name="shareSubject">Télécharge l\'appli ViaFerrata !</string>
-    <string name="shareBody">Télécharge vite l\'appli ViaFerrata et trouve ta prochaine sortie #sport et #nature !</string>
+    <string name="shareSubject">Télécharge l\'appli findAvia !</string>
+    <string name="shareBody">Télécharge vite l\'appli findAvia et trouve ta prochaine sortie Via Ferrata #sport et #nature !</string>
 
 
     <!--    Permissions    -->
