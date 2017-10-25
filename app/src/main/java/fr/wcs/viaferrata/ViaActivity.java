@@ -147,7 +147,7 @@ public class ViaActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                String shareBody = getResources().getString(R.string.shareBody) + "\n\nhttps://play.google.com/store/apps/details?id=Orion.Soft";
+                String shareBody = getResources().getString(R.string.shareBody) + "\n\nhttps://play.google.com/apps/testing/fr.wcs.viaferrata";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.shareSubject));
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.shareVia)));
