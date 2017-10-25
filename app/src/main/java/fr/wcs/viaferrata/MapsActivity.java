@@ -88,8 +88,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private float zoom;
     private Location mLocation;
 
-
-
     // Elements du panel
     private SlidingUpPanelLayout mLayout;
     private Button buttonCancel;
@@ -582,7 +580,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
     @Override
     public boolean onMyLocationButtonClick() {
         return false;
@@ -688,8 +685,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             });
         }
 
-
-
         ViaFerrataAdapter adapter = new ViaFerrataAdapter(this, viaferrataList);
         itemsListVia.setAdapter(adapter);
         setListViewHeightBasedOnChildren(itemsListVia);
@@ -731,7 +726,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //zoneGeo.add("Centre-Val-de-Loire");
         //zoneGeo.add("Pays-de-la-Loire");
 
-
         List<String> niveau = new ArrayList<>();
         niveau.add("Facile (F)");
         niveau.add("Peu difficile (PD)");
@@ -743,8 +737,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDataChild.put(listDataHeader.get(0), zoneGeo);
         listDataChild.put(listDataHeader.get(1), niveau);
     }
-
-
 
     // Fonction qui vérifie si la via correspond aux filtres
     public boolean allFiltersMatch (List<Integer> listDiff, int difficulte,
