@@ -5,7 +5,7 @@
         <layer-list>
             <item android:left="2dp" android:top="2dp">
                 <shape>
-                    <solid android:color="@color/darkerOrange" />
+                    <solid android:color="@color/colorAccent" />
                     <corners android:radius="3dp"/>
                 </shape>
             </item>
@@ -23,7 +23,7 @@
             <!-- CONTENT LAYER -->
             <item android:bottom="2dp" android:right="2dp">
                 <shape>
-                    <solid android:color="@color/darkerOrange" />
+                    <solid android:color="@color/colorAccent" />
                     <corners android:radius="3dp"/>
                 </shape>
             </item>

@@ -10,9 +10,9 @@
     <string name="back">Retour</string>
 
     <string-array name="spinner">
+        <item>Département (n°)</item>
         <item>Nom</item>
-        <item>Département(n°)</item>
-        <item>Département(nom)</item>
+        <item>Département (nom)</item>
         <item>Difficulté</item>
     </string-array>
 

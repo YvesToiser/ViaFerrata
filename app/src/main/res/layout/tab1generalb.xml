@@ -6,28 +6,38 @@
     android:layout_height="match_parent"
     android:layout_margin="15dp"
     android:orientation="vertical"
+    android:clipToPadding="false"
     tools:context="fr.wcs.viaferrata.ViaActivity">
 
     <TextView
         android:id="@+id/viaName"
-        android:layout_width="366dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/viatitles"
+        android:elevation="20dp"
+        android:paddingBottom="4dp"
         android:text="TextView"
         android:textAlignment="center"
+        android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp" />
 
     <TextView
         android:id="@+id/viaVilleStat"
+        style="@style/styleForTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="14dp"
-        style="@style/styleForTitle"
+        android:elevation="20dp"
         android:text="@string/viaVilleStatic"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viaName" />
@@ -37,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:layout_marginStart="43dp"
         android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/viaVilleStat"
@@ -46,10 +56,11 @@
 
     <TextView
         android:id="@+id/viaDepartementStat"
+        style="@style/styleForTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        style="@style/styleForTitle"
+        android:elevation="20dp"
         android:text="@string/viaDepartementStatic"
         app:layout_constraintLeft_toLeftOf="@+id/viaVilleStat"
         app:layout_constraintTop_toBottomOf="@+id/viaVille" />
@@ -60,16 +71,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="17sp"
         app:layout_constraintTop_toBottomOf="@+id/viaDepartementStat"
         app:layout_constraintLeft_toLeftOf="@+id/viaVille" />
 
     <TextView
         android:id="@+id/viaRegionStat"
+        style="@style/styleForTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        style="@style/styleForTitle"
+        android:elevation="20dp"
         android:text="@string/viaRegionStatic"
         app:layout_constraintLeft_toLeftOf="@+id/viaDepartementStat"
         app:layout_constraintTop_toBottomOf="@+id/viaDepartement" />
@@ -80,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="17sp"
         app:layout_constraintTop_toBottomOf="@+id/viaRegionStat"
         app:layout_constraintLeft_toLeftOf="@+id/viaDepartement" />
 
@@ -92,6 +104,7 @@
         android:layout_marginRight="28dp"
         android:layout_marginTop="17dp"
         android:background="@drawable/viatitles"
+        android:elevation="20dp"
         android:paddingBottom="3dp"
         android:paddingEnd="4dp"
         android:paddingLeft="4dp"
@@ -100,6 +113,7 @@
         android:paddingTop="3dp"
         android:text="@string/viaNiveauStatic"
         android:textColor="@color/white"
+        android:textSize="15sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viaName" />
 
@@ -109,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:text="TextView"
-        android:textSize="16sp"
+        android:textSize="17sp"
         app:layout_constraintTop_toBottomOf="@+id/viaNiveauStatic"
         android:layout_marginEnd="28dp"
         android:layout_marginRight="28dp"
@@ -121,23 +135,39 @@
         android:layout_height="wrap_content"
         android:foregroundGravity="center_vertical"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"/>/>
+        app:layout_constraintGuide_percent="0.5"
+        android:layout_marginBottom="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="191dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"
+        tools:layout_editor_absoluteY="286dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <LinearLayout
         android:id="@+id/passerelleLayout"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginLeft="30dp"
         android:layout_weight="0.5"
         android:background="@drawable/box"
+        android:elevation="20dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/tyrolienneLayout"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline">
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="30dp">
 
         <ImageView
             android:id="@+id/passerelleImage"
             style="@style/boxLayout.picto"
+            android:elevation="24dp"
             app:srcCompat="@drawable/passerelle" />
 
         <TextView
@@ -150,13 +180,15 @@
         android:id="@+id/pontSingeLayout"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginRight="30dp"
         android:layout_weight="0.5"
         android:background="@drawable/box"
+        android:elevation="20dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/echelleLayout"
-        app:layout_constraintRight_toLeftOf="@+id/guideline">
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="30dp">
 
         <ImageView
             android:id="@+id/pontSingeImage"
@@ -173,12 +205,18 @@
         android:id="@+id/echelleLayout"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="30dp"
         android:layout_weight="0.5"
         android:background="@drawable/box"
+        android:elevation="20dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline"
-        android:layout_marginRight="30dp">
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/pontSingeLayout"
+        android:layout_marginEnd="30dp"
+        android:clipToPadding="false">
 
         <ImageView
             android:id="@+id/echelleImage"
@@ -195,13 +233,17 @@
         android:id="@+id/tyrolienneLayout"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="30dp"
         android:layout_weight="0.5"
         android:background="@drawable/box"
+        android:elevation="20dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginLeft="30dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline">
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/passerelleLayout"
+        android:layout_marginStart="30dp">
 
         <ImageView
             android:id="@+id/tyrolImage"
