@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">ViaFerrata</string>
-    <string name="filter_text">Filtrer</string>
+    <string name="app_name">findAvia</string>
+    <string name="filter_text">Rechercher</string>
     <string name="cancelText">Annuler les filtres</string>
     <string name="validate">Valider</string>
     <string name="title_activity_via">ViaActivity</string>
@@ -10,9 +10,9 @@
     <string name="back">Retour</string>
 
     <string-array name="spinner">
+        <item>Département (n°)</item>
         <item>Nom</item>
-        <item>Département(n°)</item>
-        <item>Département(nom)</item>
+        <item>Département (nom)</item>
         <item>Difficulté</item>
     </string-array>
 
@@ -22,8 +22,8 @@
     <string name="viaRegionStatic">Région :</string>
     <string name="viaNiveauStatic">Niveau :</string>
     <string name="shareVia">Partager via : </string>
-    <string name="shareSubject">Télécharge l\'appli ViaFerrata !</string>
-    <string name="shareBody">Télécharge vite l\'appli ViaFerrata et trouve ta prochaine sortie #sport et #nature !</string>
+    <string name="shareSubject">Télécharge l\'appli findAvia !</string>
+    <string name="shareBody">Télécharge vite l\'appli findAvia et trouve ta prochaine sortie Via Ferrata #sport et #nature !</string>
 
 
     <!--    Permissions    -->
