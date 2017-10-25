@@ -308,7 +308,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json));
-
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");
             }
@@ -320,6 +319,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setLatLngBoundsForCameraTarget(Limite);
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
+
         // Fonction qui definit le zoom en fonction de l'orientation et de la largeur d'ecran
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -380,7 +380,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                         filtreFavoris = isChecked;
                         buttonCancel.setText(getResources().getString(R.string.cancelText));
-
                     }
                 });
                 switchDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -414,7 +413,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             // Reset les listes et reremplir les filtres diff/zonegeo
                             filtreDiff = new ArrayList<>();
                             filtreZoneGeo = new ArrayList<>();
-        
 
                             // Reset le panel
                             switchFavorite.setChecked(false);
@@ -422,7 +420,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             seekCheck.setChecked(false);
                             expListView.collapseGroup(0);
                             expListView.collapseGroup(1);
-
 
                             // Reset carte et liste
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
@@ -434,11 +431,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLayout.setEnabled(true);
                             mLayout.setPanelState(PanelState.COLLAPSED);
                             mLayout.setTouchEnabled(true);
-
                             mLayout.addPanelSlideListener(new PanelSlideListener() {
                                 @Override
                                 public void onPanelSlide(View panel, float slideOffset) {
-
                                 }
 
                                 @Override
@@ -448,10 +443,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                 }
                             });
-
-
                         }
                     });
+
                     // Bouton valider
                     buttonValider.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -486,7 +480,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 buttonCancel.setText(getResources().getString(R.string.cancelText));
                             }
 
-                            // Appelle la fonction qui réactualise la carte et la liste
+                            // Appelle les fonctions qui réactualise la carte et la liste
                             rechargeMarkersOnMap(filtreZoneGeo, filtreDiff);
 
                             itemsListVia = findViewById(R.id.listVia);
@@ -512,7 +506,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (filtreText.getVisibility() == VISIBLE ){
                         filtreText.setVisibility(GONE);
                         buttonSwitch.setVisibility(GONE);
-
                         buttonCancel.setVisibility(VISIBLE);
                         buttonValider.setVisibility(VISIBLE);
 
@@ -520,10 +513,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     else if (filtreText.getVisibility() == GONE) {
                         filtreText.setVisibility(VISIBLE);
                         buttonSwitch.setVisibility(VISIBLE);
-
                         buttonCancel.setVisibility(GONE);
                         buttonValider.setVisibility(GONE);
-
                     }
                 }else if (mLayout != null && (mLayout.getPanelState() == PanelState.ANCHORED)) {
                     mLayout.setPanelState(PanelState.COLLAPSED);
@@ -533,7 +524,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mLayout.setTouchEnabled(true);
                     filtreText.setVisibility(VISIBLE);
                     buttonSwitch.setVisibility(VISIBLE);
-
                     buttonCancel.setVisibility(GONE);
                     buttonValider.setVisibility(GONE);
                 }
@@ -575,8 +565,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
         expListView.setAdapter(listAdapter);
-
-
     }
 
 
@@ -621,7 +609,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         expListView.setIndicatorBoundsRelative(
             expListView.getWidth()-drawable_width-30,
             expListView.getWidth()-30);
-
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -941,10 +928,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Math.sin(dLng / 2) * Math.sin(dLng / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double dist = (earthRadius * c) / 1000;
-
         dist = Math.round(dist * 100);
         dist = dist / 100;
-
         return dist;
     }
 

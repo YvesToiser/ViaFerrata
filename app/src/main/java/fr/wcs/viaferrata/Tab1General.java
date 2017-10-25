@@ -1,4 +1,5 @@
 package fr.wcs.viaferrata;
+
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -9,12 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by wilderjm on 27/09/17.
@@ -23,8 +18,6 @@ import com.google.firebase.database.ValueEventListener;
 public class Tab1General extends Fragment{
 
     private static final String TAG = "Tab1";
-
-
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -63,12 +56,12 @@ public class Tab1General extends Fragment{
         echelle.setTypeface(myTextFont);
         tyrolienne.setTypeface(myTextFont);
 
-
+        // Get the intent
         Intent intent = getActivity().getIntent();
         ViaFerrataModel maviaferrata = (ViaFerrataModel) intent.getParcelableExtra("via");
         Log.d(TAG, "Object Tagg " + maviaferrata);
 
-
+        // Get values
         String nomVia = maviaferrata.getNom();
         name.setText(nomVia);
 
@@ -97,9 +90,5 @@ public class Tab1General extends Fragment{
         tyrolienne.setText(nbTyroliennes);
 
         return rootview;
-
-
-
     }
-
 }

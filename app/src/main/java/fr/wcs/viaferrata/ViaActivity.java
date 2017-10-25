@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-
 import static fr.wcs.viaferrata.HomeActivity.mySharedPref;
 
 
@@ -27,20 +25,10 @@ public class ViaActivity extends AppCompatActivity {
     private static final String TAG = "ViaActivity";
     int displayedChild;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_via);
-
-
-
-        //Shared preferences
-        Intent intentFav = getIntent();
-        final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
-        mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
-
-
 
         final ImageButton backButton = (ImageButton) findViewById(R.id.backButton);
         final ImageButton itineraryButton = (ImageButton) findViewById(R.id.itineraryButton);
@@ -48,21 +36,27 @@ public class ViaActivity extends AppCompatActivity {
         final ImageButton doneButton = (ImageButton) findViewById(R.id.doneButton);
         final ImageButton shareButton = (ImageButton) findViewById(R.id.shareButton);
 
+        //Shared preferences
+        Intent intentFav = getIntent();
+        final ViaFerrataModel maviaferrata =  intentFav.getParcelableExtra("via");
+        mySharedPref = getSharedPreferences("SP",MODE_PRIVATE);
+
         final String favId = "Fav" + maviaferrata.getNom();
         final boolean isFavorite = mySharedPref.getBoolean(favId, false);
         if (isFavorite) {
-            favButton.setImageResource(R.drawable.etoilechecked);
+            favButton.setImageResource(R.drawable.fav_ok_btn);
         }else {
-            favButton.setImageResource(R.drawable.etoileunchecked);
+            favButton.setImageResource(R.drawable.fav_off_btn);
         }
 
         final String doneId = "Done" + maviaferrata.getNom();
         final boolean isDone = mySharedPref.getBoolean(doneId, false);
         if (isDone) {
-            doneButton.setImageResource(R.drawable.check);
+            doneButton.setImageResource(R.drawable.fait_ok_btn);
         }else {
-            doneButton.setImageResource(R.drawable.uncheck);
+            doneButton.setImageResource(R.drawable.fait_off_btn);
         }
+        // End of shared preferences
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
@@ -71,11 +65,8 @@ public class ViaActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-
         if(intentFav.getStringExtra("fragment")!=null && intentFav.getStringExtra("fragment").equals("photo")){
-            //TODO go to fragment photo
             mViewPager.setCurrentItem(1);
-            Log.e("BIBI", "on doit charger le fragment ici!!");
         }
 
         Intent intent = getIntent();
@@ -97,6 +88,7 @@ public class ViaActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         itineraryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,6 +99,7 @@ public class ViaActivity extends AppCompatActivity {
                 startActivity(intentGM);
             }
         });
+
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,10 +107,10 @@ public class ViaActivity extends AppCompatActivity {
                 boolean isFavNewValue = !isFavorite;
                 String toastMessage;
                 if(isFavNewValue){
-                    favButton.setImageResource(R.drawable.etoilechecked);
+                    favButton.setImageResource(R.drawable.fav_ok_btn);
                     toastMessage = maviaferrata.getNom()+" "+"a été ajoutée à vos favoris.";
                 }else{
-                    favButton.setImageResource(R.drawable.etoileunchecked);
+                    favButton.setImageResource(R.drawable.fav_off_btn);
                     toastMessage = maviaferrata.getNom()+" "+"ne fait plus partie de vos favoris.";
 
                 }
@@ -125,6 +118,7 @@ public class ViaActivity extends AppCompatActivity {
                 mySharedPref.edit().putBoolean(favId, isFavNewValue).apply();
             }
         });
+
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,22 +126,23 @@ public class ViaActivity extends AppCompatActivity {
                 boolean isDoneNewValue= !isDone;
                 String toastMessage;
                 if(isDoneNewValue){
-                    doneButton.setImageResource(R.drawable.check);
+                    doneButton.setImageResource(R.drawable.fait_ok_btn);
                     toastMessage = "Vous avez fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                 }else{
-                    doneButton.setImageResource(R.drawable.uncheck);
+                    doneButton.setImageResource(R.drawable.fait_off_btn);
                     toastMessage = "Vous n'avez pas fait la via Ferrata"+" : "+maviaferrata.getNom()+".";
                 }
                 mySharedPref.edit().putBoolean(doneId, isDoneNewValue).apply();
                 Toast.makeText(ViaActivity.this, toastMessage, Toast.LENGTH_LONG).show();
             }
         });
+
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                String shareBody = getResources().getString(R.string.shareBody) + "\n\nhttps://play.google.com/store/apps/details?id=Orion.Soft";
+                String shareBody = getResources().getString(R.string.shareBody) + "\n\nhttps://play.google.com/apps/testing/fr.wcs.viaferrata";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.shareSubject));
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.shareVia)));
@@ -157,16 +152,7 @@ public class ViaActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -193,7 +179,6 @@ public class ViaActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
 

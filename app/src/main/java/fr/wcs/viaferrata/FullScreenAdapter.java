@@ -5,15 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -55,6 +60,7 @@ public class FullScreenAdapter extends PagerAdapter{
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView imgDisplay;
         Button btnClose;
+        final ProgressBar loadingBar;
 
 //        inflater = (LayoutInflater) _activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //        View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
@@ -65,14 +71,34 @@ public class FullScreenAdapter extends PagerAdapter{
 
         imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
         btnClose = (Button) viewLayout.findViewById(R.id.btnClose);
+        loadingBar = (ProgressBar) viewLayout.findViewById(R.id.progressImageLoadFS);
 
         /*BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(_imagePaths.get(position), options);
         imgDisplay.setImageBitmap();*/
+        loadingBar.setVisibility(View.VISIBLE);
         String upload = uploads.get(position);
         StorageReference gsReference = mStorage.getReferenceFromUrl(upload);
-        Glide.with(context).using(new FirebaseImageLoader()).load(gsReference).into(imgDisplay);
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(gsReference)
+                .listener(new RequestListener<StorageReference, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, StorageReference model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        loadingBar.setVisibility(View.GONE);
+                        Log.d("tag", "fail loading Image");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, StorageReference model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        loadingBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .placeholder(R.drawable.placeholdervia)
+                .into(imgDisplay);
 
         // close button click event
         btnClose.setOnClickListener(new View.OnClickListener() {
