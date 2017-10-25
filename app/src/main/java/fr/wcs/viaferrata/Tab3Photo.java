@@ -2,11 +2,13 @@ package fr.wcs.viaferrata;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Typeface;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,8 +73,6 @@ public class Tab3Photo extends Fragment {
     };
     private ImageButton mTakeImage;
     private ImageButton mSelectImage;
-    //private Button mUploadImage;
-    private ImageButton mCancel;
     private ImageView mImageView;
     private ImageView mImageViewTest;
     private Uri mFilePath;
@@ -164,11 +164,23 @@ public class Tab3Photo extends Fragment {
                 mTakeImage = (ImageButton) mView.findViewById(R.id.takeImage);
                 mSelectImage = (ImageButton) mView.findViewById(R.id.selectImage);
                 mImageView = (ImageView) mView.findViewById(R.id.imageSelected);
-                mCancel = (ImageButton) mView.findViewById(R.id.cancelAction);
                 mProgressBar = (ProgressBar) mView.findViewById(R.id.progressBar2);
                 mUploadInfo = (TextView) mView.findViewById(R.id.uploadInfo);
                 mInfoDialog = (TextView) mView.findViewById(R.id.info_photo);
                 mProgressBar.setVisibility(View.GONE);
+
+                Typeface myTitlesFont = Typeface.createFromAsset(getContext().getAssets(), "Fonts/Montserrat-Medium.ttf");
+                mInfoDialog.setTypeface(myTitlesFont);
+                mUploadInfo.setTypeface(myTitlesFont);
+
+                //negative button
+                mBuilder.setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    }
+                });
 
                 //take picture from camera
                 mTakeImage.setOnClickListener(new View.OnClickListener() {
@@ -195,15 +207,6 @@ public class Tab3Photo extends Fragment {
                 dialog = mBuilder.create();
                 dialog.show();
 
-                mCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-
-                    }
-                });
-
             }
         });
 
@@ -220,12 +223,12 @@ public class Tab3Photo extends Fragment {
                 && data.getData() != null) {
             mFilePath = data.getData();
             uploadFromPath(mFilePath);
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mFilePath);
-                mImageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), mFilePath);
+//              //  mImageView.setImageBitmap(bitmap);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
         } else if (requestCode == TAKE_IMAGE_REQUEST && resultCode == RESULT_OK) {
             checkPermission();
@@ -331,15 +334,15 @@ public class Tab3Photo extends Fragment {
         //si la personne arrive ici elle a les droits
 
         uploadFromPath(mCurrentPhotoUri);
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),mCurrentPhotoUri);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        bitmap = rotateImage(bitmap);
-        mImageView.setImageBitmap(bitmap);
+//        Bitmap bitmap = null;
+//        try {
+//            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),mCurrentPhotoUri);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        bitmap = rotateImage(bitmap);
+//      //  mImageView.setImageBitmap(bitmap);
     }
 
     @Override
@@ -387,7 +390,6 @@ public class Tab3Photo extends Fragment {
                             mUploadInfo.setVisibility(View.GONE);
                             mTakeImage.setVisibility(View.GONE);
                             mSelectImage.setVisibility(View.GONE);
-                            mCancel.setVisibility(View.GONE);
                             mInfoDialog.setVisibility(View.GONE);
 
                             Toast.makeText(getActivity().getApplicationContext(), "Image envoyée ", Toast.LENGTH_LONG).show();
@@ -415,14 +417,16 @@ public class Tab3Photo extends Fragment {
                             int currentProgress = (int) progress;
                             mProgressBar.setProgress(currentProgress);
                             mProgressBar.setVisibility(View.VISIBLE);
-                            mUploadInfo.setText("Envoi en cours :" + String.valueOf(currentProgress) +"%");
+                            mUploadInfo.setText("Envoi en cours :" +" " + String.valueOf(currentProgress) +"%");
                             mUploadInfo.setVisibility(View.VISIBLE);
                             mTakeImage.setVisibility(View.GONE);
                             mSelectImage.setVisibility(View.GONE);
-                            mCancel.setVisibility(View.GONE);
                             mInfoDialog.setVisibility(View.GONE);
+                            mImageView.setVisibility(View.GONE);
+
                         }
                     });
         }
     }
+
 }

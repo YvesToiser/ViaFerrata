@@ -23,4 +23,15 @@
         android:textColor="#ffffff"
         android:text="Fermer" />
 
+    <ProgressBar
+        android:id="@+id/progressImageLoadFS"
+        style="@android:style/Widget.Material.Light.ProgressBar.Small"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:max="100"
+        android:progress="50"
+        android:progressTint="@color/colorAccent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>
