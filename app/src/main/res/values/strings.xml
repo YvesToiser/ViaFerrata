@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">findAvia</string>
+    <string name="app_name">findAvia - Via Ferrata</string>
     <string name="filter_text">Rechercher</string>
     <string name="cancelText">Annuler les filtres</string>
     <string name="validate">Valider</string>
@@ -22,8 +22,8 @@
     <string name="viaRegionStatic">Région :</string>
     <string name="viaNiveauStatic">Niveau :</string>
     <string name="shareVia">Partager via : </string>
-    <string name="shareSubject">Télécharge l\'appli findAvia !</string>
-    <string name="shareBody">Télécharge vite l\'appli findAvia et trouve ta prochaine sortie Via Ferrata #sport et #nature !</string>
+    <string name="shareSubject">Télécharge l\'appli findAvia - Via Ferrata !</string>
+    <string name="shareBody">Télécharge vite l\'appli findAvia - Via Ferrata et trouve ta prochaine sortie #sport et #nature !</string>
 
 
     <!--    Permissions    -->
@@ -32,7 +32,6 @@
     <string name="permission_required_toast">Location permission is required for this demo.</string>
     <string name="resetText">ANNULER LES FILTRES</string>
     <string name="permission_granted">Merci d\'avoir autorisé la géolocalisation.</string>
-    <string name="permission_not_granted">Vous avez refusé la géolocalisation !</string>
 
 
     <!--   STYLE MAP    -->
