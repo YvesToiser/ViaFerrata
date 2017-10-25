@@ -66,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements NetworkStateRecei
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference viaFerrataRef = database.getReference("viaFerrata");
+        viaFerrataRef.keepSynced(true);
 
         viaFerrataRef.orderByChild("dptNb").addValueEventListener(new ValueEventListener() {
             @Override
