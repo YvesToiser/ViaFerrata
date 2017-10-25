@@ -69,10 +69,10 @@ public class Tab3Photo extends Fragment {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
     };
-    private Button mTakeImage;
-    private Button mSelectImage;
-    private Button mUploadImage;
-    private Button mCancel;
+    private ImageButton mTakeImage;
+    private ImageButton mSelectImage;
+    //private Button mUploadImage;
+    private ImageButton mCancel;
     private ImageView mImageView;
     private ImageView mImageViewTest;
     private Uri mFilePath;
@@ -104,7 +104,7 @@ public class Tab3Photo extends Fragment {
 
         mStorage = FirebaseStorage.getInstance();
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        mUploadImage = (Button) rootview.findViewById(R.id.cancelAction);
+        //mUploadImage = (ImageButton) rootview.findViewById(R.id.cancelAction);
         mFloatingActionButton = (ImageButton) rootview.findViewById(R.id.floatingActionButton);
         mBeMyFirst = (ImageView) rootview.findViewById(R.id.beMyFirstImg);
 
@@ -161,10 +161,10 @@ public class Tab3Photo extends Fragment {
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(v.getContext());
                 View mView = getActivity().getLayoutInflater().inflate(R.layout.dialog_photo,container,false);
-                mTakeImage = (Button) mView.findViewById(R.id.takeImage);
-                mSelectImage = (Button) mView.findViewById(R.id.selectImage);
+                mTakeImage = (ImageButton) mView.findViewById(R.id.takeImage);
+                mSelectImage = (ImageButton) mView.findViewById(R.id.selectImage);
                 mImageView = (ImageView) mView.findViewById(R.id.imageSelected);
-                mCancel = (Button) mView.findViewById(R.id.cancelAction);
+                mCancel = (ImageButton) mView.findViewById(R.id.cancelAction);
                 mProgressBar = (ProgressBar) mView.findViewById(R.id.progressBar2);
                 mUploadInfo = (TextView) mView.findViewById(R.id.uploadInfo);
                 mInfoDialog = (TextView) mView.findViewById(R.id.info_photo);
