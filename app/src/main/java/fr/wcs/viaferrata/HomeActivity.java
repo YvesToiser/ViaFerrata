@@ -60,7 +60,13 @@ public class HomeActivity extends AppCompatActivity implements NetworkStateRecei
         //end splash screen code
 
         // Retrieve all the viaFerrata from database and store it in global var
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        boolean calledAlready=false;
+
+        if (!calledAlready)
+        {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            calledAlready = true;
+        }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference viaFerrataRef = database.getReference("viaFerrata");
         viaFerrataRef.keepSynced(true);
