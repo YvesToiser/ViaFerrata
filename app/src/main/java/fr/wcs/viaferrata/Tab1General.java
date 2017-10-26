@@ -38,12 +38,23 @@ public class Tab1General extends Fragment{
         final TextView viaDepartementStatic =  rootview.findViewById(R.id.viaDepartementStat);
         final TextView viaRegionStatic =  rootview.findViewById(R.id.viaRegionStat);
         final TextView viaNiveauStatic =  rootview.findViewById(R.id.viaNiveauStatic);
+        final TextView viaEquipementStatic =  rootview.findViewById(R.id.viaEquipementStatic);
+        final TextView viaPontDeSingeStatic =  rootview.findViewById(R.id.viaPontSingeStatic);
+        final TextView viaPasserelleStatic =  rootview.findViewById(R.id.viaPasserelleStatic);
+        final TextView viaEchelleetStatic =  rootview.findViewById(R.id.viaEchelleStatic);
+        final TextView viaTyrolStatic =  rootview.findViewById(R.id.viaTyrolStatic);
+
 
         Typeface myTitlesFont = Typeface.createFromAsset(getContext().getAssets(), "Fonts/Montserrat-Medium.ttf");
         viaVilleStatic.setTypeface(myTitlesFont);
         viaDepartementStatic.setTypeface(myTitlesFont);
         viaRegionStatic.setTypeface(myTitlesFont);
         viaNiveauStatic.setTypeface(myTitlesFont);
+        viaEquipementStatic.setTypeface(myTitlesFont);
+        viaPontDeSingeStatic.setTypeface(myTitlesFont);
+        viaPasserelleStatic.setTypeface(myTitlesFont);
+        viaEchelleetStatic.setTypeface(myTitlesFont);
+        viaTyrolStatic.setTypeface(myTitlesFont);
 
         Typeface myTextFont = Typeface.createFromAsset(getContext().getAssets(), "Fonts/Quicksand-Regular.ttf");
         name.setTypeface(myTextFont);

@@ -79,15 +79,16 @@
         <item name="android:textColor">@color/white</item>
     </style>
     <style name="styleForTitle">
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingTop">3dp</item>
-        <item name="android:paddingBottom">3dp</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:background">@drawable/viatitles</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/grey2</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="styleForContent">
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@color/grey2</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 </resources>
