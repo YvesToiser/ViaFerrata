@@ -39,19 +39,22 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".MapsActivity">
+        <activity android:name=".MapsActivity"
+                  android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ViaActivity"
             android:label="@string/title_activity_via"
-            android:theme="@style/AppTheme.Via"/>
+            android:theme="@style/AppTheme.Via"
+            android:screenOrientation="portrait"/>
         <activity android:name=".FullScreenViewActivity"
                   android:theme="@style/AppTheme.Fs">
         </activity>
