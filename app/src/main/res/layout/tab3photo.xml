@@ -21,7 +21,7 @@
         android:layout_height="fill_parent"
         android:layout_margin="0dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/placeholdergallerievide"/>
+        app:srcCompat="@drawable/placeholdergalerievide"/>
 
     <ImageButton
         android:id="@+id/floatingActionButton"
