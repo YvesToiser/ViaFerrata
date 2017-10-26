@@ -28,6 +28,7 @@ public class HomeActivity extends AppCompatActivity implements NetworkStateRecei
 
     /** Duration of wait for splash screen**/
     private final int SPLASH_DISPLAY_LENGTH = 6000;
+    static boolean calledAlready = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +61,6 @@ public class HomeActivity extends AppCompatActivity implements NetworkStateRecei
         //end splash screen code
 
         // Retrieve all the viaFerrata from database and store it in global var
-        boolean calledAlready=false;
-
         if (!calledAlready)
         {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
