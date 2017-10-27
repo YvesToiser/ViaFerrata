@@ -18,9 +18,9 @@
 
     <!--    String ViaAvtivity    -->
     <string name="viaVilleStatic">Ville :</string>
-    <string name="viaDepartementStatic">Departement :</string>
+    <string name="viaDepartementStatic">Département :</string>
     <string name="viaRegionStatic">Région :</string>
-    <string name="viaNiveauStatic">Niveau :</string>
+    <string name="viaNiveauStatic">Difficulté :</string>
     <string name="shareVia">Partager via : </string>
     <string name="shareSubject">Télécharge l\'appli findAvia - Via Ferrata !</string>
     <string name="shareBody">Télécharge vite l\'appli findAvia - Via Ferrata et trouve ta prochaine sortie #sport et #nature !</string>
