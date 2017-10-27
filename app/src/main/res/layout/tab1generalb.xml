@@ -148,7 +148,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="16dp"
-        android:text="Passarelle :"
+        android:text="Passerelle :"
         android:textColor="@color/grey2"
         android:textSize="21dp"
         app:layout_constraintLeft_toLeftOf="@+id/viaEquipementStatic"
