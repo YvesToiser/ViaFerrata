@@ -71,8 +71,10 @@ public class HomeActivity extends AppCompatActivity implements NetworkStateRecei
         viaFerrataRef.keepSynced(true);
 
         viaFerrataRef.orderByChild("dptNb").addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mViaFerrataList.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()) {
                     ViaFerrataModel viaFerrata = data.getValue(ViaFerrataModel.class);
                     mViaFerrataList.add(viaFerrata);

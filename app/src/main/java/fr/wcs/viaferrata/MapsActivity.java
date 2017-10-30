@@ -895,6 +895,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             switchFavorite.setChecked(false);
             switchFavorite.setEnabled(false);
         }
+        else {
+            switchFavorite.setEnabled(true);
+        }
         return String.valueOf(nbOfFav);
     }
 
@@ -914,6 +917,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (nbOfDone == 0) {
             switchDone.setChecked(false);
             switchDone.setEnabled(false);
+        }
+        else {
+            switchDone.setEnabled(true);
         }
         return String.valueOf(nbOfDone);
     }
