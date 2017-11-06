@@ -48,7 +48,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MapsActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+            android:noHistory="true">
         </activity>
         <activity
             android:name=".ViaActivity"
